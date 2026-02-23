@@ -1,0 +1,118 @@
+/**
+ * ============================================================
+ * OMSP Document Tracking / Monitoring
+ * Dashboard Page CSS - Dashboard-specific layouts
+ * ============================================================
+ */
+
+/* Dashboard-specific overrides */
+.dashboard-content {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Two-column dashboard layout (main + sidebar) */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--space-6);
+}
+
+@media screen and (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Recent records list */
+.recent-records { }
+.recent-record-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  transition: background var(--transition-fast);
+  cursor: pointer;
+}
+.recent-record-item:hover {
+  background: var(--neutral-50);
+}
+.recent-record-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.recent-record-icon.fa {
+  background: var(--primary-50);
+  color: var(--primary-600);
+}
+.recent-record-icon.pa {
+  background: var(--secondary-50);
+  color: var(--secondary-600);
+}
+.recent-record-content {
+  flex: 1;
+  min-width: 0;
+}
+.recent-record-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--neutral-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recent-record-detail {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.recent-record-amount {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--neutral-700);
+  white-space: nowrap;
+}
+
+/* Pending items widget */
+.pending-list {}
+.pending-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--neutral-100);
+}
+.pending-item:last-child { border-bottom: none; }
+.pending-label {
+  font-size: var(--text-base);
+  color: var(--neutral-700);
+}
+.pending-count {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--primary-700);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* Budget mini chart (simple bar) */
+.budget-mini {
+  margin-top: var(--space-3);
+}
+.budget-mini-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+.budget-mini-label { color: var(--neutral-500); }
+.budget-mini-value { font-weight: var(--font-semibold); color: var(--neutral-800); }
