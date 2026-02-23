@@ -1,0 +1,93 @@
+<!--
+  fa-list.html
+  PURPOSE: Financial Assistance listing page. Shows a
+  filterable, sortable table of all FA records visible
+  to the current user's role.
+
+  LAYOUT: Authenticated app-layout with sidebar + header.
+  CONTROLLER: js/pages/fa-list.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Assistance - OMSP</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+  <link rel="stylesheet" href="css/modal-toast-banner.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer" class="sidebar-container"></div>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-wrapper">
+      <div id="headerContainer" class="header-container"></div>
+      <div id="bannerContainer" class="banner-container"></div>
+
+      <main class="main-content">
+        <!-- ── Page Header ── -->
+        <div class="page-header">
+          <h2>Financial Assistance Records</h2>
+          <a href="fa-create.html" id="createBtn" class="btn btn-primary">+ New FA Record</a>
+        </div>
+
+        <!-- ── Filters ── -->
+        <div class="filter-bar">
+          <div class="form-group">
+            <label for="filterStatus">Status</label>
+            <select id="filterStatus" class="form-select" onchange="applyFilters()">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="released">Released</option>
+              <option value="completed">Completed</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterMunicipality">Municipality</label>
+            <select id="filterMunicipality" class="form-select" onchange="applyFilters()">
+              <option value="">All Municipalities</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterCaseType">Case Type</label>
+            <select id="filterCaseType" class="form-select" onchange="applyFilters()">
+              <option value="">All Types</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterSearch">Search</label>
+            <input type="text" id="filterSearch" class="form-input" placeholder="Name, ID..." oninput="applyFilters()" />
+          </div>
+        </div>
+
+        <!-- ── Data Table ── -->
+        <div id="faTableContainer"></div>
+      </main>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="modalOverlay" class="modal-overlay"></div>
+
+  <script src="js/lib/constants.js"></script>
+  <script src="js/lib/utils.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/seed.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/banner.js"></script>
+  <script src="js/components/table.js"></script>
+  <script src="js/pages/fa-list.js"></script>
+</body>
+</html>

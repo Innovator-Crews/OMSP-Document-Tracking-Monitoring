@@ -1,0 +1,157 @@
+<!--
+  fa-create.html
+  PURPOSE: Create or edit a Financial Assistance record.
+  Multi-step wizard: Beneficiary → FA Details → Review.
+  Includes duplicate beneficiary detection and budget check.
+
+  LAYOUT: Authenticated app-layout with sidebar + header.
+  CONTROLLER: js/pages/fa-create.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Financial Assistance - OMSP</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+  <link rel="stylesheet" href="css/modal-toast-banner.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer" class="sidebar-container"></div>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-wrapper">
+      <div id="headerContainer" class="header-container"></div>
+      <div id="bannerContainer" class="banner-container"></div>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h2 id="pageTitle">New Financial Assistance</h2>
+        </div>
+
+        <!-- ── Wizard Step Indicator ── -->
+        <div class="wizard-steps">
+          <div class="wizard-step active" id="step1Indicator">
+            <span class="wizard-step-number">1</span>
+            <span class="wizard-step-label">Beneficiary</span>
+          </div>
+          <div class="wizard-step" id="step2Indicator">
+            <span class="wizard-step-number">2</span>
+            <span class="wizard-step-label">FA Details</span>
+          </div>
+          <div class="wizard-step" id="step3Indicator">
+            <span class="wizard-step-number">3</span>
+            <span class="wizard-step-label">Review</span>
+          </div>
+        </div>
+
+        <!-- ── Step 1: Beneficiary Information ── -->
+        <div id="step1" class="wizard-panel card">
+          <div class="card-header"><h3>Beneficiary Information</h3></div>
+          <div class="card-body">
+            <!-- Duplicate warning box (hidden by default) -->
+            <div id="duplicateWarning" class="duplicate-warning" style="display:none;"></div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="benFullName">Full Name *</label>
+                <input type="text" id="benFullName" class="form-input" required
+                  placeholder="e.g. Juan Dela Cruz" oninput="checkDuplicate()" />
+              </div>
+              <div class="form-group">
+                <label for="benMunicipality">Municipality *</label>
+                <select id="benMunicipality" class="form-select" required>
+                  <option value="">Select municipality</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="benBarangay">Barangay</label>
+                <input type="text" id="benBarangay" class="form-input" placeholder="Barangay" />
+              </div>
+              <div class="form-group">
+                <label for="benContact">Contact Number</label>
+                <input type="text" id="benContact" class="form-input" placeholder="09XX-XXX-XXXX" />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <a href="fa-list.html" class="btn btn-ghost">Cancel</a>
+              <button class="btn btn-primary" onclick="goToStep(2)">Next →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Step 2: FA Details ── -->
+        <div id="step2" class="wizard-panel card" style="display:none;">
+          <div class="card-header"><h3>Financial Assistance Details</h3></div>
+          <div class="card-body">
+            <!-- Budget info box -->
+            <div id="budgetInfo" class="cooling-off-info"></div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="faCaseType">Case Type *</label>
+                <select id="faCaseType" class="form-select" required>
+                  <option value="">Select case type</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="faAmount">Amount (₱) *</label>
+                <input type="number" id="faAmount" class="form-input" min="1" required
+                  placeholder="e.g. 5000" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="faNotes">Notes</label>
+              <textarea id="faNotes" class="form-textarea" rows="3"
+                placeholder="Additional notes or details..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+              <button class="btn btn-primary" onclick="goToStep(3)">Next →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Step 3: Review & Submit ── -->
+        <div id="step3" class="wizard-panel card" style="display:none;">
+          <div class="card-header"><h3>Review & Submit</h3></div>
+          <div class="card-body">
+            <div id="reviewSummary"></div>
+
+            <div class="form-actions">
+              <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+              <button class="btn btn-primary" id="submitBtn" onclick="submitFA()">Submit FA Record</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="modalOverlay" class="modal-overlay"></div>
+
+  <script src="js/lib/constants.js"></script>
+  <script src="js/lib/utils.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/seed.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/banner.js"></script>
+  <script src="js/components/table.js"></script>
+  <script src="js/pages/fa-create.js"></script>
+</body>
+</html>

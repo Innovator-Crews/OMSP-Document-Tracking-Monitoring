@@ -1,0 +1,87 @@
+<!--
+  pa-list.html
+  PURPOSE: Personal Assistance listing page. Shows a
+  filterable, sortable table of all PA records visible
+  to the current user's role.
+
+  LAYOUT: Authenticated app-layout with sidebar + header.
+  CONTROLLER: js/pages/pa-list.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Assistance - OMSP</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+  <link rel="stylesheet" href="css/modal-toast-banner.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer" class="sidebar-container"></div>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-wrapper">
+      <div id="headerContainer" class="header-container"></div>
+      <div id="bannerContainer" class="banner-container"></div>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h2>Personal Assistance Records</h2>
+          <a href="pa-create.html" id="createBtn" class="btn btn-primary">+ New PA Record</a>
+        </div>
+
+        <!-- ── Filters ── -->
+        <div class="filter-bar">
+          <div class="form-group">
+            <label for="filterCategory">Category</label>
+            <select id="filterCategory" class="form-select" onchange="applyPAFilters()">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterAction">Action Taken</label>
+            <select id="filterAction" class="form-select" onchange="applyPAFilters()">
+              <option value="">All Actions</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterMunicipality">Municipality</label>
+            <select id="filterMunicipality" class="form-select" onchange="applyPAFilters()">
+              <option value="">All Municipalities</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterSearch">Search</label>
+            <input type="text" id="filterSearch" class="form-input" placeholder="Name, ID..." oninput="applyPAFilters()" />
+          </div>
+        </div>
+
+        <!-- ── Data Table ── -->
+        <div id="paTableContainer"></div>
+      </main>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="modalOverlay" class="modal-overlay"></div>
+
+  <script src="js/lib/constants.js"></script>
+  <script src="js/lib/utils.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/seed.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/banner.js"></script>
+  <script src="js/components/table.js"></script>
+  <script src="js/pages/pa-list.js"></script>
+</body>
+</html>

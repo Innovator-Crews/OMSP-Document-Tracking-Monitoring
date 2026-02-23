@@ -1,0 +1,118 @@
+<!--
+  pa-create.html
+  PURPOSE: Create or edit a Personal Assistance record.
+  Single-page form with beneficiary info, PA category,
+  action taken, and notes. Includes duplicate detection.
+
+  LAYOUT: Authenticated app-layout with sidebar + header.
+  CONTROLLER: js/pages/pa-create.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Personal Assistance - OMSP</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+  <link rel="stylesheet" href="css/modal-toast-banner.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer" class="sidebar-container"></div>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-wrapper">
+      <div id="headerContainer" class="header-container"></div>
+      <div id="bannerContainer" class="banner-container"></div>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h2 id="pageTitle">New Personal Assistance</h2>
+        </div>
+
+        <form id="paForm" class="card" onsubmit="submitPA(event)">
+          <!-- ── Beneficiary Section ── -->
+          <div class="card-header"><h3>Beneficiary Information</h3></div>
+          <div class="card-body">
+            <div id="duplicateWarning" class="duplicate-warning" style="display:none;"></div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="benFullName">Full Name *</label>
+                <input type="text" id="benFullName" class="form-input" required
+                  placeholder="e.g. Maria Santos" oninput="checkPADuplicate()" />
+              </div>
+              <div class="form-group">
+                <label for="benMunicipality">Municipality *</label>
+                <select id="benMunicipality" class="form-select" required>
+                  <option value="">Select municipality</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="benBarangay">Barangay</label>
+                <input type="text" id="benBarangay" class="form-input" placeholder="Barangay" />
+              </div>
+              <div class="form-group">
+                <label for="benContact">Contact Number</label>
+                <input type="text" id="benContact" class="form-input" placeholder="09XX-XXX-XXXX" />
+              </div>
+            </div>
+          </div>
+
+          <!-- ── PA Details Section ── -->
+          <div class="card-header" style="border-top: 1px solid var(--color-border);"><h3>Assistance Details</h3></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="paCategory">Category *</label>
+                <select id="paCategory" class="form-select" required>
+                  <option value="">Select category</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="paAction">Action Taken *</label>
+                <select id="paAction" class="form-select" required>
+                  <option value="">Select action</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="paNotes">Notes / Details</label>
+              <textarea id="paNotes" class="form-textarea" rows="3"
+                placeholder="Additional details about the assistance..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <a href="pa-list.html" class="btn btn-ghost">Cancel</a>
+              <button type="submit" class="btn btn-primary" id="submitBtn">Submit PA Record</button>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="modalOverlay" class="modal-overlay"></div>
+
+  <script src="js/lib/constants.js"></script>
+  <script src="js/lib/utils.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/seed.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/banner.js"></script>
+  <script src="js/components/table.js"></script>
+  <script src="js/pages/pa-create.js"></script>
+</body>
+</html>
