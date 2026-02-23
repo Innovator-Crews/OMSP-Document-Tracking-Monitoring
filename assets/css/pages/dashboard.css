@@ -24,7 +24,11 @@
 }
 
 /* Recent records list */
-.recent-records { }
+.recent-records {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
 .recent-record-item {
   display: flex;
   align-items: center;
@@ -82,7 +86,11 @@
 }
 
 /* Pending items widget */
-.pending-list {}
+.pending-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 .pending-item {
   display: flex;
   align-items: center;

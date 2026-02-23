@@ -1,6 +1,6 @@
 # OMSP Document Tracking / Monitoring
 
-**Sangguniang Panlalawigan — Province of Bataan**
+## Sangguniang Panlalawigan — Province of Bataan
 
 A web-based system for tracking and monitoring Financial Assistance (FA) and Personal Assistance (PA) records for the Office of the Majority & Secretary of the Panlalawigan.
 
@@ -18,7 +18,7 @@ A web-based system for tracking and monitoring Financial Assistance (FA) and Per
 ## User Roles
 
 | Role | Description |
-|------|-------------|
+| ------ | ------------- |
 | **SysAdmin** | Full system access, user/BM management, cannot create FA/PA |
 | **Board Member** | Views own FA/PA, budget info, can request end-of-term archive |
 | **Secretary/Staff** | Creates FA (assigned BMs only) and PA (all BMs), primary data entry |
@@ -28,16 +28,16 @@ A web-based system for tracking and monitoring Financial Assistance (FA) and Per
 ## Demo Accounts
 
 | Role | Email | Password |
-|------|-------|----------|
-| SysAdmin | admin@omsp.gov.ph | admin123 |
-| Board Member | cruz@omsp.gov.ph | bm123 |
-| Secretary | secretary1@omsp.gov.ph | sec123 |
+| ------ | ------- | ---------- |
+| SysAdmin | `admin@omsp.gov.ph` | admin123 |
+| Board Member | `cruz@omsp.gov.ph` | bm123 |
+| Secretary | `secretary1@omsp.gov.ph` | sec123 |
 
 ---
 
 ## Project Structure
 
-```
+```text
 ├── index.html              # Redirect to pages/index.html
 ├── pages/                  # Shared pages (login, dashboard, FA/PA, search, etc.)
 ├── sysadmin/               # SysAdmin-only pages
