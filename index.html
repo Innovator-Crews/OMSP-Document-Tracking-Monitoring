@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMSP - Login</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/modal-toast-banner.css">
+</head>
+<body>
+
+  <!-- LOGIN LAYOUT (no sidebar, centered card) -->
+  <div class="login-layout">
+    <div class="login-card">
+      <!-- Logo -->
+      <div class="login-logo">
+        <div class="login-logo-icon">🏛️</div>
+        <div class="login-title">OMSP</div>
+        <div class="login-subtitle">Bataan SP Document Tracking &amp; Monitoring</div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" class="form-input" id="email" placeholder="you@omsp.gov.ph" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
+        </div>
+
+        <div id="loginError" class="form-error" style="display:none; margin-bottom:16px;"></div>
+
+        <button type="submit" class="btn btn-primary w-full btn-lg" id="loginBtn">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Demo credentials -->
+      <div class="mt-6" style="text-align:center;">
+        <p class="text-muted text-small mb-2">Demo Accounts</p>
+        <div style="display:flex; flex-direction:column; gap:6px; font-size:12px;">
+          <button class="btn btn-ghost btn-sm" onclick="fillDemo('admin@omsp.gov.ph','admin123')">
+            🔧 SysAdmin
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="fillDemo('cruz@omsp.gov.ph','bm123')">
+            👤 Board Member (Cruz)
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="fillDemo('secretary1@omsp.gov.ph','sec123')">
+            📋 Secretary (Garcia)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts (lib only — no sidebar/header needed) -->
+  <script src="js/lib/constants.js"></script>
+  <script src="js/lib/utils.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/seed.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/pages/login.js"></script>
+</body>
+</html>
