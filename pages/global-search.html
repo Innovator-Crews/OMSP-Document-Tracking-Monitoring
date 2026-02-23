@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Search — OMSP Document Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/layout.css" />
+  <link rel="stylesheet" href="../assets/css/animations.css" />
+  <link rel="stylesheet" href="../assets/css/pages/search.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-logo">🏛️</span>
+        <h2 class="sidebar-title">OMSP Tracker</h2>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+      <div class="sidebar-profile" id="sidebar-profile">
+        <div class="profile-avatar" id="profile-avatar"></div>
+        <div class="profile-info">
+          <div class="profile-name" id="profile-name"></div>
+          <div class="profile-role" id="profile-role"></div>
+        </div>
+      </div>
+      <a href="#" class="sidebar-logout" id="logout-btn">🚪 Sign Out</a>
+    </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="page-header">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <div>
+          <h1 class="page-title" id="page-title">Global Search</h1>
+        </div>
+        <div class="header-actions">
+          <span class="text-sm text-muted" id="user-name-label"></span>
+          <span class="badge badge-info" id="user-role-label"></span>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Search Hero -->
+        <div class="search-hero fade-in">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" class="search-input" placeholder="Search beneficiaries, FA records, PA records..." autofocus />
+          </div>
+          <div class="search-type-toggle mt-sm" id="search-type-toggle">
+            <button class="btn btn-sm btn-primary active" data-type="all">All</button>
+            <button class="btn btn-sm btn-secondary" data-type="beneficiary">Beneficiaries</button>
+            <button class="btn btn-sm btn-secondary" data-type="fa">FA Records</button>
+            <button class="btn btn-sm btn-secondary" data-type="pa">PA Records</button>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="search-results" class="search-results mt-lg">
+          <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <h3 class="empty-state-title">Search Records</h3>
+            <p class="empty-state-text">Type a beneficiary name to search across all records.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal-container"></div>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/activity-logger.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/validators.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../assets/js/export.js"></script>
+  <script src="../assets/js/router.js"></script>
+  <script src="../assets/js/modules/search-module.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>
