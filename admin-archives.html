@@ -1,0 +1,60 @@
+<!--
+  admin-archives.html
+  PURPOSE: View archived Board Member data after
+  their term has ended. Read-only historical view
+  of BM records, beneficiaries, and assistance.
+
+  LAYOUT: Authenticated app-layout with sidebar + header.
+  CONTROLLER: js/pages/admin-archives.js
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archives - OMSP</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/tables.css" />
+  <link rel="stylesheet" href="css/modal-toast-banner.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebarContainer" class="sidebar-container"></div>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-wrapper">
+      <div id="headerContainer" class="header-container"></div>
+      <div id="bannerContainer" class="banner-container"></div>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h2>Archives</h2>
+        </div>
+
+        <!-- ── Archived BMs List ── -->
+        <div id="archivesList"></div>
+      </main>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+  <div id="modalOverlay" class="modal-overlay"></div>
+
+  <script src="js/lib/constants.js"></script>
+  <script src="js/lib/utils.js"></script>
+  <script src="js/lib/storage.js"></script>
+  <script src="js/lib/seed.js"></script>
+  <script src="js/lib/auth.js"></script>
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/banner.js"></script>
+  <script src="js/components/table.js"></script>
+  <script src="js/pages/admin-archives.js"></script>
+</body>
+</html>
