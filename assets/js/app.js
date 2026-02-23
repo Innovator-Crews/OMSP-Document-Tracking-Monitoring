@@ -18,13 +18,7 @@ const App = {
     const { section, page } = Router.getCurrentPage();
 
     // 3. Handle login page separately
-    if (page === 'index' && section === 'pages') {
-      this.initLoginPage();
-      return;
-    }
-
-    // Also handle root index
-    if (page === 'index' && section === 'pages') {
+    if (page === 'index') {
       this.initLoginPage();
       return;
     }
@@ -60,7 +54,7 @@ const App = {
 
       if (!result.success) {
         if (errorEl) {
-          errorEl.textContent = result.message;
+          errorEl.textContent = result.error;
           errorEl.classList.remove('hidden');
         }
         return;
@@ -124,6 +118,14 @@ const App = {
     const nameLabel = document.getElementById('user-name-label');
     if (nameLabel) {
       nameLabel.textContent = user.full_name;
+    }
+
+    // Hide "New FA/PA" buttons for non-secretary roles
+    if (user.role !== 'secretary') {
+      const newFABtn = document.getElementById('new-fa-btn');
+      const newPABtn = document.getElementById('new-pa-btn');
+      if (newFABtn) newFABtn.style.display = 'none';
+      if (newPABtn) newPABtn.style.display = 'none';
     }
   },
 

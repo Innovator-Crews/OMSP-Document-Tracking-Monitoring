@@ -312,12 +312,8 @@ const Auth = {
    */
   getDashboardUrl(role) {
     const base = Utils.getBasePath();
-    const dashboards = {
-      sysadmin: `${base}sysadmin/admin-dashboard.html`,
-      board_member: `${base}boardmember/bm-dashboard.html`,
-      secretary: `${base}staff/my-dashboard.html`
-    };
-    return dashboards[role] || `${base}pages/index.html`;
+    // All roles use the shared dashboard — DashboardModule routes by role internally
+    return `${base}pages/dashboard.html`;
   },
 
   /**
