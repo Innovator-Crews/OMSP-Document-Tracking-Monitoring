@@ -1,0 +1,124 @@
+/* ==============================================
+ * base.css
+ * PURPOSE: CSS reset, global typography, and
+ * foundational styles applied to every page.
+ * Includes box-sizing reset, body defaults,
+ * heading hierarchy, link styles, and utility
+ * classes used across the entire application.
+ * ============================================== */
+
+/* --- CSS Reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--neutral-800);
+  background-color: var(--neutral-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Typography --- */
+h1 { font-size: var(--font-size-2xl); font-weight: 700; line-height: 1.2; color: var(--neutral-900); }
+h2 { font-size: var(--font-size-xl); font-weight: 600; line-height: 1.3; color: var(--neutral-800); }
+h3 { font-size: var(--font-size-lg); font-weight: 600; line-height: 1.4; color: var(--neutral-700); }
+h4 { font-size: var(--font-size-md); font-weight: 600; line-height: 1.4; color: var(--neutral-700); }
+
+p { margin-bottom: var(--space-3); }
+
+a {
+  color: var(--primary-600);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover { color: var(--primary-800); }
+
+/* --- Lists --- */
+ul, ol { list-style: none; }
+
+/* --- Images --- */
+img { max-width: 100%; height: auto; display: block; }
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--neutral-100); }
+::-webkit-scrollbar-thumb { background: var(--neutral-300); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--neutral-400); }
+
+/* --- Selection --- */
+::selection {
+  background: var(--primary-100);
+  color: var(--primary-900);
+}
+
+/* --- Utility classes --- */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-muted { color: var(--neutral-500); }
+.text-small { font-size: var(--font-size-xs); }
+.text-danger { color: var(--danger-600); }
+.text-success { color: var(--secondary-600); }
+.text-warning { color: var(--accent-600); }
+
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.flex-1 { flex: 1; }
+.flex-wrap { flex-wrap: wrap; }
+
+.grid { display: grid; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+.hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); border: 0;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.w-full { width: 100%; }
+.relative { position: relative; }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .hide-mobile { display: none !important; }
+}

@@ -1,0 +1,237 @@
+/* ==============================================
+ * components.css
+ * PURPOSE: Reusable UI component styles used
+ * throughout the app. Includes buttons (primary,
+ * secondary, danger, warning), cards, badges,
+ * progress bars, status indicators, tabs, empty
+ * state placeholders, and loading spinners.
+ * ============================================== */
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px 20px;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-primary {
+  background: var(--primary-700);
+  color: white;
+  border-color: var(--primary-700);
+}
+.btn-primary:hover { background: var(--primary-800); box-shadow: var(--shadow-md); }
+
+.btn-secondary {
+  background: white;
+  color: var(--primary-700);
+  border-color: var(--primary-300);
+}
+.btn-secondary:hover { background: var(--primary-50); border-color: var(--primary-500); }
+
+.btn-danger {
+  background: var(--danger-50);
+  color: var(--danger-700);
+  border-color: var(--danger-200, #FECACA);
+}
+.btn-danger:hover { background: var(--danger-100); }
+
+.btn-warning {
+  background: #FEF3C7;
+  color: #92400E;
+  border-color: #FDE68A;
+}
+.btn-warning:hover { background: #FDE68A; }
+
+.btn-success {
+  background: var(--secondary-500);
+  color: white;
+}
+.btn-success:hover { background: var(--secondary-600); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--neutral-600);
+  border-color: transparent;
+}
+.btn-ghost:hover { background: var(--neutral-100); color: var(--neutral-800); }
+
+.btn-sm { padding: 6px 12px; font-size: var(--font-size-xs); }
+.btn-lg { padding: 14px 28px; font-size: var(--font-size-md); }
+.btn-icon { padding: 8px; border-radius: var(--radius-md); }
+
+/* --- Cards --- */
+.card {
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.card-static:hover { transform: none; box-shadow: var(--shadow-sm); }
+.card-header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-body { padding: var(--space-5); }
+.card-footer {
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--neutral-100);
+  background: var(--neutral-50);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* --- Stat Cards (Dashboard) --- */
+.stat-card {
+  padding: var(--space-5);
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+}
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.stat-info { flex: 1; }
+.stat-value { font-size: var(--font-size-xl); font-weight: 700; line-height: 1.2; }
+.stat-label { font-size: var(--font-size-xs); color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* --- Badges --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.badge-primary { background: var(--primary-100); color: var(--primary-800); }
+.badge-success { background: #D1FAE5; color: #065F46; }
+.badge-warning { background: #FEF3C7; color: #92400E; }
+.badge-danger { background: var(--danger-100); color: var(--danger-700); }
+.badge-neutral { background: var(--neutral-100); color: var(--neutral-700); }
+
+/* --- Progress Bar --- */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--neutral-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
+}
+.progress-green { background: #22C55E; }
+.progress-yellow { background: var(--accent-500); }
+.progress-red { background: var(--danger-500); }
+
+/* --- Tabs --- */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid var(--neutral-200);
+  margin-bottom: var(--space-6);
+}
+.tab {
+  padding: var(--space-3) var(--space-5);
+  font-weight: 600;
+  color: var(--neutral-500);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all var(--transition-fast);
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-size: var(--font-size-base);
+}
+.tab:hover { color: var(--primary-600); }
+.tab.active {
+  color: var(--primary-700);
+  border-bottom-color: var(--primary-700);
+}
+
+/* --- Empty State --- */
+.empty-state {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  color: var(--neutral-400);
+}
+.empty-state-icon { font-size: 48px; margin-bottom: var(--space-4); }
+.empty-state-title { font-size: var(--font-size-lg); font-weight: 600; color: var(--neutral-600); margin-bottom: var(--space-2); }
+.empty-state-text { font-size: var(--font-size-base); max-width: 400px; margin: 0 auto; }
+
+/* --- Loading Spinner --- */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--neutral-200);
+  border-top-color: var(--primary-600);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* --- Divider --- */
+.divider {
+  height: 1px;
+  background: var(--neutral-200);
+  margin: var(--space-4) 0;
+}
+
+/* --- Avatar --- */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--primary-100);
+  color: var(--primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+}
+.avatar-sm { width: 28px; height: 28px; font-size: var(--font-size-xs); }
+.avatar-lg { width: 48px; height: 48px; font-size: var(--font-size-lg); }
