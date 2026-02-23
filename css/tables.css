@@ -1,0 +1,152 @@
+/* ==============================================
+ * tables.css
+ * PURPOSE: Data table styles for listing records.
+ * Includes table header (uppercase, light bg),
+ * alternating row hover, status columns, action
+ * buttons in rows, responsive stacking for mobile,
+ * pagination controls, and sort indicators.
+ * ============================================== */
+
+/* --- Table Container --- */
+.table-container {
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* --- Table --- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-table thead {
+  background: var(--neutral-50);
+}
+.data-table th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--neutral-200);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.data-table th:hover { color: var(--neutral-700); }
+.data-table th .sort-icon {
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.4;
+}
+.data-table th.sorted .sort-icon { opacity: 1; color: var(--primary-600); }
+
+.data-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--neutral-100);
+  font-size: var(--font-size-sm);
+  color: var(--neutral-700);
+  vertical-align: middle;
+}
+.data-table tbody tr {
+  transition: background var(--transition-fast);
+}
+.data-table tbody tr:hover {
+  background: var(--neutral-50);
+}
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* --- Table Actions Column --- */
+.table-actions {
+  display: flex;
+  gap: var(--space-1);
+}
+.table-actions .btn {
+  padding: 4px 8px;
+  font-size: var(--font-size-xs);
+}
+
+/* --- Status Cell --- */
+.status-ongoing { color: var(--primary-600); font-weight: 600; }
+.status-successful { color: var(--secondary-600); font-weight: 600; }
+.status-denied { color: var(--danger-600); font-weight: 600; }
+
+/* --- Table Toolbar --- */
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--neutral-200);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.table-toolbar-left { display: flex; align-items: center; gap: var(--space-3); }
+.table-toolbar-right { display: flex; align-items: center; gap: var(--space-3); }
+.table-count {
+  font-size: var(--font-size-sm);
+  color: var(--neutral-500);
+}
+
+/* --- Pagination --- */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-top: 1px solid var(--neutral-200);
+}
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  background: white;
+  color: var(--neutral-600);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.page-btn:hover { background: var(--neutral-50); border-color: var(--primary-300); color: var(--primary-600); }
+.page-btn.active {
+  background: var(--primary-700);
+  border-color: var(--primary-700);
+  color: white;
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* --- Responsive table --- */
+@media (max-width: 768px) {
+  .data-table thead { display: none; }
+  .data-table tbody tr {
+    display: block;
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--neutral-200);
+  }
+  .data-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-1) 0;
+    border-bottom: none;
+  }
+  .data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--neutral-500);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+  }
+}
