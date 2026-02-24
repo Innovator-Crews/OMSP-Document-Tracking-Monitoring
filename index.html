@@ -18,7 +18,7 @@
     <div class="landing-nav-inner">
       <a href="#" class="landing-nav-brand">
         <div class="landing-nav-logo" id="nav-logo-icon"></div>
-        <span class="landing-nav-name">OMSP DocTrack</span>
+        <span class="landing-nav-name">OMSP Tracker</span>
       </a>
       <div class="landing-nav-links" id="nav-links">
         <a href="#features" class="landing-nav-link">Features</a>
@@ -44,8 +44,8 @@
         <span class="text-gradient">Tracking &amp; Monitoring</span>
       </h1>
       <p class="landing-hero-desc">
-        A comprehensive system for tracking Financial Accountability reports,
-        Program Accomplishments, and legislative records for the Office of the
+        A comprehensive system for tracking Financial Assistance records,
+        Personal Assistance reports, and legislative records for the Office of the
         Majority &amp; Secretary of the Panlalawigan.
       </p>
       <div class="landing-hero-actions">
@@ -130,7 +130,7 @@
           <div class="landing-feature-icon landing-feature-icon-blue" id="feat-icon-fa"></div>
           <h3 class="landing-feature-title">FA Record Management</h3>
           <p class="landing-feature-desc">
-            Create, track, and manage Financial Accountability records with
+            Create, track, and manage Financial Assistance records with
             full audit trails, category tagging, and compliance status tracking.
           </p>
         </div>
@@ -139,8 +139,8 @@
           <div class="landing-feature-icon landing-feature-icon-teal" id="feat-icon-pa"></div>
           <h3 class="landing-feature-title">PA Record Tracking</h3>
           <p class="landing-feature-desc">
-            Monitor Program Accomplishments for each board member with
-            detailed records, searchable archives, and progress indicators.
+            Monitor Personal Assistance records for each board member with
+            detailed entries, searchable archives, and progress indicators.
           </p>
         </div>
         <!-- Feature 3 -->
@@ -291,6 +291,14 @@
             system architecture, and user-centric design. Building tools that make
             government workflows smarter and more efficient.
           </p>
+          <div class="landing-team-links">
+            <a href="https://msbp-portfolio.vercel.app/" target="_blank" rel="noopener" class="landing-team-link" id="team-ic-portfolio">
+              Portfolio
+            </a>
+            <a href="https://github.com/" target="_blank" rel="noopener" class="landing-team-link landing-team-link-outline" id="team-ic-github">
+              GitHub
+            </a>
+          </div>
         </div>
         <!-- BUVA -->
         <div class="landing-team-card">
@@ -302,6 +310,11 @@
             consultation, and project management. Partnering with government institutions
             to deliver robust, scalable solutions.
           </p>
+          <div class="landing-team-links">
+            <a href="https://backupvirtualassistance.com" target="_blank" rel="noopener" class="landing-team-link" id="team-buva-portfolio">
+              Website
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -331,7 +344,7 @@
       <div class="landing-footer-top">
         <div class="landing-footer-brand">
           <div class="landing-footer-brand-name">
-            <span id="footer-logo-icon"></span> OMSP DocTrack
+            <span id="footer-logo-icon"></span> OMSP Tracker
           </div>
           <p class="landing-footer-brand-desc">
             Document Tracking &amp; Monitoring System for the Office of the Majority
@@ -348,6 +361,7 @@
           <div class="landing-footer-col">
             <h4>Access</h4>
             <a href="pages/login.html">Staff Login</a>
+            <a href="pages/login.html">Board Member Login</a>
             <a href="sysadmin/login.html">Admin Login</a>
           </div>
         </div>
@@ -407,6 +421,11 @@
       // Team section
       document.getElementById('team-label-icon').innerHTML = Icons.render('code', 16);
 
+      // Team portfolio links icons
+      document.getElementById('team-ic-portfolio').innerHTML = Icons.render('external-link', 14) + ' Portfolio';
+      document.getElementById('team-ic-github').innerHTML = Icons.render('github', 14) + ' GitHub';
+      document.getElementById('team-buva-portfolio').innerHTML = Icons.render('external-link', 14) + ' Website';
+
       // CTA buttons
       document.getElementById('cta-staff-btn').innerHTML = Icons.render('log-in', 20) + ' Staff / Board Member';
       document.getElementById('cta-admin-btn').innerHTML = Icons.render('shield', 20) + ' System Administrator';
@@ -414,10 +433,21 @@
       // Footer
       document.getElementById('footer-logo-icon').innerHTML = Icons.render('landmark', 18);
 
-      // ── Nav scroll effect ─────────────────────────────────
+      // ── Nav scroll effect — hide on scroll down, show on scroll up ──
       const nav = document.getElementById('landing-nav');
+      let lastScrollY = 0;
+      let navHidden = false;
       window.addEventListener('scroll', () => {
-        nav.classList.toggle('scrolled', window.scrollY > 20);
+        const currentScrollY = window.scrollY;
+        nav.classList.toggle('scrolled', currentScrollY > 20);
+        if (currentScrollY > lastScrollY && currentScrollY > 80 && !navHidden) {
+          nav.style.transform = 'translateY(-100%)';
+          navHidden = true;
+        } else if (currentScrollY < lastScrollY && navHidden) {
+          nav.style.transform = 'translateY(0)';
+          navHidden = false;
+        }
+        lastScrollY = currentScrollY;
       });
 
       // ── Smooth scrolling for anchor links ─────────────────
@@ -448,6 +478,53 @@
         links.style.borderRadius = '0 0 12px 12px';
         toggle.innerHTML = isOpen ? Icons.render('menu', 24) : Icons.render('x', 24);
       });
+
+      // ── Mockup live-feed animation ────────────────────────
+      const mockupNames = [
+        'Cruz, J.', 'Santos, M.', 'Reyes, A.', 'Garcia, L.',
+        'Torres, R.', 'Flores, D.', 'Rivera, P.', 'Mendoza, C.',
+        'Lopez, K.', 'Dela Cruz, F.', 'Bautista, E.', 'Villanueva, S.'
+      ];
+      const mockupStatuses = [
+        { text: 'Compliant', cls: 'landing-mockup-badge-success' },
+        { text: 'Pending', cls: 'landing-mockup-badge-warning' },
+        { text: 'Compliant', cls: 'landing-mockup-badge-success' },
+        { text: 'Approved', cls: 'landing-mockup-badge-success' }
+      ];
+      let faCounter = 143;
+      const mockupRows = document.querySelectorAll('.landing-mockup-row');
+      const statVals = document.querySelectorAll('.landing-mockup-stat-val');
+
+      function animateMockupRow() {
+        if (!mockupRows.length) return;
+        faCounter++;
+        const name = mockupNames[Math.floor(Math.random() * mockupNames.length)];
+        const status = mockupStatuses[Math.floor(Math.random() * mockupStatuses.length)];
+        const faNum = String(faCounter).padStart(4, '0');
+
+        // Shift rows down (last row gets new data, others shift)
+        for (let i = mockupRows.length - 1; i > 0; i--) {
+          mockupRows[i].innerHTML = mockupRows[i - 1].innerHTML;
+        }
+        // Animate first row with new entry
+        const firstRow = mockupRows[0];
+        firstRow.style.opacity = '0';
+        firstRow.style.transform = 'translateY(-8px)';
+        firstRow.innerHTML =
+          '<span style="flex:1">FA-2025-' + faNum + ' — ' + name + '</span>' +
+          '<span class="landing-mockup-badge ' + status.cls + '">' + status.text + '</span>';
+        requestAnimationFrame(() => {
+          firstRow.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          firstRow.style.opacity = '1';
+          firstRow.style.transform = 'translateY(0)';
+        });
+
+        // Slowly increment stat counters
+        if (statVals[0]) statVals[0].textContent = parseInt(statVals[0].textContent) + 1;
+        if (statVals[1] && Math.random() > 0.6) statVals[1].textContent = parseInt(statVals[1].textContent) + 1;
+      }
+
+      setInterval(animateMockupRow, 3000);
     });
   </script>
 </body>
