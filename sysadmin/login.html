@@ -39,6 +39,7 @@
       font-size: var(--text-xs);
       font-weight: var(--font-semibold);
       margin-bottom: var(--space-3);
+      transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .back-to-staff {
       display: flex;
@@ -53,12 +54,35 @@
       font-size: var(--text-sm);
       color: var(--neutral-600);
       text-decoration: none;
-      transition: all var(--transition-fast);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      max-width: 100%;
     }
     .back-to-staff:hover {
       background: var(--primary-50);
       border-color: var(--primary-300);
       color: var(--primary-700);
+      transform: translateY(-1px);
+    }
+
+    /* Admin responsive overrides */
+    @media screen and (max-width: 960px) {
+      .login-promo-inner {
+        text-align: center;
+      }
+      .login-promo-links {
+        justify-content: center;
+      }
+    }
+    @media screen and (max-width: 480px) {
+      .admin-label {
+        font-size: 10px;
+        padding: 2px 8px;
+      }
+      .back-to-staff {
+        font-size: var(--text-xs);
+        padding: var(--space-2);
+      }
     }
   </style>
 </head>
@@ -112,9 +136,6 @@
       <div class="login-promo-links">
         <a href="../index.html" class="login-promo-link" id="promo-link-home">
           Back to Home
-        </a>
-        <a href="../pages/login.html" class="login-promo-link" id="promo-link-staff">
-          Staff Login
         </a>
       </div>
     </div>
@@ -204,7 +225,6 @@
       document.getElementById('promo-feat-3-icon').innerHTML = Icons.render('activity', 20);
       document.getElementById('promo-feat-4-icon').innerHTML = Icons.render('bar-chart', 20);
       document.getElementById('promo-link-home').innerHTML = Icons.render('arrow-left', 16) + ' Back to Home';
-      document.getElementById('promo-link-staff').innerHTML = Icons.render('user', 16) + ' Staff Login';
 
       // Logo & label
       document.getElementById('admin-label').innerHTML = Icons.render('shield-check', 14) + ' Administrator';

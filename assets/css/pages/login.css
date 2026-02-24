@@ -10,6 +10,7 @@
   display: flex;
   min-height: 100vh;
   background: var(--neutral-50);
+  overflow-x: hidden;
 }
 
 /* ── LEFT: Promotional Panel ─────────────────────────────── */
@@ -138,7 +139,7 @@
   color: var(--primary-200);
   text-decoration: none;
   font-weight: var(--font-medium);
-  transition: color var(--transition-fast);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .login-promo-link:hover {
@@ -160,7 +161,6 @@
 .login-card {
   width: 100%;
   max-width: 400px;
-  animation: fadeInUp 0.5s ease-out;
 }
 
 /* Logo & branding */
@@ -234,7 +234,7 @@
   cursor: pointer;
   background: transparent;
   border: none;
-  transition: all var(--transition-fast);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .toggle-password:hover {
   background: var(--neutral-100);
@@ -318,13 +318,15 @@
   border: 1px solid var(--neutral-200);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
   width: 100%;
 }
 .demo-btn:hover {
   background: var(--primary-50);
   border-color: var(--primary-300);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 .demo-btn-icon {
   width: 36px;
@@ -374,12 +376,15 @@
   font-size: var(--text-sm);
   color: var(--neutral-600);
   text-decoration: none;
-  transition: all var(--transition-fast);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  max-width: 100%;
 }
 .admin-portal-link:hover {
   background: var(--primary-50);
   border-color: var(--primary-300);
   color: var(--primary-700);
+  transform: translateY(-1px);
 }
 
 /* Footer */
@@ -409,7 +414,53 @@
   animation: shake 0.5s ease-in-out;
 }
 
+/* ── Smooth transitions ──────────────────────────────────── */
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.login-promo-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+  opacity: 0;
+}
+
+/* ── Overflow containment ────────────────────────────────── */
+.login-promo,
+.login-form-panel,
+.login-card,
+.login-promo-inner,
+.demo-accounts {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.login-promo-feature-text h3,
+.login-promo-feature-text p,
+.demo-btn-role,
+.demo-btn-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
+
+/* ── 1024px: Narrower promo ──────────────────────────────── */
+@media screen and (max-width: 1024px) {
+  .login-form-panel {
+    flex: 0 0 460px;
+  }
+
+  .login-promo {
+    padding: var(--space-10) var(--space-8);
+  }
+}
+
+/* ── 960px: Stack columns ────────────────────────────────── */
 @media screen and (max-width: 960px) {
   .login-page {
     flex-direction: column;
@@ -417,10 +468,35 @@
 
   .login-promo {
     padding: var(--space-8) var(--space-6);
+    min-height: auto;
+  }
+
+  .login-promo h1 {
+    font-size: 1.75rem;
   }
 
   .login-promo-features {
     display: none;
+  }
+
+  .login-promo-links {
+    justify-content: center;
+  }
+
+  .login-promo-inner {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .login-promo-badge {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .login-promo-desc {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .login-form-panel {
@@ -429,21 +505,111 @@
   }
 }
 
-@media screen and (max-width: 480px) {
+/* ── 768px: Tablet ───────────────────────────────────────── */
+@media screen and (max-width: 768px) {
   .login-promo {
-    padding: var(--space-6) var(--space-4);
+    padding: var(--space-6) var(--space-5);
   }
+
   .login-promo h1 {
     font-size: 1.5rem;
   }
-  .login-form-panel {
-    padding: var(--space-6) var(--space-4);
+
+  .login-promo-desc {
+    font-size: var(--text-base);
   }
+
+  .login-form-panel {
+    padding: var(--space-6) var(--space-5);
+  }
+}
+
+/* ── 480px: Small mobile ─────────────────────────────────── */
+@media screen and (max-width: 480px) {
+  .login-promo {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .login-promo h1 {
+    font-size: 1.375rem;
+  }
+
+  .login-promo-badge {
+    font-size: var(--text-xs);
+    padding: 4px 10px;
+  }
+
+  .login-promo-links {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .login-form-panel {
+    padding: var(--space-5) var(--space-4);
+  }
+
   .login-card {
     max-width: 100%;
   }
+
   .login-logo {
     width: 52px;
     height: 52px;
+  }
+
+  .logo-section h1 {
+    font-size: var(--text-lg);
+  }
+
+  .login-form .form-input {
+    height: 44px;
+    font-size: var(--text-base);
+  }
+
+  .login-form .btn-primary {
+    height: 44px;
+    font-size: var(--text-base);
+  }
+
+  .demo-btn {
+    padding: var(--space-2);
+  }
+
+  .demo-btn-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .admin-portal-link {
+    font-size: var(--text-xs);
+    padding: var(--space-2);
+  }
+}
+
+/* ── 320px: Extra small ──────────────────────────────────── */
+@media screen and (max-width: 320px) {
+  .login-promo {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .login-promo h1 {
+    font-size: 1.25rem;
+  }
+
+  .login-form-panel {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .login-form .form-group {
+    margin-bottom: var(--space-4);
+  }
+
+  .login-divider {
+    margin: var(--space-4) 0;
+  }
+
+  .login-form .form-label {
+    font-size: var(--text-xs);
   }
 }
