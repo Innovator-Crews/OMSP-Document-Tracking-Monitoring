@@ -47,6 +47,7 @@
   padding: var(--space-5) var(--space-4);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
+  overflow: hidden;
 }
 .sidebar-logo {
   width: 36px;
@@ -64,6 +65,17 @@
 .sidebar-logo svg {
   width: 22px;
   height: 22px;
+}
+.sidebar-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+  line-height: var(--leading-tight);
+  margin: 0;
 }
 .sidebar-brand {
   flex: 1;
@@ -298,6 +310,10 @@
   font-size: var(--text-2xl);
   font-weight: var(--font-bold);
   color: var(--neutral-800);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 .page-subtitle {
   font-size: var(--text-sm);
@@ -336,6 +352,22 @@
 .main-content {
   flex: 1;
   padding: var(--page-padding);
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Global overflow safety for media elements */
+.main-content img,
+.main-content svg,
+.main-content video,
+.main-content iframe,
+.main-content table {
+  max-width: 100%;
+}
+
+.main-content img,
+.main-content video {
+  height: auto;
 }
 
 
@@ -378,6 +410,8 @@
   border-radius: var(--radius-lg);
   padding: var(--space-6) var(--space-8);
   margin-bottom: var(--space-6);
+  overflow: hidden;
+  word-break: break-word;
 }
 .welcome-title {
   font-size: var(--text-2xl);
@@ -402,8 +436,11 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: calc(var(--z-sidebar) - 1);
+  transition: opacity 0.3s ease;
 }
 
 
