@@ -38,8 +38,9 @@ A web-based system for tracking and monitoring Financial Assistance (FA) and Per
 ## Project Structure
 
 ```text
-├── index.html              # Redirect to pages/index.html
+├── index.html              # Public landing page
 ├── pages/                  # Shared pages (login, dashboard, FA/PA, search, etc.)
+│   └── login.html          # Staff / Board Member login
 ├── sysadmin/               # SysAdmin-only pages
 ├── boardmember/            # Board Member-only pages
 ├── assets/
