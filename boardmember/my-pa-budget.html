@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reports — OMSP Document Tracking</title>
+  <title>My PA Budget — OMSP Document Tracking</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/main.css" />
   <link rel="stylesheet" href="../assets/css/components.css" />
   <link rel="stylesheet" href="../assets/css/layout.css" />
   <link rel="stylesheet" href="../assets/css/animations.css" />
-  <link rel="stylesheet" href="../assets/css/pages/reports.css" />
+  <link rel="stylesheet" href="css/boardmember.css" />
 </head>
 <body>
   <div class="app-shell">
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <span class="sidebar-logo">🏛️</span>
@@ -33,13 +34,16 @@
       </div>
       <a href="#" class="sidebar-logout" id="logout-btn">🚪 Sign Out</a>
     </aside>
+
+    <!-- Sidebar overlay (mobile) -->
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
+    <!-- Main Content -->
     <main class="main-content">
       <header class="page-header">
         <button class="menu-toggle" id="menu-toggle">☰</button>
         <div>
-          <h1 class="page-title" id="page-title">Reports</h1>
+          <h1 class="page-title" id="page-title">My PA Budget</h1>
         </div>
         <div class="header-actions">
           <span class="text-sm text-muted" id="user-name-label"></span>
@@ -48,28 +52,8 @@
       </header>
 
       <div class="page-body">
-        <!-- Report type selector -->
-        <div class="filter-bar mb-lg">
-          <div class="filter-group">
-            <label class="form-label text-sm mb-xs">Report Type</label>
-            <select id="report-type" class="form-input">
-              <option value="">— Select Report —</option>
-              <option value="budget-summary">Budget Summary</option>
-              <option value="fa-summary">FA Summary</option>
-              <option value="pa-summary">PA Summary</option>
-              <option value="frequency-report">Frequency Report</option>
-              <option value="bm-performance">Board Member Performance</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Report content -->
-        <div id="report-content" class="fade-in">
-          <div class="empty-state">
-            <div class="empty-state-icon" data-icon="bar-chart"></div>
-            <h3 class="empty-state-title">Select a Report</h3>
-            <p class="empty-state-text">Choose a report type from the dropdown above to generate.</p>
-          </div>
+        <div id="pa-budget-content" class="fade-in">
+          <div class="loading-spinner"></div>
         </div>
       </div>
     </main>
@@ -86,7 +70,7 @@
   <script src="../assets/js/export.js"></script>
   <script src="../assets/js/icons.js"></script>
   <script src="../assets/js/router.js"></script>
-  <script src="../assets/js/modules/reports.js"></script>
+  <script src="js/boardmember.js"></script>
   <script src="../assets/js/app.js"></script>
 </body>
 </html>
