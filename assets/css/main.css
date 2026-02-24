@@ -450,5 +450,51 @@ code {
   line-height: var(--leading-snug);
 }
 
+/* ============================================================
+   INLINE SVG ICON SYSTEM
+   ============================================================ */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  color: inherit;
+  line-height: 0;
+}
+
+.icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--neutral-200);
+  color: var(--neutral-500);
+  border-radius: var(--radius);
+  font-size: var(--text-xs);
+}
+
+/* Icon sizes */
+.icon-xs  { width: 14px; height: 14px; }
+.icon-sm  { width: 16px; height: 16px; }
+.icon-md  { width: 20px; height: 20px; }
+.icon-lg  { width: 24px; height: 24px; }
+.icon-xl  { width: 32px; height: 32px; }
+
+/* Icon colors */
+.icon-primary   { color: var(--primary-600); }
+.icon-secondary { color: var(--secondary-600); }
+.icon-accent    { color: var(--accent-500); }
+.icon-success   { color: var(--success-600); }
+.icon-danger    { color: var(--danger-600); }
+.icon-muted     { color: var(--neutral-400); }
+
+/* Spinning icon (for loaders) */
+.icon-spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* --- Google Fonts --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');

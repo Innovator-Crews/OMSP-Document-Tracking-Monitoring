@@ -2,10 +2,453 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0;url=pages/index.html" />
-  <title>OMSP Document Tracking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OMSP Document Tracking &amp; Monitoring System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/pages/landing.css" />
 </head>
-<body>
-  <p>Redirecting to <a href="pages/index.html">login</a>...</p>
+<body class="landing-page">
+
+  <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+  <nav class="landing-nav" id="landing-nav">
+    <div class="landing-nav-inner">
+      <a href="#" class="landing-nav-brand">
+        <div class="landing-nav-logo" id="nav-logo-icon"></div>
+        <span class="landing-nav-name">OMSP Tracker</span>
+      </a>
+      <div class="landing-nav-links" id="nav-links">
+        <a href="#features" class="landing-nav-link">Features</a>
+        <a href="#roles" class="landing-nav-link">User Roles</a>
+        <a href="#team" class="landing-nav-link">Team</a>
+        <a href="pages/index.html" class="landing-nav-cta" id="nav-login-btn">
+          Sign In
+        </a>
+      </div>
+      <button class="landing-nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle menu"></button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ HERO ═══════════════════════────── -->
+  <section class="landing-hero">
+    <div class="landing-hero-inner fade-in">
+      <div class="landing-hero-badge">
+        <span id="hero-badge-icon"></span>
+        Sangguniang Panlalawigan — Province of Bataan
+      </div>
+      <h1>
+        Modern Document<br/>
+        <span class="text-gradient">Tracking &amp; Monitoring</span>
+      </h1>
+      <p class="landing-hero-desc">
+        A comprehensive system for tracking Financial Accountability reports,
+        Program Accomplishments, and legislative records for the Office of the
+        Majority &amp; Secretary of the Panlalawigan.
+      </p>
+      <div class="landing-hero-actions">
+        <a href="pages/index.html" class="landing-btn-primary" id="hero-cta-login">
+          Staff / Board Member Login
+        </a>
+        <a href="sysadmin/login.html" class="landing-btn-secondary" id="hero-cta-admin">
+          Admin Portal
+        </a>
+      </div>
+    </div>
+
+    <!-- App Preview Mockup -->
+    <div class="landing-hero-visual fade-in" style="animation-delay: 0.2s;">
+      <div class="landing-hero-mockup">
+        <div class="landing-mockup-toolbar">
+          <span class="landing-mockup-dot"></span>
+          <span class="landing-mockup-dot"></span>
+          <span class="landing-mockup-dot"></span>
+          <span class="landing-mockup-url">omsp-tracking.vercel.app/pages/dashboard</span>
+        </div>
+        <div class="landing-mockup-body">
+          <div class="landing-mockup-sidebar">
+            <div class="landing-mockup-sidebar-item active" id="mock-nav-dash">Dashboard</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-fa">FA Records</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-pa">PA Records</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-search">Global Search</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-reports">Reports</div>
+          </div>
+          <div class="landing-mockup-content">
+            <div class="landing-mockup-stat-grid">
+              <div class="landing-mockup-stat">
+                <div class="landing-mockup-stat-val">247</div>
+                <div class="landing-mockup-stat-label">FA Records</div>
+              </div>
+              <div class="landing-mockup-stat">
+                <div class="landing-mockup-stat-val">183</div>
+                <div class="landing-mockup-stat-label">PA Records</div>
+              </div>
+              <div class="landing-mockup-stat">
+                <div class="landing-mockup-stat-val">12</div>
+                <div class="landing-mockup-stat-label">Board Members</div>
+              </div>
+            </div>
+            <div class="landing-mockup-card">
+              <div class="landing-mockup-card-title">Recent FA Submissions</div>
+              <div class="landing-mockup-row">
+                <span style="flex:1">FA-2025-0142 — Cruz, J.</span>
+                <span class="landing-mockup-badge landing-mockup-badge-success">Compliant</span>
+              </div>
+              <div class="landing-mockup-row">
+                <span style="flex:1">FA-2025-0141 — Santos, M.</span>
+                <span class="landing-mockup-badge landing-mockup-badge-warning">Pending</span>
+              </div>
+              <div class="landing-mockup-row">
+                <span style="flex:1">FA-2025-0140 — Reyes, A.</span>
+                <span class="landing-mockup-badge landing-mockup-badge-success">Compliant</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ FEATURES ═══════════════════════── -->
+  <section class="landing-section" id="features">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">
+          <span id="feat-label-icon"></span> Platform Features
+        </div>
+        <h2 class="landing-section-title">Everything you need to manage legislative records</h2>
+        <p class="landing-section-desc">
+          Purpose-built tools for the Sangguniang Panlalawigan to streamline
+          document tracking, compliance monitoring, and budget oversight.
+        </p>
+      </div>
+      <div class="landing-features-grid">
+        <!-- Feature 1 -->
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon landing-feature-icon-blue" id="feat-icon-fa"></div>
+          <h3 class="landing-feature-title">FA Record Management</h3>
+          <p class="landing-feature-desc">
+            Create, track, and manage Financial Accountability records with
+            full audit trails, category tagging, and compliance status tracking.
+          </p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon landing-feature-icon-teal" id="feat-icon-pa"></div>
+          <h3 class="landing-feature-title">PA Record Tracking</h3>
+          <p class="landing-feature-desc">
+            Monitor Program Accomplishments for each board member with
+            detailed records, searchable archives, and progress indicators.
+          </p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon landing-feature-icon-amber" id="feat-icon-budget"></div>
+          <h3 class="landing-feature-title">Budget Monitoring</h3>
+          <p class="landing-feature-desc">
+            Real-time budget allocation, utilization tracking, and per-member
+            financial reports with visual breakdowns and trend analysis.
+          </p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon landing-feature-icon-green" id="feat-icon-search"></div>
+          <h3 class="landing-feature-title">Global Search</h3>
+          <p class="landing-feature-desc">
+            Powerful full-text search across all records, categories, and
+            board members with advanced filters and instant results.
+          </p>
+        </div>
+        <!-- Feature 5 -->
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon landing-feature-icon-red" id="feat-icon-reports"></div>
+          <h3 class="landing-feature-title">Analytics &amp; Reports</h3>
+          <p class="landing-feature-desc">
+            Generate comprehensive reports with charts and export options.
+            Track compliance rates, submission trends, and category distribution.
+          </p>
+        </div>
+        <!-- Feature 6 -->
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon landing-feature-icon-purple" id="feat-icon-security"></div>
+          <h3 class="landing-feature-title">Role-Based Access</h3>
+          <p class="landing-feature-desc">
+            Secure authentication with role-specific permissions for
+            System Admins, Board Members, and Secretary Staff.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ STATS BAR ══════════════════════── -->
+  <div class="landing-stats-bar">
+    <div class="landing-stats-grid">
+      <div>
+        <div class="landing-stat-value">12</div>
+        <div class="landing-stat-label">Board Members</div>
+      </div>
+      <div>
+        <div class="landing-stat-value">3</div>
+        <div class="landing-stat-label">User Roles</div>
+      </div>
+      <div>
+        <div class="landing-stat-value">6</div>
+        <div class="landing-stat-label">Core Modules</div>
+      </div>
+      <div>
+        <div class="landing-stat-value">100%</div>
+        <div class="landing-stat-label">Open Source</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ USER ROLES ═════════════════════── -->
+  <section class="landing-section landing-roles-section" id="roles">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">
+          <span id="roles-label-icon"></span> User Roles
+        </div>
+        <h2 class="landing-section-title">Built for every member of the team</h2>
+        <p class="landing-section-desc">
+          Each role has a tailored experience with the right tools and permissions.
+        </p>
+      </div>
+      <div class="landing-roles-grid">
+        <!-- SysAdmin -->
+        <div class="landing-role-card">
+          <div class="landing-role-icon landing-role-icon-admin" id="role-icon-admin"></div>
+          <h3 class="landing-role-title">System Administrator</h3>
+          <p class="landing-role-desc">
+            Full system control with member management, term configuration,
+            and access to all records and reports.
+          </p>
+          <div class="landing-role-features">
+            <div class="landing-role-feature"><span id="role-check-1"></span> Manage board members &amp; staff</div>
+            <div class="landing-role-feature"><span id="role-check-2"></span> Configure terms &amp; categories</div>
+            <div class="landing-role-feature"><span id="role-check-3"></span> View all activity logs</div>
+            <div class="landing-role-feature"><span id="role-check-4"></span> Generate system-wide reports</div>
+          </div>
+        </div>
+        <!-- Board Member -->
+        <div class="landing-role-card">
+          <div class="landing-role-icon landing-role-icon-bm" id="role-icon-bm"></div>
+          <h3 class="landing-role-title">Board Member</h3>
+          <p class="landing-role-desc">
+            Personal dashboard to view your own FA/PA records,
+            budget allocation, and compliance status.
+          </p>
+          <div class="landing-role-features">
+            <div class="landing-role-feature"><span id="role-check-5"></span> View personal FA &amp; PA records</div>
+            <div class="landing-role-feature"><span id="role-check-6"></span> Monitor budget utilization</div>
+            <div class="landing-role-feature"><span id="role-check-7"></span> Track compliance status</div>
+            <div class="landing-role-feature"><span id="role-check-8"></span> Read-only secure access</div>
+          </div>
+        </div>
+        <!-- Secretary/Staff -->
+        <div class="landing-role-card">
+          <div class="landing-role-icon landing-role-icon-staff" id="role-icon-staff"></div>
+          <h3 class="landing-role-title">Secretary / Staff</h3>
+          <p class="landing-role-desc">
+            Day-to-day record entry and management for assigned board members.
+            Create, edit, and track FA/PA submissions.
+          </p>
+          <div class="landing-role-features">
+            <div class="landing-role-feature"><span id="role-check-9"></span> Create &amp; edit FA/PA records</div>
+            <div class="landing-role-feature"><span id="role-check-10"></span> Manage assigned members</div>
+            <div class="landing-role-feature"><span id="role-check-11"></span> Search &amp; filter records</div>
+            <div class="landing-role-feature"><span id="role-check-12"></span> Export data &amp; reports</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ TEAM / CREDITS ═════════════════── -->
+  <section class="landing-section landing-team-section" id="team">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">
+          <span id="team-label-icon"></span> Development Team
+        </div>
+        <h2 class="landing-section-title">Built with passion &amp; precision</h2>
+        <p class="landing-section-desc">
+          This system was designed and developed by dedicated professionals
+          committed to modernizing government technology.
+        </p>
+      </div>
+      <div class="landing-team-grid">
+        <!-- Innovator Crews -->
+        <div class="landing-team-card">
+          <div class="landing-team-logo landing-team-logo-ic">IC</div>
+          <h3 class="landing-team-name">Innovator Crews</h3>
+          <p class="landing-team-type">Development Team</p>
+          <p class="landing-team-desc">
+            A forward-thinking development crew specializing in modern web applications,
+            system architecture, and user-centric design. Building tools that make
+            government workflows smarter and more efficient.
+          </p>
+        </div>
+        <!-- BUVA -->
+        <div class="landing-team-card">
+          <div class="landing-team-logo landing-team-logo-buva">BV</div>
+          <h3 class="landing-team-name">BUVA</h3>
+          <p class="landing-team-type">Private Technology Partner</p>
+          <p class="landing-team-desc">
+            A private technology company providing strategic direction, technical
+            consultation, and project management. Partnering with government institutions
+            to deliver robust, scalable solutions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ CTA SECTION ════════════════════── -->
+  <section class="landing-cta-section">
+    <div class="landing-cta-inner">
+      <h2 class="landing-cta-title">Ready to get started?</h2>
+      <p class="landing-cta-desc">
+        Sign in to access the document tracking system. Choose your portal below.
+      </p>
+      <div class="landing-cta-buttons">
+        <a href="pages/index.html" class="landing-btn-primary" id="cta-staff-btn">
+          Staff / Board Member
+        </a>
+        <a href="sysadmin/login.html" class="landing-btn-secondary" id="cta-admin-btn">
+          System Administrator
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ FOOTER ═════════════════════────── -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-top">
+        <div class="landing-footer-brand">
+          <div class="landing-footer-brand-name">
+            <span id="footer-logo-icon"></span> OMSP Tracker
+          </div>
+          <p class="landing-footer-brand-desc">
+            Document Tracking &amp; Monitoring System for the Office of the Majority
+            &amp; Secretary of the Panlalawigan, Province of Bataan.
+          </p>
+        </div>
+        <div class="landing-footer-links-group">
+          <div class="landing-footer-col">
+            <h4>Platform</h4>
+            <a href="#features">Features</a>
+            <a href="#roles">User Roles</a>
+            <a href="#team">Team</a>
+          </div>
+          <div class="landing-footer-col">
+            <h4>Access</h4>
+            <a href="pages/index.html">Staff Login</a>
+            <a href="sysadmin/login.html">Admin Login</a>
+          </div>
+        </div>
+      </div>
+      <div class="landing-footer-bottom">
+        <span>&copy; 2025 Innovator Crews &amp; BUVA. All rights reserved.</span>
+        <span>
+          Province of Bataan &bull; Sangguniang Panlalawigan
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/icons.js"></script>
+  <script>
+    // ── Inject SVG icons ──────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      // Nav
+      document.getElementById('nav-logo-icon').innerHTML = Icons.render('landmark', 20);
+      document.getElementById('nav-login-btn').innerHTML = Icons.render('log-in', 16) + ' Sign In';
+      document.getElementById('mobile-toggle').innerHTML = Icons.render('menu', 24);
+
+      // Hero
+      document.getElementById('hero-badge-icon').innerHTML = Icons.render('sparkles', 16);
+      document.getElementById('hero-cta-login').innerHTML = Icons.render('log-in', 20) + ' Staff / Board Member Login';
+      document.getElementById('hero-cta-admin').innerHTML = Icons.render('shield', 20) + ' Admin Portal';
+
+      // Mockup sidebar icons
+      document.getElementById('mock-nav-dash').innerHTML = Icons.render('dashboard', 14) + ' Dashboard';
+      document.getElementById('mock-nav-fa').innerHTML = Icons.render('file-text', 14) + ' FA Records';
+      document.getElementById('mock-nav-pa').innerHTML = Icons.render('clipboard-list', 14) + ' PA Records';
+      document.getElementById('mock-nav-search').innerHTML = Icons.render('search', 14) + ' Global Search';
+      document.getElementById('mock-nav-reports').innerHTML = Icons.render('bar-chart', 14) + ' Reports';
+
+      // Features icons
+      document.getElementById('feat-label-icon').innerHTML = Icons.render('zap', 16);
+      document.getElementById('feat-icon-fa').innerHTML = Icons.render('file-text', 24);
+      document.getElementById('feat-icon-pa').innerHTML = Icons.render('clipboard-list', 24);
+      document.getElementById('feat-icon-budget').innerHTML = Icons.render('wallet', 24);
+      document.getElementById('feat-icon-search').innerHTML = Icons.render('search', 24);
+      document.getElementById('feat-icon-reports').innerHTML = Icons.render('bar-chart', 24);
+      document.getElementById('feat-icon-security').innerHTML = Icons.render('shield-check', 24);
+
+      // Roles section
+      document.getElementById('roles-label-icon').innerHTML = Icons.render('users', 16);
+      document.getElementById('role-icon-admin').innerHTML = Icons.render('shield', 28);
+      document.getElementById('role-icon-bm').innerHTML = Icons.render('user', 28);
+      document.getElementById('role-icon-staff').innerHTML = Icons.render('edit', 28);
+
+      // Role check marks
+      for (let i = 1; i <= 12; i++) {
+        const el = document.getElementById('role-check-' + i);
+        if (el) el.innerHTML = Icons.render('check', 16);
+      }
+
+      // Team section
+      document.getElementById('team-label-icon').innerHTML = Icons.render('code', 16);
+
+      // CTA buttons
+      document.getElementById('cta-staff-btn').innerHTML = Icons.render('log-in', 20) + ' Staff / Board Member';
+      document.getElementById('cta-admin-btn').innerHTML = Icons.render('shield', 20) + ' System Administrator';
+
+      // Footer
+      document.getElementById('footer-logo-icon').innerHTML = Icons.render('landmark', 18);
+
+      // ── Nav scroll effect ─────────────────────────────────
+      const nav = document.getElementById('landing-nav');
+      window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 20);
+      });
+
+      // ── Smooth scrolling for anchor links ─────────────────
+      document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector(link.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // ── Mobile menu toggle ────────────────────────────────
+      const toggle = document.getElementById('mobile-toggle');
+      const links = document.getElementById('nav-links');
+      toggle.addEventListener('click', () => {
+        const isOpen = links.style.display === 'flex';
+        links.style.display = isOpen ? 'none' : 'flex';
+        links.style.flexDirection = 'column';
+        links.style.position = 'absolute';
+        links.style.top = '64px';
+        links.style.left = '0';
+        links.style.right = '0';
+        links.style.background = '#fff';
+        links.style.padding = '16px';
+        links.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+        links.style.borderRadius = '0 0 12px 12px';
+        toggle.innerHTML = isOpen ? Icons.render('menu', 24) : Icons.render('x', 24);
+      });
+    });
+  </script>
 </body>
 </html>
