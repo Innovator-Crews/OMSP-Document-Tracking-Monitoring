@@ -1,0 +1,48 @@
+/* ═══════════════════════════════════════════════════════════
+   PA NEW — New Personal Assistance Form
+   Page: pages/pa-new.html
+   Overrides: forms.css, components.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Balance Info Display ─────────────────────────────────── */
+#pa-balance-info {
+  background: var(--blue-50, #eff6ff);
+  border: 1px solid var(--blue-200, #bfdbfe);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--blue-800, #1e40af);
+}
+
+/* ── Duplicate Warning ────────────────────────────────────── */
+#pa-duplicate-warning {
+  background: var(--amber-50, #fffbeb);
+  border: 1px solid var(--amber-200, #fde68a);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+}
+
+#pa-duplicate-warning .duplicate-warning-list {
+  font-size: 0.813rem;
+  color: var(--amber-800, #92400e);
+}
+
+/* ── Skip Waiting Section ─────────────────────────────────── */
+#pa-skip-reason-section {
+  border-top: 1px solid var(--border, #e5e7eb);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* ── Event / Purpose Field ────────────────────────────────── */
+#pa-event-purpose {
+  font-weight: 500;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .form-container {
+    padding: 1rem;
+  }
+}

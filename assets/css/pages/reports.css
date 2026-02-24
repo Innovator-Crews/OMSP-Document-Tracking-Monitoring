@@ -1,0 +1,94 @@
+/* ═══════════════════════════════════════════════════════════
+   REPORTS — Reports Page
+   Page: pages/reports.html
+   Overrides: components.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Report Type Selector ─────────────────────────────────── */
+#report-type {
+  max-width: 320px;
+  font-weight: 500;
+}
+
+/* ── Report Content Area ──────────────────────────────────── */
+#report-content {
+  min-height: 300px;
+}
+
+/* ── Report Tables (JS-rendered) ──────────────────────────── */
+#report-content .data-table {
+  margin-top: 1rem;
+}
+
+#report-content .data-table th {
+  background: var(--gray-50, #f9fafb);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted, #6b7280);
+}
+
+#report-content .data-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Report Summary Cards (JS-rendered) ───────────────────── */
+.report-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.report-summary-card {
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.report-summary-card .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text, #111827);
+}
+
+.report-summary-card .label {
+  font-size: 0.75rem;
+  color: var(--text-muted, #6b7280);
+  margin-top: 0.25rem;
+}
+
+/* ── Export / Print Actions ────────────────────────────────── */
+#report-content .btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Empty State Override ─────────────────────────────────── */
+#report-content .empty-state {
+  padding: 4rem 1rem;
+}
+
+#report-content .empty-state-icon svg {
+  color: var(--primary, #1d4ed8);
+  opacity: 0.5;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  #report-type {
+    max-width: 100%;
+  }
+
+  .report-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-summary {
+    grid-template-columns: 1fr;
+  }
+}

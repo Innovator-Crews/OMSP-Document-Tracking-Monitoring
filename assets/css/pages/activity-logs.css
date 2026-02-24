@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════════════════
+   ACTIVITY LOGS — Activity Logs Page
+   Page: pages/activity-logs.html
+   Overrides: components.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Content Area ─────────────────────────────────────────── */
+#activity-content {
+  min-height: 300px;
+}
+
+/* ── Log Filters (JS-rendered) ────────────────────────────── */
+.log-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.log-filters .form-input,
+.log-filters .form-select {
+  min-width: 160px;
+}
+
+/* ── Log Entry List (JS-rendered) ─────────────────────────── */
+.log-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-entry-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--gray-100, #f3f4f6);
+}
+
+.log-entry-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted, #6b7280);
+}
+
+.log-entry-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.log-entry-action {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text, #111827);
+}
+
+.log-entry-details {
+  font-size: 0.813rem;
+  color: var(--text-muted, #6b7280);
+  margin-top: 0.125rem;
+}
+
+.log-entry-time {
+  font-size: 0.75rem;
+  color: var(--text-light, #9ca3af);
+  white-space: nowrap;
+}
+
+/* ── Action Type Colors ───────────────────────────────────── */
+.log-entry-icon.log-icon-create {
+  background: var(--green-50, #f0fdf4);
+}
+
+.log-entry-icon.log-icon-create svg {
+  color: var(--green-600, #16a34a);
+}
+
+.log-entry-icon.log-icon-edit {
+  background: var(--blue-50, #eff6ff);
+}
+
+.log-entry-icon.log-icon-edit svg {
+  color: var(--blue-600, #2563eb);
+}
+
+.log-entry-icon.log-icon-delete {
+  background: var(--red-50, #fef2f2);
+}
+
+.log-entry-icon.log-icon-delete svg {
+  color: var(--red-600, #dc2626);
+}
+
+.log-entry-icon.log-icon-login {
+  background: var(--purple-50, #f5f3ff);
+}
+
+.log-entry-icon.log-icon-login svg {
+  color: var(--purple-600, #9333ea);
+}
+
+/* ── Empty State ──────────────────────────────────────────── */
+#activity-content .empty-state {
+  padding: 4rem 1rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .log-filters {
+    flex-direction: column;
+  }
+
+  .log-filters .form-input,
+  .log-filters .form-select {
+    min-width: 100%;
+  }
+
+  .log-entry {
+    flex-wrap: wrap;
+  }
+
+  .log-entry-time {
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+}

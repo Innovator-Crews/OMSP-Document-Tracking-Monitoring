@@ -1,0 +1,78 @@
+/* ═══════════════════════════════════════════════════════════
+   PA LIST — Program Accomplishment Records
+   Page: pages/pa-list.html
+   Overrides: components.css, layout.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Filter Bar Overrides ─────────────────────────────────── */
+#pa-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+#pa-filters .form-input-sm {
+  min-width: 160px;
+}
+
+#pa-filters #filter-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ── Table Enhancements ───────────────────────────────────── */
+#pa-table th:nth-child(5),
+#pa-table td:nth-child(5) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pa-table .badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+/* Event/Purpose column */
+#pa-table td:nth-child(6) {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Action Buttons ───────────────────────────────────────── */
+#pa-table .btn-ghost {
+  padding: 0.25rem 0.5rem;
+}
+
+#pa-table .btn-ghost svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Empty State ──────────────────────────────────────────── */
+#pa-table-body .empty-state {
+  padding: 3rem 1rem;
+}
+
+/* ── Pagination ───────────────────────────────────────────── */
+#pa-pagination {
+  margin-top: 1rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #pa-filters {
+    flex-direction: column;
+  }
+
+  #pa-filters .form-input-sm {
+    min-width: 100%;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

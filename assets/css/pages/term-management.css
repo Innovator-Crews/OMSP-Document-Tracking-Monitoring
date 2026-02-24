@@ -1,0 +1,54 @@
+/* ═══════════════════════════════════════════════════════════
+   TERM MANAGEMENT — Term & Archive
+   Page: pages/term-management.html
+   Overrides: admin.css, components.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Term Info Section ────────────────────────────────────── */
+#term-info-section {
+  min-height: 120px;
+}
+
+/* ── Pending Requests ─────────────────────────────────────── */
+#pending-requests {
+  min-height: 100px;
+}
+
+#pending-requests h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text, #111827);
+  margin-bottom: 0.75rem;
+}
+
+/* ── Term Overview ────────────────────────────────────────── */
+#term-overview {
+  min-height: 200px;
+}
+
+/* ── Archive Request Cards (JS-rendered) ──────────────────── */
+.archive-request-card {
+  background: #fff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.archive-request-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Approve / Deny Buttons ───────────────────────────────── */
+.archive-request-card .btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .archive-request-card {
+    padding: 0.75rem;
+  }
+}

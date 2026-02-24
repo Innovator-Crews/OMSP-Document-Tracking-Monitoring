@@ -1,0 +1,86 @@
+/* ═══════════════════════════════════════════════════════════
+   FA LIST — Financial Assistance Records
+   Page: pages/fa-list.html
+   Overrides: components.css, layout.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Filter Bar Overrides ─────────────────────────────────── */
+#fa-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+#fa-filters .form-input-sm {
+  min-width: 160px;
+}
+
+#filter-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ── Table Enhancements ───────────────────────────────────── */
+#fa-table th:nth-child(5),
+#fa-table td:nth-child(5) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#fa-table .badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+/* Status column colors */
+#fa-table .badge-success {
+  background: var(--green-50, #f0fdf4);
+  color: var(--green-700, #15803d);
+}
+
+#fa-table .badge-warning {
+  background: var(--amber-50, #fffbeb);
+  color: var(--amber-700, #b45309);
+}
+
+#fa-table .badge-danger {
+  background: var(--red-50, #fef2f2);
+  color: var(--red-700, #b91c1c);
+}
+
+/* ── Action Buttons ───────────────────────────────────────── */
+#fa-table .btn-ghost {
+  padding: 0.25rem 0.5rem;
+}
+
+#fa-table .btn-ghost svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Empty State ──────────────────────────────────────────── */
+#fa-table-body .empty-state {
+  padding: 3rem 1rem;
+}
+
+/* ── Pagination ───────────────────────────────────────────── */
+#fa-pagination {
+  margin-top: 1rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #fa-filters {
+    flex-direction: column;
+  }
+
+  #fa-filters .form-input-sm {
+    min-width: 100%;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
