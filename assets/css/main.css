@@ -163,7 +163,7 @@ html {
   font-size: 16px;
   line-height: var(--leading-normal);
   color: var(--neutral-800);
-  background-color: var(--neutral-50);
+  background-color: var(--neutral-100);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
@@ -291,7 +291,8 @@ code {
 .hidden { display: none !important; }
 .block { display: block; }
 .inline-block { display: inline-block; }
-.flex { display: flex; }
+.flex,
+.d-flex { display: flex; }
 .inline-flex { display: inline-flex; }
 .grid { display: grid; }
 
@@ -299,9 +300,12 @@ code {
 .flex-col { flex-direction: column; }
 .flex-row { flex-direction: row; }
 .flex-wrap { flex-wrap: wrap; }
-.items-center { align-items: center; }
-.items-start { align-items: flex-start; }
-.items-end { align-items: flex-end; }
+.items-center,
+.align-center { align-items: center; }
+.items-start,
+.align-start { align-items: flex-start; }
+.items-end,
+.align-end { align-items: flex-end; }
 .justify-center { justify-content: center; }
 .justify-between { justify-content: space-between; }
 .justify-end { justify-content: flex-end; }
@@ -313,6 +317,13 @@ code {
 .gap-4 { gap: var(--space-4); }
 .gap-6 { gap: var(--space-6); }
 .gap-8 { gap: var(--space-8); }
+
+/* Semantic spacing aliases (used in JS-rendered templates) */
+.gap-xs  { gap: var(--space-1); }
+.gap-sm  { gap: var(--space-2); }
+.gap-md  { gap: var(--space-4); }
+.gap-lg  { gap: var(--space-6); }
+.gap-xl  { gap: var(--space-8); }
 
 /* --- Text --- */
 .text-xs { font-size: var(--text-xs); }
@@ -357,6 +368,18 @@ code {
 .mb-4 { margin-bottom: var(--space-4); }
 .mb-6 { margin-bottom: var(--space-6); }
 .mb-8 { margin-bottom: var(--space-8); }
+
+/* Semantic margin aliases */
+.mt-xs  { margin-top: var(--space-1); }
+.mt-sm  { margin-top: var(--space-2); }
+.mt-md  { margin-top: var(--space-4); }
+.mt-lg  { margin-top: var(--space-6); }
+.mt-xl  { margin-top: var(--space-8); }
+.mb-xs  { margin-bottom: var(--space-1); }
+.mb-sm  { margin-bottom: var(--space-2); }
+.mb-md  { margin-bottom: var(--space-4); }
+.mb-lg  { margin-bottom: var(--space-6); }
+.mb-xl  { margin-bottom: var(--space-8); }
 .ml-2 { margin-left: var(--space-2); }
 .ml-auto { margin-left: auto; }
 .mr-2 { margin-right: var(--space-2); }

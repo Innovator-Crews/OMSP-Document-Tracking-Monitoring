@@ -145,9 +145,12 @@ const DashboardModule = {
     const termText = daysLeft > 0 ? daysLeft + ' days remaining' : 'Term ended';
 
     container.innerHTML = `
-      <div class="mb-lg">
-        <h2 class="mb-xs">Welcome back, ${Utils.escapeHtml(user.full_name)}</h2>
-        <p class="text-muted">${Utils.escapeHtml(bm.district_name)} · Term ${bm.current_term_number} · ${termText}</p>
+      <div class="mb-lg flex justify-between items-start">
+        <div>
+          <h2 class="mb-xs">Welcome back, ${Utils.escapeHtml(user.full_name)}</h2>
+          <p class="text-muted">${Utils.escapeHtml(bm.district_name)} · Term ${bm.current_term_number} · ${termText}</p>
+        </div>
+        <span class="badge badge-warning" style="flex-shrink:0;margin-top:4px;">Read Only</span>
       </div>
 
       <div class="grid-3-col gap-md mb-lg">
@@ -227,7 +230,7 @@ const DashboardModule = {
     container.innerHTML = `
       <div class="mb-lg">
         <h2 class="mb-xs">Welcome back, ${Utils.escapeHtml(user.full_name)}</h2>
-        <p class="text-muted">Secretary/Staff Dashboard</p>
+        <p class="text-muted">Secretary &mdash; managing records for <strong>${assignedBMs.length} assigned board member${assignedBMs.length !== 1 ? 's' : ''}</strong></p>
       </div>
 
       <div class="grid-4-col gap-md mb-lg">

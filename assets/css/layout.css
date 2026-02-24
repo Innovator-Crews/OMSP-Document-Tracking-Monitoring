@@ -13,9 +13,49 @@
  */
 
 /* ============================================================
+   ROLE-SPECIFIC THEMING (data-role on body)
+   ============================================================ */
+
+/* Default / sysadmin — blue accent */
+.sidebar {
+  --role-accent: var(--primary-600);
+}
+
+/* Board Member — amber accent */
+[data-role="board_member"] .sidebar {
+  --role-accent: var(--accent-500);
+}
+
+/* Secretary — teal accent */
+[data-role="secretary"] .sidebar {
+  --role-accent: var(--secondary-600);
+}
+
+/* Sidebar header top accent stripe */
+.sidebar-header {
+  border-top: 3px solid var(--role-accent, var(--primary-600));
+}
+
+/* Active nav item uses role accent */
+[data-role="board_member"] .nav-link.active {
+  background: var(--accent-700);
+}
+[data-role="board_member"] .nav-link.active:hover {
+  background: var(--accent-600);
+}
+[data-role="secretary"] .nav-link.active {
+  background: var(--secondary-700);
+}
+[data-role="secretary"] .nav-link.active:hover {
+  background: var(--secondary-600);
+}
+
+
+/* ============================================================
    APP SHELL - Sidebar + Main layout
    ============================================================ */
-.app-layout {
+.app-layout,
+.app-shell {
   display: flex;
   min-height: 100vh;
 }
@@ -292,7 +332,8 @@
   gap: var(--space-3);
 }
 
-.mobile-menu-btn {
+.mobile-menu-btn,
+.menu-toggle {
   display: none;
   width: 40px;
   height: 40px;
@@ -351,9 +392,19 @@
 /* Main content */
 .main-content {
   flex: 1;
-  padding: var(--page-padding);
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   overflow-x: hidden;
   max-width: 100%;
+}
+
+/* Page body — scrollable content area below the sticky header */
+.page-body {
+  flex: 1;
+  padding: var(--page-padding);
+  overflow-x: hidden;
 }
 
 /* Global overflow safety for media elements */
@@ -388,15 +439,23 @@
   margin-bottom: var(--space-6);
 }
 
-.two-col {
+.two-col,
+.grid-2-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-6);
 }
 
-.three-col {
+.three-col,
+.grid-3-col {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.grid-4-col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-4);
 }
 
@@ -448,6 +507,18 @@
    RESPONSIVE DESIGN
    ============================================================ */
 
+/* Small desktop / large tablet (1024px and below) */
+@media screen and (max-width: 1024px) {
+  .grid-3-col,
+  .three-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-4-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* Tablet (768px and below) */
 @media screen and (max-width: 768px) {
   :root {
@@ -465,11 +536,13 @@
     display: block;
   }
 
-  .main-wrapper {
+  .main-wrapper,
+  .main-content {
     margin-left: 0;
   }
 
-  .mobile-menu-btn {
+  .mobile-menu-btn,
+  .menu-toggle {
     display: flex;
   }
 
@@ -477,11 +550,14 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .two-col {
+  .two-col,
+  .grid-2-col {
     grid-template-columns: 1fr;
   }
 
-  .three-col {
+  .three-col,
+  .grid-3-col,
+  .grid-4-col {
     grid-template-columns: 1fr;
   }
 
@@ -571,7 +647,7 @@
 
 /* Large desktop (1440px+) */
 @media screen and (min-width: 1440px) {
-  .main-content {
+  .page-body {
     max-width: calc(var(--max-content-width) + var(--page-padding) * 2);
   }
 }
@@ -588,10 +664,12 @@
     display: none !important;
   }
 
-  .main-wrapper {
+  .main-wrapper,
+  .main-content {
     margin-left: 0;
   }
 
+  .page-body,
   .main-content {
     padding: 0;
   }

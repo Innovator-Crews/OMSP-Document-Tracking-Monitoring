@@ -218,3 +218,40 @@
   width: 22px;
   height: 22px;
 }
+
+/* ============================================================
+   ROLE-SPECIFIC DASHBOARD WELCOME AREA
+   ============================================================ */
+
+/* Base welcome heading */
+.dashboard-welcome h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--neutral-900);
+  letter-spacing: -0.015em;
+  margin-bottom: var(--space-1);
+}
+.dashboard-welcome p.text-muted {
+  font-size: var(--text-base);
+  color: var(--neutral-500);
+}
+
+/* BM: amber left border accent */
+[data-role="board_member"] .mb-lg:first-child h2 {
+  border-left: 4px solid var(--accent-500);
+  padding-left: var(--space-3);
+}
+
+/* Secretary: teal left border accent */
+[data-role="secretary"] .mb-lg:first-child h2 {
+  border-left: 4px solid var(--secondary-600);
+  padding-left: var(--space-3);
+}
+
+/* Recent record item hover uses role accent bg */
+[data-role="board_member"] .recent-record-item:hover {
+  background: var(--accent-50);
+}
+[data-role="secretary"] .recent-record-item:hover {
+  background: var(--secondary-50);
+}

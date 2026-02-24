@@ -32,6 +32,9 @@
     </div>
   </nav>
 
+  <!-- Mobile nav backdrop -->
+  <div class="landing-nav-backdrop" id="nav-backdrop"></div>
+
   <!-- ═══════════════════════ HERO ═══════════════════════────── -->
   <section class="landing-hero">
     <div class="landing-hero-inner fade-in">
@@ -293,10 +296,7 @@
           </p>
           <div class="landing-team-links">
             <a href="https://msbp-portfolio.vercel.app/" target="_blank" rel="noopener" class="landing-team-link" id="team-ic-portfolio">
-              Portfolio
-            </a>
-            <a href="https://github.com/" target="_blank" rel="noopener" class="landing-team-link landing-team-link-outline" id="team-ic-github">
-              GitHub
+              Website
             </a>
           </div>
         </div>
@@ -422,8 +422,7 @@
       document.getElementById('team-label-icon').innerHTML = Icons.render('code', 16);
 
       // Team portfolio links icons
-      document.getElementById('team-ic-portfolio').innerHTML = Icons.render('external-link', 14) + ' Portfolio';
-      document.getElementById('team-ic-github').innerHTML = Icons.render('github', 14) + ' GitHub';
+      document.getElementById('team-ic-portfolio').innerHTML = Icons.render('external-link', 14) + ' Website';
       document.getElementById('team-buva-portfolio').innerHTML = Icons.render('external-link', 14) + ' Website';
 
       // CTA buttons
@@ -464,19 +463,42 @@
       // ── Mobile menu toggle ────────────────────────────────
       const toggle = document.getElementById('mobile-toggle');
       const links = document.getElementById('nav-links');
-      toggle.addEventListener('click', () => {
-        const isOpen = links.style.display === 'flex';
-        links.style.display = isOpen ? 'none' : 'flex';
+      const backdrop = document.getElementById('nav-backdrop');
+
+      function openMobileNav() {
+        links.style.display = 'flex';
         links.style.flexDirection = 'column';
         links.style.position = 'absolute';
-        links.style.top = '64px';
+        links.style.top = '56px';
         links.style.left = '0';
         links.style.right = '0';
         links.style.background = '#fff';
         links.style.padding = '16px';
         links.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
         links.style.borderRadius = '0 0 12px 12px';
-        toggle.innerHTML = isOpen ? Icons.render('menu', 24) : Icons.render('x', 24);
+        links.style.zIndex = '99';
+        backdrop.classList.add('active');
+        toggle.innerHTML = Icons.render('x', 24);
+      }
+
+      function closeMobileNav() {
+        links.style.display = 'none';
+        backdrop.classList.remove('active');
+        toggle.innerHTML = Icons.render('menu', 24);
+      }
+
+      toggle.addEventListener('click', () => {
+        const isOpen = links.style.display === 'flex';
+        isOpen ? closeMobileNav() : openMobileNav();
+      });
+
+      backdrop.addEventListener('click', closeMobileNav);
+
+      // Close on nav link click (mobile)
+      links.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          if (window.innerWidth <= 768) closeMobileNav();
+        });
       });
 
       // ── Mockup live-feed animation ────────────────────────

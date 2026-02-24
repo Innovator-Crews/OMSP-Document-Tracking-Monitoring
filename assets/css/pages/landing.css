@@ -23,11 +23,29 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--neutral-200);
-  transition: box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-base), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .landing-nav.scrolled {
   box-shadow: var(--shadow-md);
+}
+
+/* Mobile nav backdrop blur */
+.landing-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 98;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.landing-nav-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
 }
 
 .landing-nav-inner {
@@ -69,6 +87,19 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
+}
+
+/* Force nav links visible on desktop regardless of any inline style set by mobile JS */
+@media screen and (min-width: 769px) {
+  .landing-nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
 }
 
 .landing-nav-link {

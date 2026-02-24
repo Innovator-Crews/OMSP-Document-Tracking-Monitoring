@@ -74,6 +74,9 @@ const App = {
    * Setup the app shell (sidebar, header, mobile menu)
    */
   setupShell(user) {
+    // Set role data attribute for CSS theming
+    document.body.setAttribute('data-role', user.role);
+
     // Inject SVG icons into shell elements (replaces emoji)
     this.injectShellIcons();
 
@@ -111,10 +114,17 @@ const App = {
       });
     }
 
-    // Set role label in header
+    // Tag body with role for CSS scoping (set above at start of setupShell)
+
+    // Set role label in header badge with role-matching color
     const roleLabel = document.getElementById('user-role-label');
     if (roleLabel) {
       roleLabel.textContent = Utils.getRoleLabel(user.role);
+      // Swap badge color by role
+      roleLabel.classList.remove('badge-info', 'badge-warning', 'badge-success', 'badge-neutral');
+      if (user.role === 'board_member') roleLabel.classList.add('badge-warning');
+      else if (user.role === 'secretary')  roleLabel.classList.add('badge-success');
+      else                                 roleLabel.classList.add('badge-info');
     }
 
     // Set user name in header
