@@ -25,10 +25,14 @@ Bataan Sangguniang Panlalawigan Financial & Personal Assistance Tracking System
 2. PA is **transparent** - all secretaries can see all PA records (to catch fraud)
 3. **Soft delete only** - nothing is permanently deleted
 4. **Manual term archive** - BM requests, SysAdmin approves
-5. Categories: **Default (permanent)** + **Custom (can archive if unused)**
-6. **Frequency tracking** - flag beneficiaries with 3+ requests/month
-7. Monthly FA budget: ₱70,000 base with optional rollover
-8. Duration control: 3/6/custom months cooling-off period
+5. **Multi-term support** - After archive, SysAdmin can start a new term (2nd, 3rd, etc.)
+6. Categories: **Default (permanent)** + **Custom (can archive if unused)**
+7. **Frequency tracking** - flag beneficiaries with 3+ requests/month
+8. Monthly FA budget: ₱70,000 base (editable by BM) with optional rollover
+9. PA budget: Pool-based (not monthly) — BM can add/edit/remove entries anytime
+10. Duration control: 3/6/custom months cooling-off period
+11. **Logout confirmation** - modal before signing out
+12. **Sidebar collapse** - icon-only mode (64px), state persisted in localStorage
 
 ## Technical Stack
 - HTML5 semantic markup

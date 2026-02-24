@@ -46,18 +46,37 @@
 - ✅ Reports page (`reports.js`, `reports.html`)
 - ✅ Budget overview page (`budget.html`)
 
-## Phase 4: Polish (In Progress)
+## Phase 4: Polish & UX Enhancements ✅
 - ✅ All animations smooth & light theme consistent (cubic-bezier transitions across landing, login, components)
-- ✅ Empty states designed (SVG icons + text)
+- ✅ Empty states designed (SVG icons + text) + `Utils.renderEmptyState()` utility
+- ✅ Pagination utility (`Utils.paginate()` + `Utils.renderPagination()`)
 - ✅ Loading states implemented (spinners, skeletons)
 - ✅ Error handling graceful (banners, toasts)
 - ✅ Export to CSV working
 - ✅ Responsive at 320px, 480px, 768px, 1024px, 1440px — landing + login pages
 - ✅ Overflow containment — global (layout, components, landing, login)
+- ✅ Sidebar collapse to icon-only mode (64px, CSS transitions, localStorage persistence)
+- ✅ Sidebar profile CSS (avatar circle, name, role text, flex row)
+- ✅ Sidebar logout CSS (danger hover state, icon alignment)
+- ✅ Logout confirmation modal (Notifications.confirm before Auth.logout)
+- ✅ Role-based theming via `data-role` attribute (blue/amber/teal)
 - ⬜ Responsive verified on all authenticated pages
 - ⬜ No console errors
 - ✅ README documentation complete
 - ✅ vercel.json deployment config
+
+## Phase 5: Budget & Term Features ✅
+- ✅ PA budget system (`Storage.getPABudgets`, `addPABudget`, `updatePABudget`, `removePABudget`)
+- ✅ PA budget page (`boardmember/my-pa-budget.html`) with full CRUD UI
+- ✅ PA budget pool-based model (not monthly like FA)
+- ✅ PA budget deduction validation (`Storage.deductFromPABudget`)
+- ✅ PA budget dashboard integration (BM dashboard shows PA budget card + progress bar)
+- ✅ FA budget editing by BM (`Storage.updateFABaseBudget`, edit modal in my-fa-budget)
+- ✅ FA budget rollover bug fix (`budget.rollover` → `budget.rollover_amount`)
+- ✅ End Term visible in BM account (`TermManager.init()` role routing fix)
+- ✅ Multi-term logic (SysAdmin starts new term for archived BM, `TermManager.showNewTermModal`)
+- ✅ "My PA Budget" sidebar link for board_member role
+- ✅ `credit-card` icon added to icons.js
 
 ---
 
@@ -97,14 +116,17 @@ Each page must pass: **HTML structure** ✔ | **CSS styling** ✔ | **JS wiring*
 | # | Page | HTML | CSS | JS Module | Responsive | Status |
 |---|------|------|-----|-----------|------------|--------|
 | 17 | My FA Budget | `boardmember/my-fa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+| 18 | My PA Budget | `boardmember/my-pa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
 
 ### Shared Infrastructure (verified across all pages)
 | # | Component | Files | Status |
 |---|-----------|-------|--------|
-| 18 | Sidebar navigation | `layout.css` + `router.js` | ⬜ |
-| 19 | Icons system | `icons.js` + `main.css` (.icon classes) | ⬜ |
-| 20 | Modals & toasts | `components.css` + `notifications.js` | ⬜ |
-| 21 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ⬜ |
+| 19 | Sidebar navigation + collapse | `layout.css` + `router.js` + `app.js` | ⬜ |
+| 20 | Icons system | `icons.js` (90+ icons incl. credit-card) + `main.css` | ⬜ |
+| 21 | Modals & toasts | `components.css` + `notifications.js` | ⬜ |
+| 22 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ⬜ |
+| 23 | Sidebar profile + logout | `layout.css` (.sidebar-profile, .sidebar-logout) | ⬜ |
+| 24 | Pagination + Empty states | `utils.js` (paginate, renderPagination, renderEmptyState) | ⬜ |
 
 ---
 
