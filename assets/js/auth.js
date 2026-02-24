@@ -308,7 +308,7 @@ const Auth = {
    */
   getLoginUrl() {
     const base = Utils.getBasePath();
-    return `${base}pages/index.html`;
+    return `${base}pages/login.html`;
   },
 
   /**
