@@ -61,6 +61,10 @@
   font-size: var(--text-lg);
   flex-shrink: 0;
 }
+.sidebar-logo svg {
+  width: 22px;
+  height: 22px;
+}
 .sidebar-brand {
   flex: 1;
   min-width: 0;
@@ -152,6 +156,10 @@
   align-items: center;
   justify-content: center;
 }
+.nav-icon svg {
+  width: 18px;
+  height: 18px;
+}
 
 .nav-text {
   flex: 1;
@@ -228,6 +236,11 @@
   font-size: var(--text-sm);
   height: 36px;
   margin-top: var(--space-2);
+  gap: var(--space-2);
+}
+.sidebar-footer .btn svg {
+  width: 18px;
+  height: 18px;
 }
 .sidebar-footer .btn:hover {
   background: rgba(255, 255, 255, 0.06);

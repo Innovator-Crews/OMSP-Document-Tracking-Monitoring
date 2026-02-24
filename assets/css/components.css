@@ -32,6 +32,11 @@
 }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
+.btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
 .btn:disabled, .btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
