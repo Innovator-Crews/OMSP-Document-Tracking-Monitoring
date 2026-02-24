@@ -138,9 +138,11 @@ const DashboardModule = {
     }
 
     const budget = Storage.getCurrentBudget(bm.bm_id);
+    const paBudget = Storage.getPABudgetSummary(bm.bm_id);
     const faRecords = Storage.query(KEYS.FA_RECORDS, { bm_id: bm.bm_id });
     const paRecords = Storage.query(KEYS.PA_RECORDS, { bm_id: bm.bm_id });
     const pct = Utils.percentage(budget.used_amount, budget.total_budget);
+    const paPct = paBudget.total_pool > 0 ? Utils.percentage(paBudget.total_used, paBudget.total_pool) : 0;
     const daysLeft = Utils.daysUntil(bm.term_end);
     const termText = daysLeft > 0 ? daysLeft + ' days remaining' : 'Term ended';
 
@@ -161,28 +163,45 @@ const DashboardModule = {
           <div class="stat-subtext">Used: ${Utils.formatCurrency(budget.used_amount)}</div>
         </div>
         <div class="stat-card stat-card-teal">
-          <div class="stat-icon stat-icon-teal">${Icons.render('file-text', 22)}</div>
-          <div class="stat-label">FA Records</div>
-          <div class="stat-value">${faRecords.length}</div>
+          <div class="stat-icon stat-icon-teal">${Icons.render('credit-card', 22)}</div>
+          <div class="stat-label">PA Budget Remaining</div>
+          <div class="stat-value">${Utils.formatCurrency(paBudget.remaining)}</div>
+          <div class="stat-subtext">Pool: ${Utils.formatCurrency(paBudget.total_pool)}</div>
         </div>
         <div class="stat-card stat-card-amber">
-          <div class="stat-icon stat-icon-amber">${Icons.render('clipboard-list', 22)}</div>
-          <div class="stat-label">PA Records</div>
-          <div class="stat-value">${paRecords.length}</div>
+          <div class="stat-icon stat-icon-amber">${Icons.render('file-text', 22)}</div>
+          <div class="stat-label">Total Records</div>
+          <div class="stat-value">${faRecords.length + paRecords.length}</div>
+          <div class="stat-subtext">FA: ${faRecords.length} · PA: ${paRecords.length}</div>
         </div>
       </div>
 
-      <div class="card mb-lg">
-        <div class="card-header">
-          <h3 class="card-title">FA Budget Usage</h3>
-          <span class="badge ${pct > 90 ? 'badge-danger' : pct > 70 ? 'badge-warning' : 'badge-success'}">${pct}% used</span>
+      <div class="grid-2-col gap-md mb-lg">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">FA Budget Usage</h3>
+            <span class="badge ${pct > 90 ? 'badge-danger' : pct > 70 ? 'badge-warning' : 'badge-success'}">${pct}% used</span>
+          </div>
+          <div class="progress-bar mb-xs">
+            <div class="progress-fill ${pct > 90 ? 'progress-fill-red' : pct > 70 ? 'progress-fill-yellow' : 'progress-fill-blue'}" style="width:${pct}%"></div>
+          </div>
+          <div class="d-flex justify-between text-sm text-muted">
+            <span>Used: ${Utils.formatCurrency(budget.used_amount)}</span>
+            <span>Remaining: ${Utils.formatCurrency(budget.remaining_amount)}</span>
+          </div>
         </div>
-        <div class="progress-bar mb-xs">
-          <div class="progress-fill ${pct > 90 ? 'progress-fill-red' : pct > 70 ? 'progress-fill-yellow' : 'progress-fill-blue'}" style="width:${pct}%"></div>
-        </div>
-        <div class="d-flex justify-between text-sm text-muted">
-          <span>Used: ${Utils.formatCurrency(budget.used_amount)}</span>
-          <span>Remaining: ${Utils.formatCurrency(budget.remaining_amount)}</span>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">PA Budget Usage</h3>
+            <span class="badge ${paPct > 90 ? 'badge-danger' : paPct > 70 ? 'badge-warning' : 'badge-success'}">${paPct}% used</span>
+          </div>
+          <div class="progress-bar mb-xs">
+            <div class="progress-fill ${paPct > 90 ? 'progress-fill-red' : paPct > 70 ? 'progress-fill-yellow' : 'progress-fill-blue'}" style="width:${Math.min(paPct, 100)}%"></div>
+          </div>
+          <div class="d-flex justify-between text-sm text-muted">
+            <span>Used: ${Utils.formatCurrency(paBudget.total_used)}</span>
+            <span>Remaining: ${Utils.formatCurrency(paBudget.remaining)}</span>
+          </div>
         </div>
       </div>
 

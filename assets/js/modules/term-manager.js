@@ -14,10 +14,26 @@ const TermManager = {
     if (!user) return;
 
     if (user.role === 'sysadmin') {
+      // Hide BM section
+      const bmSection = document.getElementById('term-info-section');
+      if (bmSection) bmSection.style.display = 'none';
       this.loadPendingRequests();
       this.loadTermOverview();
     } else if (user.role === 'board_member') {
+      // Hide admin sections
+      const pendingEl = document.getElementById('pending-requests');
+      const overviewEl = document.getElementById('term-overview');
+      if (pendingEl) pendingEl.style.display = 'none';
+      if (overviewEl) overviewEl.style.display = 'none';
       this.loadMyTermInfo();
+    } else {
+      // Secretary: hide all term sections, show info message
+      const pendingEl = document.getElementById('pending-requests');
+      const overviewEl = document.getElementById('term-overview');
+      const bmSection = document.getElementById('term-info-section');
+      if (pendingEl) pendingEl.style.display = 'none';
+      if (overviewEl) overviewEl.style.display = 'none';
+      if (bmSection) bmSection.innerHTML = '<div class="banner banner-info"><div class="banner-content">Term management is handled by Board Members and the System Administrator.</div></div>';
     }
   },
 
@@ -313,29 +329,188 @@ const TermManager = {
 
     // Active BMs
     html += '<h4 class="mb-sm">Active Board Members</h4>';
-    html += '<div class="grid-2-col gap-md">';
-    active.forEach(bm => {
-      const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
-      const daysLeft = Utils.daysUntil(bm.term_end);
-      html += `
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-between align-center">
-              <div>
-                <h4 class="mb-0">${Utils.escapeHtml(user ? user.full_name : 'Unknown')}</h4>
-                <span class="text-muted text-sm">${Utils.escapeHtml(bm.district_name)}</span>
+    if (active.length === 0) {
+      html += Utils.renderEmptyState('users', 'No Active Board Members', 'All board members have been archived.');
+    } else {
+      html += '<div class="grid-2-col gap-md">';
+      active.forEach(bm => {
+        const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+        const daysLeft = Utils.daysUntil(bm.term_end);
+        html += `
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-between align-center">
+                <div>
+                  <h4 class="mb-0">${Utils.escapeHtml(user ? user.full_name : 'Unknown')}</h4>
+                  <span class="text-muted text-sm">${Utils.escapeHtml(bm.district_name)}</span>
+                </div>
+                <span class="badge ${daysLeft <= 30 ? 'badge-danger' : daysLeft <= 90 ? 'badge-warning' : 'badge-success'}">${daysLeft > 0 ? daysLeft + 'd left' : 'Ended'}</span>
               </div>
-              <span class="badge ${daysLeft <= 30 ? 'badge-danger' : daysLeft <= 90 ? 'badge-warning' : 'badge-success'}">${daysLeft > 0 ? daysLeft + 'd left' : 'Ended'}</span>
-            </div>
-            <div class="mt-sm text-sm text-muted">
-              Term ${bm.current_term_number} • ${Utils.formatDate(bm.term_start)} — ${Utils.formatDate(bm.term_end)}
+              <div class="mt-sm text-sm text-muted">
+                Term ${bm.current_term_number} • ${Utils.formatDate(bm.term_start)} — ${Utils.formatDate(bm.term_end)}
+              </div>
             </div>
           </div>
-        </div>
-      `;
-    });
-    html += '</div>';
+        `;
+      });
+      html += '</div>';
+    }
+
+    // Archived BMs — show "Start New Term" option
+    if (archived.length > 0) {
+      html += '<h4 class="mb-sm mt-lg">Archived Board Members</h4>';
+      html += '<div class="grid-2-col gap-md">';
+      archived.forEach(bm => {
+        const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+        html += `
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-between align-center mb-sm">
+                <div>
+                  <h4 class="mb-0">${Utils.escapeHtml(user ? user.full_name : 'Unknown')}</h4>
+                  <span class="text-muted text-sm">${Utils.escapeHtml(bm.district_name)}</span>
+                </div>
+                <span class="badge badge-neutral">Archived</span>
+              </div>
+              <div class="text-sm text-muted mb-md">
+                Completed Term ${bm.current_term_number} • ${Utils.formatDate(bm.term_start)} — ${Utils.formatDate(bm.term_end)}
+                ${bm.archived_at ? '<br>Archived on ' + Utils.formatDate(bm.archived_at, 'datetime') : ''}
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="TermManager.showNewTermModal('${bm.bm_id}')">
+                ${Icons.render('plus-circle', 16)} Start New Term
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+    }
 
     container.innerHTML = html;
-  }
-};
+  },
+
+  /* --------------------------------------------------------
+   * SYSADMIN: Start New Term for Archived BM
+   * -------------------------------------------------------- */
+  showNewTermModal(bmId) {
+    const bm = Storage.getById(KEYS.BOARD_MEMBERS, bmId, 'bm_id');
+    if (!bm) return;
+    const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+    const nextTerm = bm.current_term_number + 1;
+
+    // Default dates: today → +3 years
+    const today = new Date();
+    const threeYearsLater = new Date(today);
+    threeYearsLater.setFullYear(threeYearsLater.getFullYear() + 3);
+    const startDefault = today.toISOString().slice(0, 10);
+    const endDefault = threeYearsLater.toISOString().slice(0, 10);
+
+    const container = document.getElementById('modal-container');
+    container.innerHTML = `
+      <div class="modal-overlay active" id="new-term-overlay">
+        <div class="modal" style="max-width: 520px;">
+          <div class="modal-header">
+            <h3 class="modal-title">Start ${Utils.ordinal(nextTerm)} Term</h3>
+            <button class="modal-close" onclick="TermManager.closeNewTermModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="banner banner-info mb-md">
+              <div class="banner-content">
+                This will reactivate <strong>${Utils.escapeHtml(user ? user.full_name : 'Unknown')}</strong> (${Utils.escapeHtml(bm.district_name)}) for a new term. Previous term records remain archived.
+              </div>
+            </div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Term Number</label>
+              <input type="text" class="form-input" value="${Utils.ordinal(nextTerm)} Term" disabled />
+            </div>
+
+            <div class="d-flex gap-md">
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Term Start Date</label>
+                <input type="date" class="form-input" id="new-term-start" value="${startDefault}" required />
+              </div>
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Term End Date</label>
+                <input type="date" class="form-input" id="new-term-end" value="${endDefault}" required />
+              </div>
+            </div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">FA Monthly Budget (₱)</label>
+              <input type="number" class="form-input" id="new-term-fa-budget" value="70000" min="0" step="1000" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="TermManager.closeNewTermModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="TermManager.confirmNewTerm('${bmId}')">
+              ${Icons.render('plus-circle', 16)} Start New Term
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  closeNewTermModal() {
+    const overlay = document.getElementById('new-term-overlay');
+    if (overlay) overlay.remove();
+  },
+
+  async confirmNewTerm(bmId) {
+    const bm = Storage.getById(KEYS.BOARD_MEMBERS, bmId, 'bm_id');
+    if (!bm) return;
+
+    const termStart = document.getElementById('new-term-start').value;
+    const termEnd = document.getElementById('new-term-end').value;
+    const faBudget = parseInt(document.getElementById('new-term-fa-budget').value) || 70000;
+
+    if (!termStart || !termEnd) {
+      Notifications.error('Please provide both start and end dates.');
+      return;
+    }
+    if (new Date(termEnd) <= new Date(termStart)) {
+      Notifications.error('End date must be after start date.');
+      return;
+    }
+
+    const nextTerm = bm.current_term_number + 1;
+    const now = new Date().toISOString();
+    const adminUser = Auth.getCurrentUser();
+
+    // Update BM record for new term
+    Storage.update(KEYS.BOARD_MEMBERS, bmId, {
+      current_term_number: nextTerm,
+      term_start: termStart,
+      term_end: termEnd,
+      fa_monthly_budget: faBudget,
+      is_active: true,
+      is_archived: false,
+      archived_at: null,
+      archived_by: null,
+      archive_requested: false,
+      archive_requested_at: null,
+      archive_status: 'none'
+    }, 'bm_id');
+
+    // Create new monthly budget for the first month of new term
+    Storage.getCurrentBudget(bmId);
+
+    // Clear PA budgets for the new term (old ones stay archived)
+    // We'll just reset pa_balance on the BM record
+    Storage.update(KEYS.BOARD_MEMBERS, bmId, { pa_balance: 0 }, 'bm_id');
+
+    // Log the activity
+    const bmUser = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+    ActivityLogger.log(
+      `Started ${Utils.ordinal(nextTerm)} term for ${bmUser ? bmUser.full_name : bmId}`,
+      'create', 'term', bmId,
+      `Term ${nextTerm}: ${termStart} — ${termEnd}, FA Budget: ₱${Utils.formatNumber(faBudget)}/mo`
+    );
+
+      this.closeNewTermModal();
+      Notifications.success(`${Utils.ordinal(nextTerm)} term started successfully for ${bmUser ? bmUser.full_name : 'Board Member'}.`);
+      this.loadPendingRequests();
+      this.loadTermOverview();
+    }
+  };
