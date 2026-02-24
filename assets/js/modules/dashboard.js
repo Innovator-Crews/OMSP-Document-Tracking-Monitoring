@@ -13,162 +13,282 @@ const DashboardModule = {
     const user = Auth.getCurrentUser();
     if (!user) return;
 
+    const container = document.getElementById('dashboard-content');
+    if (!container) return;
+
     switch (user.role) {
       case 'sysadmin':
-        this.renderAdminDashboard(user);
+        this.renderAdminDashboard(container, user);
         break;
       case 'board_member':
-        this.renderBMDashboard(user);
+        this.renderBMDashboard(container, user);
         break;
       case 'secretary':
-        this.renderStaffDashboard(user);
+        this.renderStaffDashboard(container, user);
         break;
     }
-
-    Auth.setupSidebarProfile();
-    Auth.setActiveSidebarLink();
   },
 
   /* --------------------------------------------------------
    * SYSADMIN DASHBOARD
    * -------------------------------------------------------- */
-  renderAdminDashboard(user) {
+  renderAdminDashboard(container, user) {
     const users = Storage.getAll(KEYS.USERS);
     const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
     const faRecords = Storage.getAll(KEYS.FA_RECORDS).filter(r => !r.is_archived);
     const paRecords = Storage.getAll(KEYS.PA_RECORDS).filter(r => !r.is_archived);
     const pendingArchives = bms.filter(b => b.archive_status === 'pending');
-    const todayLogs = ActivityLogger.getToday();
+    const todayLogs = ActivityLogger.getToday ? ActivityLogger.getToday() : [];
 
-    // Stats
-    this.setStatValue('stat-total-bms', bms.length);
-    this.setStatValue('stat-active-users', users.filter(u => u.is_active).length);
-    this.setStatValue('stat-fa-records', faRecords.length);
-    this.setStatValue('stat-pa-records', paRecords.length);
-    this.setStatValue('stat-pending-archives', pendingArchives.length);
-    this.setStatValue('stat-today-activity', todayLogs.length);
-
-    // Total budget disbursed this month
     const budgets = Storage.getAll(KEYS.MONTHLY_BUDGETS)
       .filter(b => b.year_month === Utils.getCurrentYearMonth());
     const totalUsed = budgets.reduce((sum, b) => sum + b.used_amount, 0);
-    this.setStatValue('stat-total-disbursed', Utils.formatCurrency(totalUsed));
 
-    // Welcome banner
-    const welcomeEl = document.getElementById('welcome-name');
-    if (welcomeEl) welcomeEl.textContent = user.full_name;
+    container.innerHTML = `
+      <div class="mb-lg">
+        <h2 class="mb-xs">Welcome back, <span id="welcome-name">${Utils.escapeHtml(user.full_name)}</span></h2>
+        <p class="text-muted">System Administrator Dashboard</p>
+      </div>
 
-    // Recent activity
+      <div class="grid-3-col gap-md mb-lg">
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">👥</div>
+          <div class="stat-label">Board Members</div>
+          <div class="stat-value">${bms.length}</div>
+        </div>
+        <div class="stat-card stat-card-teal">
+          <div class="stat-icon stat-icon-teal">👤</div>
+          <div class="stat-label">Active Users</div>
+          <div class="stat-value">${users.filter(u => u.is_active).length}</div>
+        </div>
+        <div class="stat-card stat-card-amber">
+          <div class="stat-icon stat-icon-amber">💰</div>
+          <div class="stat-label">Total Disbursed</div>
+          <div class="stat-value">${Utils.formatCurrency(totalUsed)}</div>
+        </div>
+      </div>
+
+      <div class="grid-3-col gap-md mb-lg">
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">📋</div>
+          <div class="stat-label">FA Records</div>
+          <div class="stat-value">${faRecords.length}</div>
+        </div>
+        <div class="stat-card stat-card-teal">
+          <div class="stat-icon stat-icon-teal">📝</div>
+          <div class="stat-label">PA Records</div>
+          <div class="stat-value">${paRecords.length}</div>
+        </div>
+        <div class="stat-card stat-card-amber">
+          <div class="stat-icon stat-icon-amber">📦</div>
+          <div class="stat-label">Pending Archives</div>
+          <div class="stat-value">${pendingArchives.length}</div>
+        </div>
+      </div>
+
+      <div class="grid-2-col gap-md mb-lg">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Activity</h3>
+            <a href="activity-logs.html" class="section-link">View All →</a>
+          </div>
+          <div id="recent-activity"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Pending Archive Requests</h3>
+          </div>
+          <div id="pending-archives-list"></div>
+        </div>
+      </div>
+
+      <div class="grid-2-col gap-md">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent FA Records</h3>
+            <a href="fa-list.html" class="section-link">View All →</a>
+          </div>
+          <div id="recent-fa-list" class="recent-records"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">BM Budget Overview</h3>
+            <a href="budget.html" class="section-link">Full Report →</a>
+          </div>
+          <div id="budget-overview"></div>
+        </div>
+      </div>
+    `;
+
+    // Populate dynamic sections
     ActivityLogger.renderList('#recent-activity', { limit: 10 });
-
-    // Pending archive requests
     this.renderPendingArchives('#pending-archives-list', pendingArchives);
-
-    // Recent FA records
     this.renderRecentRecords('#recent-fa-list', faRecords.slice(-5).reverse(), 'fa');
-
-    // BM budget overview
     this.renderBudgetOverview('#budget-overview');
   },
 
   /* --------------------------------------------------------
    * BOARD MEMBER DASHBOARD
    * -------------------------------------------------------- */
-  renderBMDashboard(user) {
+  renderBMDashboard(container, user) {
     const bm = Auth.getCurrentBMData();
-    if (!bm) return;
+    if (!bm) {
+      container.innerHTML = '<p class="text-muted">Board member data not found.</p>';
+      return;
+    }
 
     const budget = Storage.getCurrentBudget(bm.bm_id);
     const faRecords = Storage.query(KEYS.FA_RECORDS, { bm_id: bm.bm_id });
     const paRecords = Storage.query(KEYS.PA_RECORDS, { bm_id: bm.bm_id });
+    const pct = Utils.percentage(budget.used_amount, budget.total_budget);
+    const daysLeft = Utils.daysUntil(bm.term_end);
+    const termText = daysLeft > 0 ? daysLeft + ' days remaining' : 'Term ended';
 
-    // Welcome
-    const welcomeEl = document.getElementById('welcome-name');
-    if (welcomeEl) welcomeEl.textContent = user.full_name;
-    const districtEl = document.getElementById('district-name');
-    if (districtEl) districtEl.textContent = bm.district_name;
+    container.innerHTML = `
+      <div class="mb-lg">
+        <h2 class="mb-xs">Welcome back, ${Utils.escapeHtml(user.full_name)}</h2>
+        <p class="text-muted">${Utils.escapeHtml(bm.district_name)} · Term ${bm.current_term_number} · ${termText}</p>
+      </div>
 
-    // Stats
-    this.setStatValue('stat-fa-budget-remaining', Utils.formatCurrency(budget.remaining_amount));
-    this.setStatValue('stat-fa-budget-used', Utils.formatCurrency(budget.used_amount));
-    this.setStatValue('stat-fa-count', faRecords.length);
-    this.setStatValue('stat-pa-count', paRecords.length);
-    this.setStatValue('stat-pa-balance', Utils.formatCurrency(bm.pa_balance));
+      <div class="grid-3-col gap-md mb-lg">
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">💰</div>
+          <div class="stat-label">FA Budget Remaining</div>
+          <div class="stat-value">${Utils.formatCurrency(budget.remaining_amount)}</div>
+          <div class="stat-subtext">Used: ${Utils.formatCurrency(budget.used_amount)}</div>
+        </div>
+        <div class="stat-card stat-card-teal">
+          <div class="stat-icon stat-icon-teal">📋</div>
+          <div class="stat-label">FA Records</div>
+          <div class="stat-value">${faRecords.length}</div>
+        </div>
+        <div class="stat-card stat-card-amber">
+          <div class="stat-icon stat-icon-amber">📝</div>
+          <div class="stat-label">PA Records</div>
+          <div class="stat-value">${paRecords.length}</div>
+        </div>
+      </div>
 
-    // Budget progress bar
-    const progressEl = document.getElementById('budget-progress');
-    if (progressEl) {
-      const pct = Utils.percentage(budget.used_amount, budget.total_budget);
-      progressEl.style.width = `${pct}%`;
-      progressEl.className = `progress-fill ${pct > 90 ? 'progress-danger' : pct > 70 ? 'progress-warning' : 'progress-primary'}`;
-    }
-    const pctLabel = document.getElementById('budget-pct');
-    if (pctLabel) pctLabel.textContent = `${Utils.percentage(budget.used_amount, budget.total_budget)}%`;
+      <div class="card mb-lg">
+        <div class="card-header">
+          <h3 class="card-title">FA Budget Usage</h3>
+          <span class="badge ${pct > 90 ? 'badge-danger' : pct > 70 ? 'badge-warning' : 'badge-success'}">${pct}% used</span>
+        </div>
+        <div class="progress-bar mb-xs">
+          <div class="progress-fill ${pct > 90 ? 'progress-fill-red' : pct > 70 ? 'progress-fill-yellow' : 'progress-fill-blue'}" style="width:${pct}%"></div>
+        </div>
+        <div class="d-flex justify-between text-sm text-muted">
+          <span>Used: ${Utils.formatCurrency(budget.used_amount)}</span>
+          <span>Remaining: ${Utils.formatCurrency(budget.remaining_amount)}</span>
+        </div>
+      </div>
 
-    // Term info
-    const termEl = document.getElementById('term-info');
-    if (termEl) {
-      const daysLeft = Utils.daysUntil(bm.term_end);
-      termEl.textContent = `Term ${bm.current_term_number} • ${daysLeft > 0 ? daysLeft + ' days remaining' : 'Term ended'}`;
-    }
+      <div class="grid-2-col gap-md mb-lg">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent FA Records</h3>
+            <a href="fa-list.html" class="section-link">View All →</a>
+          </div>
+          <div id="recent-fa-list" class="recent-records"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent PA Records</h3>
+            <a href="pa-list.html" class="section-link">View All →</a>
+          </div>
+          <div id="recent-pa-list" class="recent-records"></div>
+        </div>
+      </div>
 
-    // Recent records
-    const recentFA = faRecords.slice(-5).reverse();
-    this.renderRecentRecords('#recent-fa-list', recentFA, 'fa');
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">My Staff</h3>
+        </div>
+        <div id="my-staff-list"></div>
+      </div>
+    `;
 
-    const recentPA = paRecords.slice(-5).reverse();
-    this.renderRecentRecords('#recent-pa-list', recentPA, 'pa');
-
-    // My staff
+    // Populate dynamic sections
+    this.renderRecentRecords('#recent-fa-list', faRecords.slice(-5).reverse(), 'fa');
+    this.renderRecentRecords('#recent-pa-list', paRecords.slice(-5).reverse(), 'pa');
     this.renderMyStaff('#my-staff-list', bm.bm_id);
   },
 
   /* --------------------------------------------------------
    * SECRETARY DASHBOARD
    * -------------------------------------------------------- */
-  renderStaffDashboard(user) {
+  renderStaffDashboard(container, user) {
     const assignedBMs = Auth.getAssignedBMs();
-
-    // Welcome
-    const welcomeEl = document.getElementById('welcome-name');
-    if (welcomeEl) welcomeEl.textContent = user.full_name;
-
-    // Assigned BMs summary
-    this.setStatValue('stat-assigned-bms', assignedBMs.length);
-
-    // Total records by this secretary
     const myFA = Storage.getAll(KEYS.FA_RECORDS).filter(r => r.encoded_by === user.user_id && !r.is_archived);
     const myPA = Storage.getAll(KEYS.PA_RECORDS).filter(r => r.encoded_by === user.user_id && !r.is_archived);
-    this.setStatValue('stat-my-fa-count', myFA.length);
-    this.setStatValue('stat-my-pa-count', myPA.length);
-    this.setStatValue('stat-total-encoded', myFA.length + myPA.length);
-
-    // Today's records
     const today = new Date().toISOString().split('T')[0];
     const todayRecords = [...myFA, ...myPA].filter(r => r.created_at.startsWith(today));
-    this.setStatValue('stat-today-records', todayRecords.length);
 
-    // Assigned BMs cards
+    container.innerHTML = `
+      <div class="mb-lg">
+        <h2 class="mb-xs">Welcome back, ${Utils.escapeHtml(user.full_name)}</h2>
+        <p class="text-muted">Secretary/Staff Dashboard</p>
+      </div>
+
+      <div class="grid-4-col gap-md mb-lg">
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">👥</div>
+          <div class="stat-label">Assigned BMs</div>
+          <div class="stat-value">${assignedBMs.length}</div>
+        </div>
+        <div class="stat-card stat-card-teal">
+          <div class="stat-icon stat-icon-teal">📋</div>
+          <div class="stat-label">My FA Records</div>
+          <div class="stat-value">${myFA.length}</div>
+        </div>
+        <div class="stat-card stat-card-amber">
+          <div class="stat-icon stat-icon-amber">📝</div>
+          <div class="stat-label">My PA Records</div>
+          <div class="stat-value">${myPA.length}</div>
+        </div>
+        <div class="stat-card stat-card-green">
+          <div class="stat-icon stat-icon-green">📅</div>
+          <div class="stat-label">Today's Records</div>
+          <div class="stat-value">${todayRecords.length}</div>
+        </div>
+      </div>
+
+      <div class="card mb-lg">
+        <div class="card-header">
+          <h3 class="card-title">Assigned Board Members</h3>
+        </div>
+        <div id="assigned-bms-list" class="grid-2-col gap-md"></div>
+      </div>
+
+      <div class="grid-2-col gap-md">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">My Recent Records</h3>
+          </div>
+          <div id="my-recent-records" class="recent-records"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Activity Feed</h3>
+            <a href="activity-logs.html" class="section-link">View All →</a>
+          </div>
+          <div id="recent-activity"></div>
+        </div>
+      </div>
+    `;
+
+    // Populate dynamic sections
     this.renderAssignedBMCards('#assigned-bms-list', assignedBMs);
-
-    // Recent records I encoded
     const allMyRecords = [...myFA.map(r => ({ ...r, type: 'FA' })), ...myPA.map(r => ({ ...r, type: 'PA' }))]
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, 8);
     this.renderMyRecentRecords('#my-recent-records', allMyRecords);
-
-    // Activity feed
     ActivityLogger.renderList('#recent-activity', { user_id: user.user_id, limit: 10 });
   },
 
   /* --------------------------------------------------------
    * RENDER HELPERS
    * -------------------------------------------------------- */
-
-  setStatValue(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-  },
 
   renderRecentRecords(selector, records, type) {
     const el = document.querySelector(selector);
@@ -229,7 +349,7 @@ const DashboardModule = {
             <span class="text-muted">${bm.district_name}</span>
           </div>
           <div class="pending-time">${Utils.formatRelativeTime(bm.archive_requested_at)}</div>
-          <a href="pending-archives.html?id=${bm.bm_id}" class="btn btn-sm btn-warning">Review</a>
+          <a href="term-management.html" class="btn btn-sm btn-warning">Review</a>
         </div>
       `;
     }).join('');
