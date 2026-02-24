@@ -339,22 +339,14 @@ const Auth = {
     const user = this.getCurrentUser();
     if (!user) return;
 
-    const nameEl = document.querySelector('.user-name');
-    const roleEl = document.querySelector('.user-role');
-    const avatarEl = document.querySelector('.user-avatar, .sidebar-avatar');
-    const logoutBtn = document.querySelector('.logout-btn, [data-action="logout"]');
+    // Match IDs used in the HTML sidebar-profile section
+    const nameEl = document.getElementById('profile-name');
+    const roleEl = document.getElementById('profile-role');
+    const avatarEl = document.getElementById('profile-avatar');
 
     if (nameEl) nameEl.textContent = user.full_name;
     if (roleEl) roleEl.textContent = Utils.getRoleLabel(user.role);
     if (avatarEl) avatarEl.textContent = Utils.getInitials(user.full_name);
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (confirm('Are you sure you want to logout?')) {
-          this.logout();
-        }
-      });
-    }
   },
 
   /**
@@ -362,7 +354,7 @@ const Auth = {
    */
   setActiveSidebarLink() {
     const currentPage = window.location.pathname.split('/').pop();
-    const links = document.querySelectorAll('.sidebar-link');
+    const links = document.querySelectorAll('.nav-link');
     links.forEach(link => {
       const href = link.getAttribute('href');
       if (href && href.includes(currentPage)) {

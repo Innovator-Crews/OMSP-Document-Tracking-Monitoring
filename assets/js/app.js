@@ -192,18 +192,21 @@ const App = {
 
       // SysAdmin pages
       case 'bm-management':
-        this.initBMManagement();
+        if (typeof SysAdminModule !== 'undefined') SysAdminModule.initBMManagement();
+        else this.initBMManagement(); // fallback
         Router.setPageInfo('Board Member Management');
         break;
 
       case 'staff-management':
-        this.initStaffManagement();
+        if (typeof SysAdminModule !== 'undefined') SysAdminModule.initStaffManagement();
+        else this.initStaffManagement(); // fallback
         Router.setPageInfo('Staff Management');
         break;
 
       // BM pages
       case 'my-fa-budget':
-        this.initMyBudget();
+        if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initMyBudget();
+        else this.initMyBudget(); // fallback
         Router.setPageInfo('My FA Budget');
         break;
 
