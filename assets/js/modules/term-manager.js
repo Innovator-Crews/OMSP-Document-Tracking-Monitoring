@@ -140,7 +140,7 @@ const TermManager = {
     if (pending.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">📦</div>
+          <div class="empty-state-icon">${Icons.render('archive', 32)}</div>
           <h3 class="empty-state-title">No Pending Requests</h3>
           <p class="empty-state-text">There are no pending archive requests from Board Members.</p>
         </div>
@@ -197,8 +197,8 @@ const TermManager = {
             </div>
 
             <div class="d-flex gap-sm">
-              <button class="btn btn-success" onclick="TermManager.approveArchive('${bm.bm_id}')">✅ Approve Archive</button>
-              <button class="btn btn-danger" onclick="TermManager.denyArchive('${bm.bm_id}')">❌ Deny</button>
+              <button class="btn btn-success" onclick="TermManager.approveArchive('${bm.bm_id}')">${Icons.render('check-circle', 16)} Approve Archive</button>
+              <button class="btn btn-danger" onclick="TermManager.denyArchive('${bm.bm_id}')">${Icons.render('x-circle', 16)} Deny</button>
             </div>
           </div>
         </div>
