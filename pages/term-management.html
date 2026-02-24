@@ -44,9 +44,17 @@
       </header>
 
       <div class="page-body">
-        <div id="term-content" class="fade-in">
+        <!-- BM: Term info + request archive (rendered by TermManager for board_member) -->
+        <div id="term-info-section" class="fade-in"></div>
+
+        <!-- Admin: Pending archive requests (rendered by TermManager for sysadmin) -->
+        <div id="pending-requests" class="fade-in mb-lg">
+          <h3 class="mb-md">Pending Archive Requests</h3>
           <div class="loading-spinner"></div>
         </div>
+
+        <!-- Admin: Term overview (rendered by TermManager for sysadmin) -->
+        <div id="term-overview" class="fade-in"></div>
       </div>
     </main>
   </div>

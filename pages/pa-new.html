@@ -49,32 +49,42 @@
             <!-- Board Member -->
             <div class="form-group">
               <label for="pa-bm" class="form-label">Board Member <span class="required">*</span></label>
-              <select id="pa-bm" class="form-input" required>
+              <select id="pa-bm" class="form-select" required>
                 <option value="">Select Board Member</option>
               </select>
             </div>
 
-            <!-- Beneficiary -->
+            <!-- PA Balance display (set by JS after BM selection) -->
+            <div id="pa-balance-info" style="display:none"></div>
+
+            <!-- Client/Beneficiary name (with duplicate search) -->
             <div class="form-group">
-              <label for="pa-beneficiary" class="form-label">Beneficiary Full Name <span class="required">*</span></label>
-              <input type="text" id="pa-beneficiary" class="form-input" placeholder="Last Name, First Name Middle Name" required autocomplete="off" />
+              <label for="pa-client-name" class="form-label">Beneficiary / Client Name <span class="required">*</span></label>
+              <input type="text" id="pa-client-name" class="form-input" placeholder="Last Name, First Name Middle Name" required autocomplete="off" />
+              <input type="hidden" id="pa-beneficiary-id" />
             </div>
 
-            <!-- Duplicate check -->
-            <div id="duplicate-result" class="hidden"></div>
+            <!-- Duplicate warning (populated by JS) -->
+            <div id="pa-duplicate-warning" style="display:none" class="duplicate-warning-list"></div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label for="pa-address" class="form-label">Address</label>
+              <input type="text" id="pa-address" class="form-input" placeholder="Barangay, Municipality" />
+            </div>
 
             <!-- Category -->
             <div class="form-group">
               <label for="pa-category" class="form-label">Category <span class="required">*</span></label>
-              <select id="pa-category" class="form-input" required>
+              <select id="pa-category" class="form-select" required>
                 <option value="">Select Category</option>
               </select>
             </div>
 
-            <!-- Custom category -->
-            <div id="custom-category-group" class="form-group hidden">
-              <label for="pa-custom-category" class="form-label">Specify Category <span class="required">*</span></label>
-              <input type="text" id="pa-custom-category" class="form-input" placeholder="Enter custom category" />
+            <!-- Custom category (if "Other" selected) -->
+            <div id="pa-category-custom" class="form-group" style="display:none">
+              <label class="form-label">Specify Category <span class="required">*</span></label>
+              <input type="text" class="form-input" placeholder="Enter custom category" />
             </div>
 
             <!-- Amount -->
@@ -85,20 +95,42 @@
 
             <!-- Event / Purpose -->
             <div class="form-group">
-              <label for="pa-event" class="form-label">Event / Purpose</label>
-              <input type="text" id="pa-event" class="form-input" placeholder="e.g. Fiesta, Birthday, Wake" />
+              <label for="pa-event-purpose" class="form-label">Event / Purpose</label>
+              <input type="text" id="pa-event-purpose" class="form-input" placeholder="e.g. Fiesta, Birthday, Wake" />
             </div>
 
             <!-- Action Taken -->
             <div class="form-group">
-              <label for="pa-action" class="form-label">Action Taken</label>
-              <input type="text" id="pa-action" class="form-input" placeholder="e.g. Cash Aid, Gift, etc." />
+              <label for="pa-action-taken" class="form-label">Action Taken</label>
+              <input type="text" id="pa-action-taken" class="form-input" placeholder="e.g. Cash Aid, Gift, etc." />
             </div>
 
             <!-- Office Note -->
             <div class="form-group">
               <label for="pa-office-note" class="form-label">Office Note</label>
               <textarea id="pa-office-note" class="form-input form-textarea" rows="2" placeholder="Internal note..."></textarea>
+            </div>
+
+            <!-- Skip waiting -->
+            <div class="form-group">
+              <label class="form-check">
+                <input type="checkbox" id="pa-skip-waiting" />
+                <span>Skip waiting period for this record</span>
+              </label>
+            </div>
+
+            <!-- Skip reason (shown when skip checked) -->
+            <div id="pa-skip-reason-section" style="display:none">
+              <div class="form-group">
+                <label for="pa-skip-reason" class="form-label">Reason for skipping</label>
+                <textarea id="pa-skip-reason" class="form-input form-textarea" rows="2" placeholder="Why is the waiting period being skipped?"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-check">
+                  <input type="checkbox" id="pa-skip-bm-noted" />
+                  <span>Board Member has been notified</span>
+                </label>
+              </div>
             </div>
 
             <!-- Date -->

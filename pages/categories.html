@@ -46,8 +46,8 @@
       <div class="page-body">
         <!-- Tabs -->
         <div class="tabs mb-lg" id="category-tabs">
-          <button class="tab active" data-tab="fa">FA Categories</button>
-          <button class="tab" data-tab="pa">PA Categories</button>
+          <button class="tab active" data-cat-tab="fa">FA Categories</button>
+          <button class="tab" data-cat-tab="pa">PA Categories</button>
         </div>
 
         <!-- Add button -->
@@ -55,8 +55,8 @@
           <button class="btn btn-primary btn-sm" id="add-category-btn">➕ Add Category</button>
         </div>
 
-        <!-- Category list -->
-        <div id="category-content" class="fade-in">
+        <!-- Category list (rendered by CategoryManager) -->
+        <div id="category-list" class="fade-in">
           <div class="loading-spinner"></div>
         </div>
       </div>

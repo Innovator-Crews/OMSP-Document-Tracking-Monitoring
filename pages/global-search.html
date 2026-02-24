@@ -48,22 +48,25 @@
         <div class="search-hero fade-in">
           <div class="search-input-wrapper">
             <span class="search-icon">🔍</span>
-            <input type="text" id="search-input" class="search-input" placeholder="Search beneficiaries, FA records, PA records..." autofocus />
+            <input type="text" id="global-search-input" class="search-input" placeholder="Search beneficiaries, FA records, PA records..." autofocus />
           </div>
           <div class="search-type-toggle mt-sm" id="search-type-toggle">
-            <button class="btn btn-sm btn-primary active" data-type="all">All</button>
-            <button class="btn btn-sm btn-secondary" data-type="beneficiary">Beneficiaries</button>
-            <button class="btn btn-sm btn-secondary" data-type="fa">FA Records</button>
-            <button class="btn btn-sm btn-secondary" data-type="pa">PA Records</button>
+            <button class="btn btn-sm btn-primary active" data-search-type="all">All</button>
+            <button class="btn btn-sm btn-secondary" data-search-type="beneficiary">Beneficiaries</button>
+            <button class="btn btn-sm btn-secondary" data-search-type="fa">FA Records</button>
+            <button class="btn btn-sm btn-secondary" data-search-type="pa">PA Records</button>
           </div>
         </div>
 
+        <!-- Result count -->
+        <div id="result-count" class="text-sm text-muted mt-md"></div>
+
         <!-- Results -->
-        <div id="search-results" class="search-results mt-lg">
+        <div id="search-results" class="search-results mt-md">
           <div class="empty-state">
             <div class="empty-state-icon">🔍</div>
             <h3 class="empty-state-title">Search Records</h3>
-            <p class="empty-state-text">Type a beneficiary name to search across all records.</p>
+            <p class="empty-state-desc">Type a beneficiary name to search across all records.</p>
           </div>
         </div>
       </div>
