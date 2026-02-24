@@ -109,8 +109,8 @@ const ReportsModule = {
       </div>
 
       <div class="mt-md d-flex gap-sm">
-        <button class="btn btn-secondary" onclick="ReportsModule.exportBudgetReport()">📤 Export CSV</button>
-        <button class="btn btn-secondary" onclick="ReportsModule.printBudgetReport()">🖨️ Print</button>
+        <button class="btn btn-secondary" onclick="ReportsModule.exportBudgetReport()">${Icons.render('download', 16)} Export CSV</button>
+        <button class="btn btn-secondary" onclick="ReportsModule.printBudgetReport()">${Icons.render('print', 16)} Print</button>
       </div>
     `;
   },
@@ -358,7 +358,7 @@ const ReportsModule = {
     if (!container) return;
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-icon">📊</div>
+        <div class="empty-state-icon">${Icons.render('bar-chart', 32)}</div>
         <h3 class="empty-state-title">Select a Report</h3>
         <p class="empty-state-text">Choose a report type from the dropdown above.</p>
       </div>

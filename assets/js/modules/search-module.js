@@ -297,7 +297,7 @@ const SearchModule = {
     if (!container) return;
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-icon">${Icons.render('search', 32)}</div>
         <h3 class="empty-state-title">Search</h3>
         <p class="empty-state-text">${message}</p>
       </div>
