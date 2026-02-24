@@ -603,6 +603,16 @@
   cursor: not-allowed;
 }
 
+.pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  color: var(--neutral-400);
+  font-size: var(--text-sm);
+}
+
 
 /* ============================================================
    MODAL
