@@ -98,6 +98,10 @@
   background: var(--neutral-100);
   color: var(--neutral-800);
 }
+.btn-ghost svg {
+  width: 16px;
+  height: 16px;
+}
 
 /* Icon button */
 .btn-icon {
@@ -916,6 +920,12 @@
   margin-bottom: var(--space-2);
 }
 .empty-state-desc {
+  font-size: var(--text-base);
+  color: var(--neutral-500);
+  max-width: 360px;
+  margin-bottom: var(--space-6);
+}
+.empty-state-text {
   font-size: var(--text-base);
   color: var(--neutral-500);
   max-width: 360px;
