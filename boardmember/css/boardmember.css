@@ -1,0 +1,115 @@
+/**
+ * ============================================================
+ * OMSP Document Tracking / Monitoring
+ * Board Member CSS — Styles specific to BM pages
+ * ============================================================
+ */
+
+/* Budget overview card */
+.budget-overview {
+  background: #fff;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.budget-overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.budget-overview-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--neutral-800);
+}
+
+.budget-overview-month {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+  background: var(--neutral-100);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+}
+
+/* Budget progress circle (large) */
+.budget-progress-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-4);
+}
+
+.budget-ring-value {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--primary-600);
+}
+
+.budget-ring-label {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+}
+
+/* Budget breakdown items */
+.budget-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.budget-breakdown-item {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  background: var(--neutral-50);
+  border-radius: var(--radius-md);
+}
+
+.budget-breakdown-amount {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--neutral-800);
+}
+
+.budget-breakdown-label {
+  font-size: var(--text-xs);
+  color: var(--neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* Budget history table enhancements */
+.budget-history .data-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Large progress bar for budget page */
+.progress-lg {
+  height: 12px;
+}
+
+/* My FA/PA summary cards */
+.my-records-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+/* Responsive */
+@media screen and (max-width: 640px) {
+  .budget-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  .budget-progress-ring {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+}
