@@ -59,43 +59,43 @@ const Router = {
 
     const links = {
       sysadmin: [
-        { label: 'Dashboard', icon: '📊', href: `${root}pages/dashboard.html`, id: 'nav-dashboard' },
+        { label: 'Dashboard', icon: 'dashboard', href: `${root}pages/dashboard.html`, id: 'nav-dashboard' },
         { type: 'divider', label: 'Records' },
-        { label: 'FA Records', icon: '📋', href: `${root}pages/fa-list.html`, id: 'nav-fa-list' },
-        { label: 'PA Records', icon: '📝', href: `${root}pages/pa-list.html`, id: 'nav-pa-list' },
-        { label: 'Global Search', icon: '🔍', href: `${root}pages/global-search.html`, id: 'nav-search' },
+        { label: 'FA Records', icon: 'file-text', href: `${root}pages/fa-list.html`, id: 'nav-fa-list' },
+        { label: 'PA Records', icon: 'clipboard-list', href: `${root}pages/pa-list.html`, id: 'nav-pa-list' },
+        { label: 'Global Search', icon: 'search', href: `${root}pages/global-search.html`, id: 'nav-search' },
         { type: 'divider', label: 'Management' },
-        { label: 'Board Members', icon: '👥', href: `${root}sysadmin/bm-management.html`, id: 'nav-bm-mgmt' },
-        { label: 'Staff', icon: '👤', href: `${root}sysadmin/staff-management.html`, id: 'nav-staff-mgmt' },
-        { label: 'Categories', icon: '🏷️', href: `${root}pages/categories.html`, id: 'nav-categories' },
-        { label: 'Term / Archive', icon: '📦', href: `${root}pages/term-management.html`, id: 'nav-term' },
+        { label: 'Board Members', icon: 'users', href: `${root}sysadmin/bm-management.html`, id: 'nav-bm-mgmt' },
+        { label: 'Staff', icon: 'user', href: `${root}sysadmin/staff-management.html`, id: 'nav-staff-mgmt' },
+        { label: 'Categories', icon: 'tag', href: `${root}pages/categories.html`, id: 'nav-categories' },
+        { label: 'Term / Archive', icon: 'archive', href: `${root}pages/term-management.html`, id: 'nav-term' },
         { type: 'divider', label: 'Reports' },
-        { label: 'Reports', icon: '📈', href: `${root}pages/reports.html`, id: 'nav-reports' },
-        { label: 'Activity Logs', icon: '📜', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
-        { label: 'Budget Overview', icon: '💰', href: `${root}pages/budget.html`, id: 'nav-budget' },
+        { label: 'Reports', icon: 'bar-chart', href: `${root}pages/reports.html`, id: 'nav-reports' },
+        { label: 'Activity Logs', icon: 'activity', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
+        { label: 'Budget Overview', icon: 'wallet', href: `${root}pages/budget.html`, id: 'nav-budget' },
       ],
       board_member: [
-        { label: 'Dashboard', icon: '📊', href: `${root}pages/dashboard.html`, id: 'nav-dashboard' },
+        { label: 'Dashboard', icon: 'dashboard', href: `${root}pages/dashboard.html`, id: 'nav-dashboard' },
         { type: 'divider', label: 'My Records' },
-        { label: 'FA Records', icon: '📋', href: `${root}pages/fa-list.html`, id: 'nav-fa-list' },
-        { label: 'PA Records', icon: '📝', href: `${root}pages/pa-list.html`, id: 'nav-pa-list' },
-        { label: 'Global Search', icon: '🔍', href: `${root}pages/global-search.html`, id: 'nav-search' },
+        { label: 'FA Records', icon: 'file-text', href: `${root}pages/fa-list.html`, id: 'nav-fa-list' },
+        { label: 'PA Records', icon: 'clipboard-list', href: `${root}pages/pa-list.html`, id: 'nav-pa-list' },
+        { label: 'Global Search', icon: 'search', href: `${root}pages/global-search.html`, id: 'nav-search' },
         { type: 'divider', label: 'Budget & Term' },
-        { label: 'My FA Budget', icon: '💰', href: `${root}boardmember/my-fa-budget.html`, id: 'nav-budget' },
-        { label: 'Term / Archive', icon: '📦', href: `${root}pages/term-management.html`, id: 'nav-term' },
+        { label: 'My FA Budget', icon: 'wallet', href: `${root}boardmember/my-fa-budget.html`, id: 'nav-budget' },
+        { label: 'Term / Archive', icon: 'archive', href: `${root}pages/term-management.html`, id: 'nav-term' },
         { type: 'divider', label: 'Reports' },
-        { label: 'Activity Logs', icon: '📜', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
+        { label: 'Activity Logs', icon: 'activity', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
       ],
       secretary: [
-        { label: 'Dashboard', icon: '📊', href: `${root}pages/dashboard.html`, id: 'nav-dashboard' },
+        { label: 'Dashboard', icon: 'dashboard', href: `${root}pages/dashboard.html`, id: 'nav-dashboard' },
         { type: 'divider', label: 'Records' },
-        { label: 'New FA', icon: '➕', href: `${root}pages/fa-new.html`, id: 'nav-fa-new' },
-        { label: 'FA Records', icon: '📋', href: `${root}pages/fa-list.html`, id: 'nav-fa-list' },
-        { label: 'New PA', icon: '➕', href: `${root}pages/pa-new.html`, id: 'nav-pa-new' },
-        { label: 'PA Records', icon: '📝', href: `${root}pages/pa-list.html`, id: 'nav-pa-list' },
-        { label: 'Global Search', icon: '🔍', href: `${root}pages/global-search.html`, id: 'nav-search' },
+        { label: 'New FA', icon: 'file-plus', href: `${root}pages/fa-new.html`, id: 'nav-fa-new' },
+        { label: 'FA Records', icon: 'file-text', href: `${root}pages/fa-list.html`, id: 'nav-fa-list' },
+        { label: 'New PA', icon: 'plus-circle', href: `${root}pages/pa-new.html`, id: 'nav-pa-new' },
+        { label: 'PA Records', icon: 'clipboard-list', href: `${root}pages/pa-list.html`, id: 'nav-pa-list' },
+        { label: 'Global Search', icon: 'search', href: `${root}pages/global-search.html`, id: 'nav-search' },
         { type: 'divider', label: 'Reports' },
-        { label: 'Activity Logs', icon: '📜', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
+        { label: 'Activity Logs', icon: 'activity', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
       ]
     };
 
@@ -121,9 +121,10 @@ const Router = {
       }
 
       const isActive = this.isLinkActive(link, currentPage);
+      const iconHtml = typeof Icons !== 'undefined' ? Icons.nav(link.icon) : link.icon;
       return `
         <a href="${link.href}" class="nav-link ${isActive ? 'active' : ''}" id="${link.id}">
-          <span class="nav-icon">${link.icon}</span>
+          <span class="nav-icon">${iconHtml}</span>
           <span class="nav-text">${link.label}</span>
         </a>
       `;

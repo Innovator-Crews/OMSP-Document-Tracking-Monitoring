@@ -100,6 +100,22 @@ const ActivityLogger = {
    * @returns {string}
    */
   getActionIcon(actionType) {
+    if (typeof Icons !== 'undefined') {
+      const iconMap = {
+        create: 'plus-circle',
+        update: 'edit',
+        delete: 'trash',
+        archive: 'archive',
+        restore: 'refresh',
+        login: 'key',
+        logout: 'log-out',
+        export: 'download',
+        status_change: 'refresh',
+        approve: 'check-circle',
+        deny: 'x-circle'
+      };
+      return Icons.render(iconMap[actionType] || 'clipboard-list', 16);
+    }
     const icons = {
       create: '➕',
       update: '✏️',
@@ -173,7 +189,7 @@ const ActivityLogger = {
     if (logs.length === 0) {
       el.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">📋</div>
+          <div class="empty-state-icon">${Icons.render('clipboard-list', 32)}</div>
           <h3 class="empty-state-title">No Activity Yet</h3>
           <p class="empty-state-text">Activity will appear here as actions are performed.</p>
         </div>

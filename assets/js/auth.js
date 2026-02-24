@@ -77,11 +77,17 @@ const Auth = {
    */
   logout() {
     const user = this.getCurrentUser();
+    const wasAdmin = user && user.role === 'sysadmin';
     if (user) {
       ActivityLogger.log('Logged out', 'logout', 'system', null, null);
     }
     Storage.remove(KEYS.CURRENT_USER);
-    window.location.href = this.getLoginUrl();
+    if (wasAdmin) {
+      const base = Utils.getBasePath();
+      window.location.href = `${base}sysadmin/login.html`;
+    } else {
+      window.location.href = this.getLoginUrl();
+    }
   },
 
   /**

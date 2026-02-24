@@ -18,7 +18,7 @@ const App = {
     const { section, page } = Router.getCurrentPage();
 
     // 3. Handle login page separately
-    if (page === 'index') {
+    if (page === 'index' || page === 'login') {
       this.initLoginPage();
       return;
     }
@@ -74,6 +74,9 @@ const App = {
    * Setup the app shell (sidebar, header, mobile menu)
    */
   setupShell(user) {
+    // Inject SVG icons into shell elements (replaces emoji)
+    this.injectShellIcons();
+
     // Render sidebar nav
     Router.renderSidebar();
 
@@ -127,6 +130,48 @@ const App = {
       if (newFABtn) newFABtn.style.display = 'none';
       if (newPABtn) newPABtn.style.display = 'none';
     }
+  },
+
+  /**
+   * Replace emoji placeholders with SVG icons in the app shell
+   */
+  injectShellIcons() {
+    if (typeof Icons === 'undefined') return;
+
+    // Sidebar logo
+    const logo = document.querySelector('.sidebar-logo');
+    if (logo) logo.innerHTML = Icons.render('landmark', 24);
+
+    // Logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) logoutBtn.innerHTML = Icons.render('log-out', 18) + ' Sign Out';
+
+    // Menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menuToggle) menuToggle.innerHTML = Icons.render('menu', 22);
+
+    // "New FA" button
+    const newFABtn = document.getElementById('new-fa-btn');
+    if (newFABtn) newFABtn.innerHTML = Icons.render('file-plus', 16) + ' New FA';
+
+    // "New PA" button
+    const newPABtn = document.getElementById('new-pa-btn');
+    if (newPABtn) newPABtn.innerHTML = Icons.render('plus-circle', 16) + ' New PA';
+
+    // Export CSV button
+    const exportBtn = document.getElementById('export-csv-btn');
+    if (exportBtn) exportBtn.innerHTML = Icons.render('download', 16) + ' Export';
+
+    // "Add Category" button
+    const addCatBtn = document.getElementById('add-category-btn');
+    if (addCatBtn) addCatBtn.innerHTML = Icons.render('plus', 16) + ' Add Category';
+
+    // Replace all data-icon attributes with rendered SVG icons
+    document.querySelectorAll('[data-icon]').forEach(el => {
+      const iconName = el.getAttribute('data-icon');
+      const size = el.classList.contains('empty-state-icon') ? 32 : 20;
+      el.innerHTML = Icons.render(iconName, size);
+    });
   },
 
   /**
