@@ -10,6 +10,18 @@
   animation: fadeInUp 0.3s ease-out;
 }
 
+/* Welcome header enhancements */
+.page-body > .mb-lg:first-child h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--neutral-900);
+  letter-spacing: -0.01em;
+}
+.page-body > .mb-lg:first-child p.text-muted {
+  font-size: var(--text-base);
+  margin-top: var(--space-1);
+}
+
 /* Two-column dashboard layout (main + sidebar) */
 .dashboard-grid {
   display: grid;
@@ -41,6 +53,30 @@
 .recent-record-item:hover {
   background: var(--neutral-50);
 }
+
+/* Record icons for SVG */
+.record-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.record-icon-fa {
+  background: var(--primary-50);
+  color: var(--primary-600);
+}
+.record-icon-pa {
+  background: var(--secondary-50);
+  color: var(--secondary-600);
+}
+.record-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 .recent-record-icon {
   width: 40px;
   height: 40px;
@@ -85,6 +121,35 @@
   white-space: nowrap;
 }
 
+/* Record info block */
+.record-info {
+  flex: 1;
+  min-width: 0;
+}
+.record-name {
+  font-weight: var(--font-medium);
+  color: var(--neutral-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.record-meta {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.record-amount {
+  text-align: right;
+  flex-shrink: 0;
+}
+.amount-value {
+  font-weight: var(--font-semibold);
+  color: var(--neutral-800);
+}
+
 /* Pending items widget */
 .pending-list {
   list-style: none;
@@ -124,3 +189,32 @@
 }
 .budget-mini-label { color: var(--neutral-500); }
 .budget-mini-value { font-weight: var(--font-semibold); color: var(--neutral-800); }
+
+/* Section links in card headers */
+.section-link {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--primary-600);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.section-link:hover {
+  color: var(--primary-700);
+}
+
+/* Empty state mini */
+.empty-state-mini {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--neutral-400);
+  font-size: var(--text-sm);
+}
+
+/* Stat icon SVG sizing */
+.stat-icon svg {
+  width: 22px;
+  height: 22px;
+}
