@@ -19,17 +19,20 @@ const SysAdminModule = {
 
     let html = `
       <div class="grid-3-col gap-md mb-lg">
-        <div class="stat-card stat-card-primary">
-          <div class="stat-value">${active.length}</div>
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">${typeof Icons !== 'undefined' ? Icons.render('users', 22) : ''}</div>
           <div class="stat-label">Active Board Members</div>
+          <div class="stat-value">${active.length}</div>
         </div>
-        <div class="stat-card stat-card-warning">
-          <div class="stat-value">${active.filter(b => b.archive_status === 'pending').length}</div>
+        <div class="stat-card stat-card-amber">
+          <div class="stat-icon stat-icon-amber">${typeof Icons !== 'undefined' ? Icons.render('clock', 22) : ''}</div>
           <div class="stat-label">Pending Archive</div>
+          <div class="stat-value">${active.filter(b => b.archive_status === 'pending').length}</div>
         </div>
-        <div class="stat-card stat-card-muted">
-          <div class="stat-value">${archived.length}</div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:var(--neutral-100);color:var(--neutral-500)">${typeof Icons !== 'undefined' ? Icons.render('archive', 22) : ''}</div>
           <div class="stat-label">Archived</div>
+          <div class="stat-value">${archived.length}</div>
         </div>
       </div>
 
@@ -96,9 +99,10 @@ const SysAdminModule = {
     const assignments = Storage.getAll(KEYS.SECRETARY_ASSIGNMENTS);
 
     let html = `
-      <div class="stat-card stat-card-primary mb-lg" style="max-width:200px">
-        <div class="stat-value">${users.length}</div>
+      <div class="stat-card stat-card-blue mb-lg" style="max-width:200px">
+        <div class="stat-icon stat-icon-blue">${typeof Icons !== 'undefined' ? Icons.render('user', 22) : ''}</div>
         <div class="stat-label">Active Staff</div>
+        <div class="stat-value">${users.length}</div>
       </div>
 
       <div class="table-container">

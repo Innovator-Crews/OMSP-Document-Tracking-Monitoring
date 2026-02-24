@@ -28,17 +28,20 @@ const BoardMemberModule = {
       <h3 class="mb-md">FA Budget — ${Utils.formatMonth(Utils.getCurrentYearMonth())}</h3>
 
       <div class="grid-3-col gap-md mb-lg">
-        <div class="stat-card stat-card-primary">
-          <div class="stat-value">${Utils.formatCurrency(budget.total_budget)}</div>
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">${typeof Icons !== 'undefined' ? Icons.render('wallet', 22) : ''}</div>
           <div class="stat-label">Total Budget</div>
+          <div class="stat-value">${Utils.formatCurrency(budget.total_budget)}</div>
         </div>
-        <div class="stat-card stat-card-warning">
-          <div class="stat-value">${Utils.formatCurrency(budget.used_amount)}</div>
+        <div class="stat-card stat-card-amber">
+          <div class="stat-icon stat-icon-amber">${typeof Icons !== 'undefined' ? Icons.render('trending-up', 22) : ''}</div>
           <div class="stat-label">Used</div>
+          <div class="stat-value">${Utils.formatCurrency(budget.used_amount)}</div>
         </div>
-        <div class="stat-card stat-card-success">
-          <div class="stat-value">${Utils.formatCurrency(budget.remaining_amount)}</div>
+        <div class="stat-card stat-card-green">
+          <div class="stat-icon stat-icon-green">${typeof Icons !== 'undefined' ? Icons.render('check-circle', 22) : ''}</div>
           <div class="stat-label">Remaining</div>
+          <div class="stat-value">${Utils.formatCurrency(budget.remaining_amount)}</div>
         </div>
       </div>
 
