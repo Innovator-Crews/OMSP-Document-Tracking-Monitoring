@@ -492,5 +492,100 @@ const Utils = {
       return '../';
     }
     return './';
+  },
+
+  /* --------------------------------------------------------
+   * PAGINATION HELPER
+   * -------------------------------------------------------- */
+
+  /**
+   * Create a paginated result from an array
+   * @param {Array} items - Full data array
+   * @param {number} page - Current page (1-indexed)
+   * @param {number} pageSize - Items per page
+   * @returns {{ data: Array, page: number, pageSize: number, totalItems: number, totalPages: number, hasNext: boolean, hasPrev: boolean }}
+   */
+  paginate(items, page = 1, pageSize = 10) {
+    const totalItems = items.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+    const currentPage = this.clamp(page, 1, totalPages);
+    const start = (currentPage - 1) * pageSize;
+    const data = items.slice(start, start + pageSize);
+    return {
+      data,
+      page: currentPage,
+      pageSize,
+      totalItems,
+      totalPages,
+      hasNext: currentPage < totalPages,
+      hasPrev: currentPage > 1
+    };
+  },
+
+  /**
+   * Render pagination controls HTML
+   * @param {Object} paginationResult - Result from Utils.paginate()
+   * @param {string} callbackFn - Name of the global function to call on page change
+   * @returns {string} HTML string
+   */
+  renderPagination(paginationResult, callbackFn) {
+    const { page, totalPages, totalItems, pageSize, hasNext, hasPrev } = paginationResult;
+    if (totalPages <= 1) return '';
+
+    const start = (page - 1) * pageSize + 1;
+    const end = Math.min(page * pageSize, totalItems);
+
+    let buttons = '';
+
+    // Prev button
+    buttons += `<button class="pagination-btn" ${!hasPrev ? 'disabled' : ''} onclick="${callbackFn}(${page - 1})">&laquo;</button>`;
+
+    // Page numbers (show max 5 around current)
+    const startPage = Math.max(1, page - 2);
+    const endPage = Math.min(totalPages, page + 2);
+
+    if (startPage > 1) {
+      buttons += `<button class="pagination-btn" onclick="${callbackFn}(1)">1</button>`;
+      if (startPage > 2) buttons += `<span class="pagination-ellipsis">…</span>`;
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      buttons += `<button class="pagination-btn ${i === page ? 'active' : ''}" onclick="${callbackFn}(${i})">${i}</button>`;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) buttons += `<span class="pagination-ellipsis">…</span>`;
+      buttons += `<button class="pagination-btn" onclick="${callbackFn}(${totalPages})">${totalPages}</button>`;
+    }
+
+    // Next button
+    buttons += `<button class="pagination-btn" ${!hasNext ? 'disabled' : ''} onclick="${callbackFn}(${page + 1})">&raquo;</button>`;
+
+    return `
+      <div class="pagination">
+        <span>Showing ${start}–${end} of ${totalItems}</span>
+        <div class="pagination-buttons">${buttons}</div>
+      </div>
+    `;
+  },
+
+  /**
+   * Render an empty state with icon, title and description
+   * @param {string} icon - Icon name from Icons module
+   * @param {string} title - Empty state title
+   * @param {string} description - Description text
+   * @param {string} actionHtml - Optional action button HTML
+   * @returns {string} HTML string
+   */
+  renderEmptyState(icon, title, description, actionHtml = '') {
+    const iconHtml = typeof Icons !== 'undefined' ? Icons.render(icon, 48) : '';
+    return `
+      <div class="empty-state">
+        <div class="empty-state-icon">${iconHtml}</div>
+        <h3 class="empty-state-title">${title}</h3>
+        <p class="empty-state-text">${description}</p>
+        ${actionHtml}
+      </div>
+    `;
   }
 };

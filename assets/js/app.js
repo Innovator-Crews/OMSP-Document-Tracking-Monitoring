@@ -105,12 +105,32 @@ const App = {
       });
     }
 
+    // Sidebar collapse toggle (desktop)
+    const collapseBtn = document.getElementById('sidebar-collapse-btn');
+    if (collapseBtn && sidebar) {
+      // Restore collapse state
+      const isCollapsed = localStorage.getItem('omsp_sidebar_collapsed') === 'true';
+      if (isCollapsed) sidebar.classList.add('collapsed');
+
+      collapseBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        localStorage.setItem('omsp_sidebar_collapsed', sidebar.classList.contains('collapsed'));
+      });
+    }
+
     // Logout button
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        Auth.logout();
+        Notifications.confirm({
+          title: 'Sign Out',
+          message: 'Are you sure you want to sign out? Any unsaved changes will be lost.',
+          confirmText: 'Sign Out',
+          cancelText: 'Cancel',
+          type: 'warning',
+          onConfirm: () => Auth.logout()
+        });
       });
     }
 
@@ -151,6 +171,10 @@ const App = {
     // Sidebar logo
     const logo = document.querySelector('.sidebar-logo');
     if (logo) logo.innerHTML = Icons.render('landmark', 24);
+
+    // Sidebar collapse button
+    const collapseBtn = document.getElementById('sidebar-collapse-btn');
+    if (collapseBtn) collapseBtn.innerHTML = Icons.render('chevron-left', 16);
 
     // Logout button
     const logoutBtn = document.getElementById('logout-btn');
@@ -265,6 +289,11 @@ const App = {
         Router.setPageInfo('My FA Budget');
         break;
 
+      case 'my-pa-budget':
+        if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initPABudget();
+        Router.setPageInfo('My PA Budget');
+        break;
+
       default:
         console.log('No module for page:', page);
     }
@@ -324,7 +353,7 @@ const App = {
               <span>Used: ${Utils.formatCurrency(budget.used_amount)}</span>
               <span>Remaining: ${Utils.formatCurrency(budget.remaining_amount)}</span>
             </div>
-            <div class="text-sm text-muted mt-xs">Total: ${Utils.formatCurrency(budget.total_budget)} (Rollover: ${Utils.formatCurrency(budget.rollover)})</div>
+            <div class="text-sm text-muted mt-xs">Total: ${Utils.formatCurrency(budget.total_budget)} (Rollover: ${Utils.formatCurrency(budget.rollover_amount || 0)})</div>
           </div>
         </div>
       `;
@@ -508,7 +537,7 @@ const App = {
           </div>
           <div class="d-flex justify-between text-sm">
             <span>${pct}% used</span>
-            <span>Rollover from previous month: ${Utils.formatCurrency(budget.rollover)}</span>
+            <span>Rollover from previous month: ${Utils.formatCurrency(budget.rollover_amount || 0)}</span>
           </div>
         </div>
       </div>

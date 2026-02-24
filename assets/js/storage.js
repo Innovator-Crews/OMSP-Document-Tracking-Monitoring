@@ -22,6 +22,7 @@ const KEYS = {
   FA_CATEGORIES: 'bataan_sp_fa_categories',
   PA_CATEGORIES: 'bataan_sp_pa_categories',
   MONTHLY_BUDGETS: 'bataan_sp_monthly_budgets',
+  PA_BUDGETS: 'bataan_sp_pa_budgets',
   ACTIVITY_LOGS: 'bataan_sp_activity_logs',
   MONTHLY_FREQUENCY: 'bataan_sp_monthly_frequency',
   CURRENT_USER: 'bataan_sp_current_user',
@@ -357,6 +358,120 @@ const Storage = {
   setRollover(bmId, selected) {
     const budget = this.getCurrentBudget(bmId);
     this.update(KEYS.MONTHLY_BUDGETS, budget.log_id, { rollover_selected: selected }, 'log_id');
+  },
+
+  /* --------------------------------------------------------
+   * PA BUDGET OPERATIONS  (pool-based, not monthly)
+   * -------------------------------------------------------- */
+
+  /**
+   * Get all PA budget entries for a Board Member
+   * @param {string} bmId - Board Member ID
+   * @returns {Array} PA budget entries sorted by created_at desc
+   */
+  getPABudgets(bmId) {
+    return this.getAll(KEYS.PA_BUDGETS)
+      .filter(b => b.bm_id === bmId && !b.is_deleted)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+
+  /**
+   * Get total PA budget pool for a BM
+   * @param {string} bmId - Board Member ID
+   * @returns {{ total_pool: number, total_used: number, remaining: number, entries: Array }}
+   */
+  getPABudgetSummary(bmId) {
+    const entries = this.getPABudgets(bmId);
+    const totalPool = entries.reduce((s, e) => s + e.amount, 0);
+    const paRecords = this.query(KEYS.PA_RECORDS, { bm_id: bmId });
+    const totalUsed = paRecords.reduce((s, r) => s + (r.amount_provided || 0), 0);
+    return {
+      total_pool: totalPool,
+      total_used: totalUsed,
+      remaining: totalPool - totalUsed,
+      entries
+    };
+  },
+
+  /**
+   * Add a PA budget entry
+   * @param {string} bmId - Board Member ID
+   * @param {number} amount - Budget amount to add
+   * @param {string} description - Description / note
+   * @param {string} addedBy - User ID who added
+   * @returns {Object} Created entry
+   */
+  addPABudget(bmId, amount, description, addedBy) {
+    const entry = {
+      pa_budget_id: this.generateId('pab'),
+      bm_id: bmId,
+      amount: parseFloat(amount),
+      description: description || '',
+      added_by: addedBy,
+      is_deleted: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    this.add(KEYS.PA_BUDGETS, entry);
+    return entry;
+  },
+
+  /**
+   * Update a PA budget entry
+   * @param {string} entryId - PA budget entry ID
+   * @param {number} amount - New amount
+   * @param {string} description - New description
+   * @returns {boolean} Success
+   */
+  updatePABudget(entryId, amount, description) {
+    return this.update(KEYS.PA_BUDGETS, entryId, {
+      amount: parseFloat(amount),
+      description: description || ''
+    }, 'pa_budget_id');
+  },
+
+  /**
+   * Remove a PA budget entry (soft delete)
+   * @param {string} entryId - PA budget entry ID
+   * @returns {boolean} Success
+   */
+  removePABudget(entryId) {
+    return this.update(KEYS.PA_BUDGETS, entryId, { is_deleted: true }, 'pa_budget_id');
+  },
+
+  /**
+   * Deduct from PA budget pool
+   * @param {string} bmId - Board Member ID
+   * @param {number} amount - Amount to deduct
+   * @returns {{ success: boolean, summary: Object, error?: string }}
+   */
+  deductFromPABudget(bmId, amount) {
+    const summary = this.getPABudgetSummary(bmId);
+    if (amount > summary.remaining) {
+      return {
+        success: false,
+        summary,
+        error: `Insufficient PA budget. Remaining: ${Utils.formatCurrency(summary.remaining)}, Requested: ${Utils.formatCurrency(amount)}`
+      };
+    }
+    return { success: true, summary };
+  },
+
+  /**
+   * Update FA monthly base budget amount
+   * @param {string} bmId - Board Member ID
+   * @param {number} newBase - New base budget amount
+   */
+  updateFABaseBudget(bmId, newBase) {
+    const budget = this.getCurrentBudget(bmId);
+    const diff = newBase - budget.base_budget;
+    this.update(KEYS.MONTHLY_BUDGETS, budget.log_id, {
+      base_budget: newBase,
+      total_budget: budget.total_budget + diff,
+      remaining_amount: budget.remaining_amount + diff
+    }, 'log_id');
+    // Also update the BM record's fa_monthly_budget
+    this.update(KEYS.BOARD_MEMBERS, bmId, { fa_monthly_budget: newBase }, 'bm_id');
   },
 
   /* --------------------------------------------------------
@@ -809,6 +924,31 @@ const Storage = {
 
     // --- EMPTY COLLECTIONS ---
     this.set(KEYS.MONTHLY_FREQUENCY, []);
+
+    // --- SEED PA BUDGETS ---
+    const paBudgets = [
+      {
+        pa_budget_id: 'pab_001',
+        bm_id: 'bm_001',
+        amount: 50000,
+        description: 'Initial PA budget allocation',
+        added_by: 'usr_admin01',
+        is_deleted: false,
+        created_at: now,
+        updated_at: now
+      },
+      {
+        pa_budget_id: 'pab_002',
+        bm_id: 'bm_002',
+        amount: 30000,
+        description: 'Initial PA budget allocation',
+        added_by: 'usr_admin01',
+        is_deleted: false,
+        created_at: now,
+        updated_at: now
+      }
+    ];
+    this.set(KEYS.PA_BUDGETS, paBudgets);
 
     console.log('✅ OMSP default data seeded successfully');
   },

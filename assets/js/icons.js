@@ -42,6 +42,7 @@ const Icons = {
     'chevron-down':     '<polyline points="6 9 12 15 18 9"/>',
     'chevron-left':     '<polyline points="15 18 9 12 15 6"/>',
     'chevron-up':       '<polyline points="18 15 12 9 6 15"/>',
+    'credit-card':      '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>',
     'arrow-right':      '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
     'arrow-left':       '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
     'arrow-up-right':   '<line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>',
