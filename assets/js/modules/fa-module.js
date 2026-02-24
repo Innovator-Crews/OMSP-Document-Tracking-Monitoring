@@ -568,7 +568,7 @@ const FAModule = {
         <tr>
           <td colspan="7" class="text-center p-xl">
             <div class="empty-state">
-              <div class="empty-state-icon">📋</div>
+              <div class="empty-state-icon">${Icons.render('file-text', 32)}</div>
               <h3 class="empty-state-title">No FA Records</h3>
               <p class="empty-state-text">No financial assistance records found.</p>
             </div>
@@ -601,8 +601,8 @@ const FAModule = {
           <td>${Utils.formatDate(r.created_at)}</td>
           <td>
             <div class="d-flex gap-xs">
-              <button class="btn btn-sm btn-ghost" onclick="FAModule.viewDetail('${r.fa_id}')" title="View">👁️</button>
-              <button class="btn btn-sm btn-ghost" onclick="FAModule.editStatus('${r.fa_id}')" title="Edit Status">✏️</button>
+              <button class="btn btn-sm btn-ghost" onclick="FAModule.viewDetail('${r.fa_id}')" title="View">${Icons.render('eye', 16)}</button>
+              <button class="btn btn-sm btn-ghost" onclick="FAModule.editStatus('${r.fa_id}')" title="Edit Status">${Icons.render('edit', 16)}</button>
             </div>
           </td>
         </tr>

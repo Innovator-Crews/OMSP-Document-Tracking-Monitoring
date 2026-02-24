@@ -52,17 +52,17 @@ const DashboardModule = {
 
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">
-          <div class="stat-icon stat-icon-blue">👥</div>
+          <div class="stat-icon stat-icon-blue">${Icons.render('users', 22)}</div>
           <div class="stat-label">Board Members</div>
           <div class="stat-value">${bms.length}</div>
         </div>
         <div class="stat-card stat-card-teal">
-          <div class="stat-icon stat-icon-teal">👤</div>
+          <div class="stat-icon stat-icon-teal">${Icons.render('user', 22)}</div>
           <div class="stat-label">Active Users</div>
           <div class="stat-value">${users.filter(u => u.is_active).length}</div>
         </div>
         <div class="stat-card stat-card-amber">
-          <div class="stat-icon stat-icon-amber">💰</div>
+          <div class="stat-icon stat-icon-amber">${Icons.render('wallet', 22)}</div>
           <div class="stat-label">Total Disbursed</div>
           <div class="stat-value">${Utils.formatCurrency(totalUsed)}</div>
         </div>
@@ -70,17 +70,17 @@ const DashboardModule = {
 
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">
-          <div class="stat-icon stat-icon-blue">📋</div>
+          <div class="stat-icon stat-icon-blue">${Icons.render('file-text', 22)}</div>
           <div class="stat-label">FA Records</div>
           <div class="stat-value">${faRecords.length}</div>
         </div>
         <div class="stat-card stat-card-teal">
-          <div class="stat-icon stat-icon-teal">📝</div>
+          <div class="stat-icon stat-icon-teal">${Icons.render('clipboard-list', 22)}</div>
           <div class="stat-label">PA Records</div>
           <div class="stat-value">${paRecords.length}</div>
         </div>
         <div class="stat-card stat-card-amber">
-          <div class="stat-icon stat-icon-amber">📦</div>
+          <div class="stat-icon stat-icon-amber">${Icons.render('archive', 22)}</div>
           <div class="stat-label">Pending Archives</div>
           <div class="stat-value">${pendingArchives.length}</div>
         </div>
@@ -152,18 +152,18 @@ const DashboardModule = {
 
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">
-          <div class="stat-icon stat-icon-blue">💰</div>
+          <div class="stat-icon stat-icon-blue">${Icons.render('wallet', 22)}</div>
           <div class="stat-label">FA Budget Remaining</div>
           <div class="stat-value">${Utils.formatCurrency(budget.remaining_amount)}</div>
           <div class="stat-subtext">Used: ${Utils.formatCurrency(budget.used_amount)}</div>
         </div>
         <div class="stat-card stat-card-teal">
-          <div class="stat-icon stat-icon-teal">📋</div>
+          <div class="stat-icon stat-icon-teal">${Icons.render('file-text', 22)}</div>
           <div class="stat-label">FA Records</div>
           <div class="stat-value">${faRecords.length}</div>
         </div>
         <div class="stat-card stat-card-amber">
-          <div class="stat-icon stat-icon-amber">📝</div>
+          <div class="stat-icon stat-icon-amber">${Icons.render('clipboard-list', 22)}</div>
           <div class="stat-label">PA Records</div>
           <div class="stat-value">${paRecords.length}</div>
         </div>
@@ -232,22 +232,22 @@ const DashboardModule = {
 
       <div class="grid-4-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">
-          <div class="stat-icon stat-icon-blue">👥</div>
+          <div class="stat-icon stat-icon-blue">${Icons.render('users', 22)}</div>
           <div class="stat-label">Assigned BMs</div>
           <div class="stat-value">${assignedBMs.length}</div>
         </div>
         <div class="stat-card stat-card-teal">
-          <div class="stat-icon stat-icon-teal">📋</div>
+          <div class="stat-icon stat-icon-teal">${Icons.render('file-text', 22)}</div>
           <div class="stat-label">My FA Records</div>
           <div class="stat-value">${myFA.length}</div>
         </div>
         <div class="stat-card stat-card-amber">
-          <div class="stat-icon stat-icon-amber">📝</div>
+          <div class="stat-icon stat-icon-amber">${Icons.render('clipboard-list', 22)}</div>
           <div class="stat-label">My PA Records</div>
           <div class="stat-value">${myPA.length}</div>
         </div>
         <div class="stat-card stat-card-green">
-          <div class="stat-icon stat-icon-green">📅</div>
+          <div class="stat-icon stat-icon-green">${Icons.render('calendar', 22)}</div>
           <div class="stat-label">Today's Records</div>
           <div class="stat-value">${todayRecords.length}</div>
         </div>
@@ -314,7 +314,7 @@ const DashboardModule = {
       return `
         <div class="recent-record-item">
           <div class="record-icon record-icon-${type}">
-            ${type === 'fa' ? '📋' : '📝'}
+            ${type === 'fa' ? Icons.render('file-text', 18) : Icons.render('clipboard-list', 18)}
           </div>
           <div class="record-info">
             <div class="record-name">${Utils.escapeHtml(name || '—')}</div>
@@ -464,7 +464,7 @@ const DashboardModule = {
       return `
         <div class="recent-record-item">
           <div class="record-icon record-icon-${r.type.toLowerCase()}">
-            ${r.type === 'FA' ? '📋' : '📝'}
+            ${r.type === 'FA' ? Icons.render('file-text', 18) : Icons.render('clipboard-list', 18)}
           </div>
           <div class="record-info">
             <div class="record-name">${Utils.escapeHtml(name || '—')}</div>

@@ -388,7 +388,7 @@ const PAModule = {
         <tr>
           <td colspan="6" class="text-center p-xl">
             <div class="empty-state">
-              <div class="empty-state-icon">📝</div>
+              <div class="empty-state-icon">${Icons.render('clipboard-list', 32)}</div>
               <h3 class="empty-state-title">No PA Records</h3>
               <p class="empty-state-text">No personal assistance records found.</p>
             </div>
@@ -415,7 +415,7 @@ const PAModule = {
           <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
           <td>${Utils.formatDate(r.created_at)}</td>
           <td>
-            <button class="btn btn-sm btn-ghost" onclick="PAModule.viewDetail('${r.pa_id}')" title="View">👁️</button>
+            <button class="btn btn-sm btn-ghost" onclick="PAModule.viewDetail('${r.pa_id}')" title="View">${Icons.render('eye', 16)}</button>
           </td>
         </tr>
       `;

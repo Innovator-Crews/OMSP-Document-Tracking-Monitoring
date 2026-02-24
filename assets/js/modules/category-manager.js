@@ -93,8 +93,8 @@ const CategoryManager = {
                 <span class="text-muted text-sm">Added by ${Utils.escapeHtml(creator ? creator.full_name : 'Unknown')} • ${Utils.formatDate(c.created_at)}</span>
               </div>
               <div class="d-flex gap-xs">
-                <button class="btn btn-sm btn-ghost" onclick="CategoryManager.editCategory('${c.id}')" title="Edit">✏️</button>
-                <button class="btn btn-sm btn-ghost text-danger" onclick="CategoryManager.archiveCategory('${c.id}')" title="Archive">🗑️</button>
+                <button class="btn btn-sm btn-ghost" onclick="CategoryManager.editCategory('${c.id}')" title="Edit">${Icons.render('edit', 16)}</button>
+                <button class="btn btn-sm btn-ghost text-danger" onclick="CategoryManager.archiveCategory('${c.id}')" title="Archive">${Icons.render('trash', 16)}</button>
               </div>
             </div>
           </div>
