@@ -184,6 +184,12 @@
   background: var(--primary-50);
 }
 
+.landing-nav-link.active {
+  color: var(--primary-700);
+  background: var(--primary-100);
+  box-shadow: inset 0 0 0 1px var(--primary-200);
+}
+
 .landing-nav-cta {
   margin-left: var(--space-3);
   padding: var(--space-2) var(--space-5);
@@ -241,19 +247,6 @@
     radial-gradient(ellipse at 20% 50%, rgba(29, 78, 216, 0.08) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 60%),
     radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.landing-hero::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: radial-gradient(circle, var(--neutral-300) 1px, transparent 1px);
-  background-size: 24px 24px;
-  opacity: 0.25;
   pointer-events: none;
 }
 

@@ -469,6 +469,45 @@
         });
       });
 
+      // ── Section active-state in navbar (scrollspy) ───────
+      const sectionNavLinks = Array.from(document.querySelectorAll('.landing-nav-link[href^="#"]'));
+      const sectionTargets = sectionNavLinks
+        .map(link => {
+          const id = link.getAttribute('href');
+          const section = id ? document.querySelector(id) : null;
+          return section ? { link, section } : null;
+        })
+        .filter(Boolean);
+
+      function setActiveSectionLink(targetId) {
+        sectionNavLinks.forEach(link => {
+          const isActive = link.getAttribute('href') === targetId;
+          link.classList.toggle('active', isActive);
+          link.setAttribute('aria-current', isActive ? 'true' : 'false');
+        });
+      }
+
+      if (sectionTargets.length) {
+        setActiveSectionLink('#features');
+        const sectionObserver = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter(entry => entry.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+            if (visible.length) {
+              setActiveSectionLink('#' + visible[0].target.id);
+            }
+          },
+          {
+            root: null,
+            rootMargin: '-40% 0px -45% 0px',
+            threshold: [0.2, 0.4, 0.6]
+          }
+        );
+
+        sectionTargets.forEach(({ section }) => sectionObserver.observe(section));
+      }
+
       // ── Mobile menu toggle ────────────────────────────────
       const toggle = document.getElementById('mobile-toggle');
       const links = document.getElementById('nav-links');
@@ -526,6 +565,38 @@
       const mockupRows = document.querySelectorAll('.landing-mockup-row');
       const statVals = document.querySelectorAll('.landing-mockup-stat-val');
 
+      function animateCounterValue(el, targetValue, duration = 550) {
+        if (!el) return;
+        const currentValue = parseInt(el.textContent, 10);
+        if (Number.isNaN(currentValue) || currentValue === targetValue) {
+          el.textContent = String(targetValue);
+          return;
+        }
+
+        if (el._counterAnimationId) {
+          cancelAnimationFrame(el._counterAnimationId);
+        }
+
+        const startValue = currentValue;
+        const delta = targetValue - startValue;
+        const startTime = performance.now();
+
+        function tick(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const nextValue = Math.round(startValue + delta * eased);
+          el.textContent = String(nextValue);
+
+          if (progress < 1) {
+            el._counterAnimationId = requestAnimationFrame(tick);
+          } else {
+            el._counterAnimationId = null;
+          }
+        }
+
+        el._counterAnimationId = requestAnimationFrame(tick);
+      }
+
       function animateMockupRow() {
         if (!mockupRows.length) return;
         faCounter++;
@@ -551,8 +622,14 @@
         });
 
         // Slowly increment stat counters
-        if (statVals[0]) statVals[0].textContent = parseInt(statVals[0].textContent) + 1;
-        if (statVals[1] && Math.random() > 0.6) statVals[1].textContent = parseInt(statVals[1].textContent) + 1;
+        if (statVals[0]) {
+          const currentFa = parseInt(statVals[0].textContent, 10) || 0;
+          animateCounterValue(statVals[0], currentFa + 1);
+        }
+        if (statVals[1] && Math.random() > 0.6) {
+          const currentPa = parseInt(statVals[1].textContent, 10) || 0;
+          animateCounterValue(statVals[1], currentPa + 1);
+        }
       }
 
       setInterval(animateMockupRow, 3000);
