@@ -389,7 +389,7 @@ const PAModule = {
           <td colspan="6" class="text-center p-xl">
             <div class="empty-state">
               <div class="empty-state-icon">${Icons.render('clipboard-list', 32)}</div>
-              <h3 class="empty-state-title">No PA Records</h3>
+              <h3 class="empty-state-title">No Personal Assistance Records</h3>
               <p class="empty-state-text">No personal assistance records found.</p>
             </div>
           </td>
@@ -462,7 +462,7 @@ const PAModule = {
       <div class="modal-overlay active" id="pa-detail-modal">
         <div class="modal animate-fade-in">
           <div class="modal-header">
-            <h3 class="modal-title">PA Record Detail</h3>
+            <h3 class="modal-title">Personal Assistance Record Detail</h3>
             <button class="modal-close" onclick="document.getElementById('pa-detail-modal').remove()">&times;</button>
           </div>
           <div class="modal-body">

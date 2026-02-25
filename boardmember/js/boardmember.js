@@ -3,12 +3,12 @@
  * OMSP Document Tracking / Monitoring
  * Board Member Module — BM-specific page logic
  * ============================================================
- * Handles BM-only pages: My FA Budget, My PA Budget
+ * Handles BM-only pages: My Financial Assistance Budget, My Personal Assistance Budget
  */
 
 const BoardMemberModule = {
 
-  // ─── My FA Budget Page ───────────────────────────────────
+  // ─── My Financial Assistance Budget Page ───────────────────────────────────
   initMyBudget() {
     const container = document.getElementById('my-budget-content');
     if (!container) return;
@@ -26,7 +26,7 @@ const BoardMemberModule = {
 
     let html = `
       <div class="d-flex justify-between align-center mb-md">
-        <h3>FA Budget — ${Utils.formatMonth(Utils.getCurrentYearMonth())}</h3>
+        <h3>Financial Assistance Budget — ${Utils.formatMonth(Utils.getCurrentYearMonth())}</h3>
         <button class="btn btn-sm btn-secondary" onclick="BoardMemberModule.showEditFABudget()">
           ${typeof Icons !== 'undefined' ? Icons.render('edit', 14) : ''} Edit Base Budget
         </button>
@@ -95,7 +95,7 @@ const BoardMemberModule = {
     container.innerHTML = html;
   },
 
-  // ─── Edit FA Base Budget Modal ───────────────────────────
+  // ─── Edit Financial Assistance Base Budget Modal ───────────────────────────
   async showEditFABudget() {
     const bmData = Auth.getCurrentBMData();
     if (!bmData) return;
@@ -107,7 +107,7 @@ const BoardMemberModule = {
       <div class="modal-overlay active">
         <div class="modal modal-sm animate-fade-in">
           <div class="modal-header">
-            <h3 class="modal-title">Edit FA Base Budget</h3>
+            <h3 class="modal-title">Edit Financial Assistance Base Budget</h3>
             <button class="modal-close" id="modal-close-btn">&times;</button>
           </div>
           <div class="modal-body">
@@ -142,14 +142,14 @@ const BoardMemberModule = {
         return;
       }
       Storage.updateFABaseBudget(bmData.bm_id, newBase);
-      ActivityLogger.log(`Updated FA base budget to ${Utils.formatCurrency(newBase)}`, 'budget_change', 'budget', bmData.bm_id);
-      Notifications.success('FA base budget updated.');
+      ActivityLogger.log(`Updated Financial Assistance base budget to ${Utils.formatCurrency(newBase)}`, 'budget_change', 'budget', bmData.bm_id);
+      Notifications.success('Financial Assistance base budget updated.');
       closeModal();
       this.initMyBudget();
     });
   },
 
-  // ─── My PA Budget Page ───────────────────────────────────
+  // ─── My Personal Assistance Budget Page ───────────────────────────────────
   initPABudget() {
     const container = document.getElementById('pa-budget-content');
     if (!container) return;
@@ -166,7 +166,7 @@ const BoardMemberModule = {
 
     let html = `
       <div class="d-flex justify-between align-center mb-md">
-        <h3>PA Budget Pool</h3>
+        <h3>Personal Assistance Budget Pool</h3>
         <button class="btn btn-sm btn-primary" onclick="BoardMemberModule.showAddPABudget()">
           ${typeof Icons !== 'undefined' ? Icons.render('plus', 14) : ''} Add Budget
         </button>
@@ -248,7 +248,7 @@ const BoardMemberModule = {
       ` : `
         <div class="empty-state">
           <div class="empty-state-icon">${typeof Icons !== 'undefined' ? Icons.render('credit-card', 48) : ''}</div>
-          <h3 class="empty-state-title">No PA Budget Entries</h3>
+          <h3 class="empty-state-title">No Personal Assistance Budget Entries</h3>
           <p class="empty-state-text">Click "Add Budget" to create your first PA budget allocation.</p>
         </div>
       `}
@@ -257,11 +257,11 @@ const BoardMemberModule = {
     container.innerHTML = html;
   },
 
-  // ─── Add PA Budget Entry Modal ───────────────────────────
+  // ─── Add Personal Assistance Budget Entry Modal ───────────────────────────
   showAddPABudget() {
     const bmData = Auth.getCurrentBMData();
     if (!bmData) return;
-    this._showPABudgetModal('Add PA Budget Entry', '', '', (amount, desc) => {
+    this._showPABudgetModal('Add Personal Assistance Budget Entry', '', '', (amount, desc) => {
       const user = Auth.getCurrentUser();
       Storage.addPABudget(bmData.bm_id, amount, desc, user.user_id);
       ActivityLogger.log(`Added PA budget entry: ${Utils.formatCurrency(amount)}`, 'budget_change', 'budget', bmData.bm_id, desc);
@@ -270,11 +270,11 @@ const BoardMemberModule = {
     });
   },
 
-  // ─── Edit PA Budget Entry Modal ──────────────────────────
+  // ─── Edit Personal Assistance Budget Entry Modal ──────────────────────────
   showEditPABudget(entryId) {
     const entry = Storage.getById(KEYS.PA_BUDGETS, entryId, 'pa_budget_id');
     if (!entry) return;
-    this._showPABudgetModal('Edit PA Budget Entry', entry.amount, entry.description, (amount, desc) => {
+    this._showPABudgetModal('Edit Personal Assistance Budget Entry', entry.amount, entry.description, (amount, desc) => {
       Storage.updatePABudget(entryId, amount, desc);
       const bmData = Auth.getCurrentBMData();
       ActivityLogger.log(`Edited PA budget entry to ${Utils.formatCurrency(amount)}`, 'budget_change', 'budget', bmData ? bmData.bm_id : entryId, desc);
@@ -283,7 +283,7 @@ const BoardMemberModule = {
     });
   },
 
-  // ─── Remove PA Budget Entry ──────────────────────────────
+  // ─── Remove Personal Assistance Budget Entry ──────────────────────────────
   async removePABudgetEntry(entryId) {
     const confirmed = await Notifications.confirm({
       title: 'Remove Budget Entry',
@@ -300,7 +300,7 @@ const BoardMemberModule = {
     this.initPABudget();
   },
 
-  // ─── Shared PA Budget Modal ──────────────────────────────
+  // ─── Shared Personal Assistance Budget Modal ──────────────────────────────
   _showPABudgetModal(title, currentAmount, currentDesc, onSave) {
     const modalContainer = document.getElementById('modal-container');
     modalContainer.innerHTML = `

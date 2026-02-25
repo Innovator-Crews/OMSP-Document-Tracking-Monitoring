@@ -201,7 +201,7 @@ const ReportsModule = {
       <div class="grid-2-col gap-md mb-lg">
         <div class="stat-card stat-card-teal">
           <div class="stat-value">${records.length}</div>
-          <div class="stat-label">Total PA Records</div>
+          <div class="stat-label">Total Personal Assistance Records</div>
         </div>
         <div class="stat-card stat-card-success">
           <div class="stat-value">${Utils.formatCurrency(totalAmount)}</div>
@@ -264,8 +264,8 @@ const ReportsModule = {
             <thead>
               <tr>
                 <th>Beneficiary</th>
-                <th>FA Count</th>
-                <th>PA Count</th>
+                <th>Financial Assistance Count</th>
+                <th>Personal Assistance Count</th>
                 <th>Total</th>
                 <th>Amount</th>
                 <th>Level</th>
@@ -321,10 +321,10 @@ const ReportsModule = {
             <tr>
               <th>Board Member</th>
               <th>District</th>
-              <th>FA Records</th>
-              <th>PA Records</th>
-              <th class="text-right">FA Total</th>
-              <th class="text-right">PA Total</th>
+              <th>Financial Assistance Records</th>
+              <th>Personal Assistance Records</th>
+              <th class="text-right">Financial Assistance Total</th>
+              <th class="text-right">Personal Assistance Total</th>
               <th>Budget Usage</th>
             </tr>
           </thead>

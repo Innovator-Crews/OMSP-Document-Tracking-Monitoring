@@ -251,11 +251,11 @@ const SearchModule = {
             <div class="grid-2-col gap-md mb-lg">
               <div class="stat-card stat-card-primary">
                 <div class="stat-value">${faRecords.length}</div>
-                <div class="stat-label">FA Records</div>
+                <div class="stat-label">Financial Assistance Records</div>
               </div>
               <div class="stat-card stat-card-teal">
                 <div class="stat-value">${paRecords.length}</div>
-                <div class="stat-label">PA Records</div>
+                <div class="stat-label">Personal Assistance Records</div>
               </div>
             </div>
 

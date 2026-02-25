@@ -16,7 +16,7 @@ const FAModule = {
    * -------------------------------------------------------- */
 
   /**
-   * Initialize the New FA form
+   * Initialize the New Financial Assistance form
    */
   initNewForm() {
     const user = Auth.requireAuth();
@@ -569,7 +569,7 @@ const FAModule = {
           <td colspan="7" class="text-center p-xl">
             <div class="empty-state">
               <div class="empty-state-icon">${Icons.render('file-text', 32)}</div>
-              <h3 class="empty-state-title">No FA Records</h3>
+              <h3 class="empty-state-title">No Financial Assistance Records</h3>
               <p class="empty-state-text">No financial assistance records found.</p>
             </div>
           </td>
@@ -664,7 +664,7 @@ const FAModule = {
       <div class="modal-overlay active" id="fa-detail-modal">
         <div class="modal animate-fade-in">
           <div class="modal-header">
-            <h3 class="modal-title">FA Record Detail</h3>
+            <h3 class="modal-title">Financial Assistance Record Detail</h3>
             <button class="modal-close" onclick="document.getElementById('fa-detail-modal').remove()">&times;</button>
           </div>
           <div class="modal-body">

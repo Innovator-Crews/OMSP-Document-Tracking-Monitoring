@@ -30,7 +30,7 @@ const StaffModule = {
   /**
    * Get recent records created by this secretary
    * @param {number} limit
-   * @returns {Array} Mixed FA/PA records
+   * @returns {Array} Mixed Financial Assistance/Personal Assistance records
    */
   getMyRecentRecords(limit = 10) {
     const user = Auth.getCurrentUser();

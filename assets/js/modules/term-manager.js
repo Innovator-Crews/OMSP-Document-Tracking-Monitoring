@@ -74,11 +74,11 @@ const TermManager = {
               <span class="detail-value ${daysLeft <= 30 ? 'text-danger' : daysLeft <= 90 ? 'text-warning' : ''}">${daysLeft > 0 ? daysLeft + ' days' : 'Term ended'}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Total FA Records</span>
+              <span class="detail-label">Total Financial Assistance Records</span>
               <span class="detail-value">${faCount}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Total PA Records</span>
+              <span class="detail-label">Total Personal Assistance Records</span>
               <span class="detail-value">${paCount}</span>
             </div>
             <div class="detail-item">
@@ -98,7 +98,7 @@ const TermManager = {
             <p class="text-muted mb-md">When your term ends, you can request the System Administrator to archive all your records. This will preserve your data as read-only for the new term.</p>
             <div class="banner banner-warning mb-md">
               <div class="banner-content">
-                <strong>⚠️ Important:</strong> Once archived, you will not be able to add new FA/PA records under this term. All records will be preserved but marked as archived.
+                <strong>⚠️ Important:</strong> Once archived, you will not be able to add new Financial Assistance/Personal Assistance records under this term. All records will be preserved but marked as archived.
               </div>
             </div>
             <button class="btn btn-warning" onclick="TermManager.requestArchive()">Request Archive</button>
@@ -195,11 +195,11 @@ const TermManager = {
                 <span class="detail-value">${Utils.formatDate(bm.term_start)} — ${Utils.formatDate(bm.term_end)}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">FA Records</span>
+                <span class="detail-label">Financial Assistance Records</span>
                 <span class="detail-value">${faCount}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">PA Records</span>
+                <span class="detail-label">Personal Assistance Records</span>
                 <span class="detail-value">${paCount}</span>
               </div>
               <div class="detail-item">
@@ -269,7 +269,7 @@ const TermManager = {
     ActivityLogger.log(
       `Approved archive for ${targetUser ? targetUser.full_name : bmId}`,
       'approve', 'term', bmId,
-      `Archived ${faRecords.length} FA + ${paRecords.length} PA records`
+      `Archived ${faRecords.length} Financial Assistance + ${paRecords.length} Personal Assistance records`
     );
 
     Notifications.success(`Archive approved. ${faRecords.length + paRecords.length} records archived.`);
@@ -437,7 +437,7 @@ const TermManager = {
             </div>
 
             <div class="form-group mb-md">
-              <label class="form-label">FA Monthly Budget (₱)</label>
+              <label class="form-label">Financial Assistance Monthly Budget (₱)</label>
               <input type="number" class="form-input" id="new-term-fa-budget" value="70000" min="0" step="1000" />
             </div>
           </div>
@@ -505,7 +505,7 @@ const TermManager = {
     ActivityLogger.log(
       `Started ${Utils.ordinal(nextTerm)} term for ${bmUser ? bmUser.full_name : bmId}`,
       'create', 'term', bmId,
-      `Term ${nextTerm}: ${termStart} — ${termEnd}, FA Budget: ₱${Utils.formatNumber(faBudget)}/mo`
+      `Term ${nextTerm}: ${termStart} — ${termEnd}, Financial Assistance Budget: ₱${Utils.formatNumber(faBudget)}/mo`
     );
 
       this.closeNewTermModal();

@@ -71,12 +71,12 @@ const DashboardModule = {
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">
           <div class="stat-icon stat-icon-blue">${Icons.render('file-text', 22)}</div>
-          <div class="stat-label">FA Records</div>
+          <div class="stat-label">Financial Assistance Records</div>
           <div class="stat-value">${faRecords.length}</div>
         </div>
         <div class="stat-card stat-card-teal">
           <div class="stat-icon stat-icon-teal">${Icons.render('clipboard-list', 22)}</div>
-          <div class="stat-label">PA Records</div>
+          <div class="stat-label">Personal Assistance Records</div>
           <div class="stat-value">${paRecords.length}</div>
         </div>
         <div class="stat-card stat-card-amber">
@@ -105,7 +105,7 @@ const DashboardModule = {
       <div class="grid-2-col gap-md">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Recent FA Records</h3>
+            <h3 class="card-title">Recent Financial Assistance Records</h3>
             <a href="fa-list.html" class="section-link">View All →</a>
           </div>
           <div id="recent-fa-list" class="recent-records"></div>
@@ -158,13 +158,13 @@ const DashboardModule = {
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">
           <div class="stat-icon stat-icon-blue">${Icons.render('wallet', 22)}</div>
-          <div class="stat-label">FA Budget Remaining</div>
+          <div class="stat-label">Financial Assistance Budget Remaining</div>
           <div class="stat-value">${Utils.formatCurrency(budget.remaining_amount)}</div>
           <div class="stat-subtext">Used: ${Utils.formatCurrency(budget.used_amount)}</div>
         </div>
         <div class="stat-card stat-card-teal">
           <div class="stat-icon stat-icon-teal">${Icons.render('credit-card', 22)}</div>
-          <div class="stat-label">PA Budget Remaining</div>
+          <div class="stat-label">Personal Assistance Budget Remaining</div>
           <div class="stat-value">${Utils.formatCurrency(paBudget.remaining)}</div>
           <div class="stat-subtext">Pool: ${Utils.formatCurrency(paBudget.total_pool)}</div>
         </div>
@@ -172,14 +172,14 @@ const DashboardModule = {
           <div class="stat-icon stat-icon-amber">${Icons.render('file-text', 22)}</div>
           <div class="stat-label">Total Records</div>
           <div class="stat-value">${faRecords.length + paRecords.length}</div>
-          <div class="stat-subtext">FA: ${faRecords.length} · PA: ${paRecords.length}</div>
+          <div class="stat-subtext">Financial Assistance: ${faRecords.length} · Personal Assistance: ${paRecords.length}</div>
         </div>
       </div>
 
       <div class="grid-2-col gap-md mb-lg">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">FA Budget Usage</h3>
+            <h3 class="card-title">Financial Assistance Budget Usage</h3>
             <span class="badge ${pct > 90 ? 'badge-danger' : pct > 70 ? 'badge-warning' : 'badge-success'}">${pct}% used</span>
           </div>
           <div class="progress-bar mb-xs">
@@ -192,7 +192,7 @@ const DashboardModule = {
         </div>
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">PA Budget Usage</h3>
+            <h3 class="card-title">Personal Assistance Budget Usage</h3>
             <span class="badge ${paPct > 90 ? 'badge-danger' : paPct > 70 ? 'badge-warning' : 'badge-success'}">${paPct}% used</span>
           </div>
           <div class="progress-bar mb-xs">
@@ -208,14 +208,14 @@ const DashboardModule = {
       <div class="grid-2-col gap-md mb-lg">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Recent FA Records</h3>
+            <h3 class="card-title">Recent Financial Assistance Records</h3>
             <a href="fa-list.html" class="section-link">View All →</a>
           </div>
           <div id="recent-fa-list" class="recent-records"></div>
         </div>
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Recent PA Records</h3>
+            <h3 class="card-title">Recent Personal Assistance Records</h3>
             <a href="pa-list.html" class="section-link">View All →</a>
           </div>
           <div id="recent-pa-list" class="recent-records"></div>
@@ -260,12 +260,12 @@ const DashboardModule = {
         </div>
         <div class="stat-card stat-card-teal">
           <div class="stat-icon stat-icon-teal">${Icons.render('file-text', 22)}</div>
-          <div class="stat-label">My FA Records</div>
+          <div class="stat-label">My Financial Assistance Records</div>
           <div class="stat-value">${myFA.length}</div>
         </div>
         <div class="stat-card stat-card-amber">
           <div class="stat-icon stat-icon-amber">${Icons.render('clipboard-list', 22)}</div>
-          <div class="stat-label">My PA Records</div>
+          <div class="stat-label">My Personal Assistance Records</div>
           <div class="stat-value">${myPA.length}</div>
         </div>
         <div class="stat-card stat-card-green">
@@ -457,7 +457,7 @@ const DashboardModule = {
             </div>
             <div class="mt-sm">
               <div class="d-flex justify-between text-sm mb-xs">
-                <span>FA Budget</span>
+                <span>Financial Assistance Budget</span>
                 <span class="${pct > 90 ? 'text-danger' : ''}">${pct}% used</span>
               </div>
               <div class="progress-bar progress-sm">
