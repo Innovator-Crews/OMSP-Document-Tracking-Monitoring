@@ -80,6 +80,11 @@ const App = {
     // Inject SVG icons into shell elements (replaces emoji)
     this.injectShellIcons();
 
+    // Initialize odometer-style stat animations for rendered metrics
+    if (typeof Utils !== 'undefined' && typeof Utils.initStatOdometerObserver === 'function') {
+      Utils.initStatOdometerObserver(document.body);
+    }
+
     // Render sidebar nav
     Router.renderSidebar();
 
@@ -156,7 +161,7 @@ const App = {
       nameLabel.textContent = user.full_name;
     }
 
-    // Hide "New FA/PA" buttons for non-secretary roles
+    // Hide "New Financial Assistance/Personal Assistance" buttons for non-secretary roles
     if (user.role !== 'secretary') {
       const newFABtn = document.getElementById('new-fa-btn');
       const newPABtn = document.getElementById('new-pa-btn');
@@ -170,10 +175,15 @@ const App = {
    */
   injectShellIcons() {
     if (typeof Icons === 'undefined') return;
+    const basePath = (typeof Utils !== 'undefined' && typeof Utils.getBasePath === 'function')
+      ? Utils.getBasePath()
+      : './';
 
     // Sidebar logo
     const logo = document.querySelector('.sidebar-logo');
-    if (logo) logo.innerHTML = Icons.render('landmark', 24);
+    if (logo) {
+      logo.innerHTML = `<img src="${basePath}assets/images/SP-logo-nobg.png" alt="SP Logo" class="sidebar-logo-img">`;
+    }
 
     // Sidebar collapse button
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
@@ -187,13 +197,13 @@ const App = {
     const menuToggle = document.getElementById('menu-toggle');
     if (menuToggle) menuToggle.innerHTML = Icons.render('menu', 22);
 
-    // "New FA" button
+    // "New Financial Assistance" button
     const newFABtn = document.getElementById('new-fa-btn');
-    if (newFABtn) newFABtn.innerHTML = Icons.render('file-plus', 16) + ' New FA';
+    if (newFABtn) newFABtn.innerHTML = Icons.render('file-plus', 16) + ' New Financial Assistance';
 
-    // "New PA" button
+    // "New Personal Assistance" button
     const newPABtn = document.getElementById('new-pa-btn');
-    if (newPABtn) newPABtn.innerHTML = Icons.render('plus-circle', 16) + ' New PA';
+    if (newPABtn) newPABtn.innerHTML = Icons.render('plus-circle', 16) + ' New Personal Assistance';
 
     // Export CSV button
     const exportBtn = document.getElementById('export-csv-btn');
@@ -273,7 +283,7 @@ const App = {
 
       case 'fa-list':
         if (typeof FAModule !== 'undefined') FAModule.initList();
-        Router.setPageInfo('FA Records');
+        Router.setPageInfo('Financial Assistance Records');
         break;
 
       case 'pa-new':
@@ -283,7 +293,7 @@ const App = {
 
       case 'pa-list':
         if (typeof PAModule !== 'undefined') PAModule.initList();
-        Router.setPageInfo('PA Records');
+        Router.setPageInfo('Personal Assistance Records');
         break;
 
       case 'global-search':
@@ -333,12 +343,12 @@ const App = {
       case 'my-fa-budget':
         if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initMyBudget();
         else this.initMyBudget(); // fallback
-        Router.setPageInfo('My FA Budget');
+        Router.setPageInfo('My Financial Assistance Budget');
         break;
 
       case 'my-pa-budget':
         if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initPABudget();
-        Router.setPageInfo('My PA Budget');
+        Router.setPageInfo('My Personal Assistance Budget');
         break;
 
       default:
@@ -541,7 +551,7 @@ const App = {
   },
 
   /**
-   * My FA Budget Page (BM view)
+  * My Financial Assistance Budget Page (BM view)
    */
   initMyBudget() {
     const container = document.getElementById('my-budget-content');
@@ -559,7 +569,7 @@ const App = {
     const history = Storage.getBudgetHistory(bmData.bm_id);
 
     let html = `
-      <h3 class="mb-md">FA Budget — ${Utils.formatMonth(Utils.getCurrentYearMonth())}</h3>
+      <h3 class="mb-md">Financial Assistance Budget — ${Utils.formatMonth(Utils.getCurrentYearMonth())}</h3>
 
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-primary">

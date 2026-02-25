@@ -6,6 +6,9 @@
  */
 
 const Utils = {
+  _odometerObserver: null,
+  _odometerScheduled: null,
+
   /* --------------------------------------------------------
    * DATE FORMATTING
    * -------------------------------------------------------- */
@@ -402,6 +405,145 @@ const Utils = {
     } else {
       btn.textContent = btn.dataset.originalText || btn.textContent;
     }
+  },
+
+  /**
+   * Animate numeric values with odometer-style digit rolling.
+   * Supports plain numbers, percentages, and currency-formatted values.
+   * @param {Element|Document} context
+   * @param {string} selector
+   */
+  animateStatOdometers(context = document, selector = '.stat-value, .landing-metric-value, [data-odometer]') {
+    const root = context && typeof context.querySelectorAll === 'function' ? context : document;
+    const targets = Array.from(root.querySelectorAll(selector));
+
+    /* Pause observer while we mutate DOM to prevent re-entry */
+    const obs = this._odometerObserver;
+    if (obs) obs.disconnect();
+
+    targets.forEach((el) => {
+      if (!el || el.closest('.landing-mockup-stat-val')) return;
+
+      /* Always prefer the stored value over textContent (which is
+         garbage once the digit-track spans are in the DOM). */
+      const rawText = (el.dataset.odometerValue || el.textContent || '').trim();
+      if (!rawText || !/\d/.test(rawText)) return;
+      if (el.dataset.odometerRaw === rawText) return;
+
+      const firstDigitIndex = rawText.search(/\d/);
+      const lastDigitIndex = Math.max(rawText.lastIndexOf('0'), rawText.lastIndexOf('1'), rawText.lastIndexOf('2'), rawText.lastIndexOf('3'), rawText.lastIndexOf('4'), rawText.lastIndexOf('5'), rawText.lastIndexOf('6'), rawText.lastIndexOf('7'), rawText.lastIndexOf('8'), rawText.lastIndexOf('9'));
+      if (firstDigitIndex === -1 || lastDigitIndex === -1 || firstDigitIndex > lastDigitIndex) return;
+
+      const prefix = rawText.slice(0, firstDigitIndex);
+      const numericCore = rawText.slice(firstDigitIndex, lastDigitIndex + 1);
+      const suffix = rawText.slice(lastDigitIndex + 1);
+
+      const targetDigits = numericCore.replace(/\D/g, '').split('');
+      const previousDigitsRaw = (el.dataset.odometerDigits || '').replace(/\D/g, '');
+      const previousDigits = previousDigitsRaw
+        ? previousDigitsRaw.padStart(targetDigits.length, '0').slice(-targetDigits.length).split('')
+        : Array(targetDigits.length).fill('0');
+
+      let digitCursor = 0;
+      el.classList.add('odometer-value');
+      el.innerHTML = '';
+
+      if (prefix) {
+        const prefixEl = document.createElement('span');
+        prefixEl.className = 'odometer-affix';
+        prefixEl.textContent = prefix;
+        el.appendChild(prefixEl);
+      }
+
+      for (const ch of numericCore) {
+        if (/\d/.test(ch)) {
+          const fromDigit = parseInt(previousDigits[digitCursor] || '0', 10);
+          const toDigit = parseInt(ch, 10);
+
+          const digitWrap = document.createElement('span');
+          digitWrap.className = 'odometer-digit';
+
+          const track = document.createElement('span');
+          track.className = 'odometer-track';
+
+          for (let pass = 0; pass < 3; pass += 1) {
+            for (let d = 0; d <= 9; d += 1) {
+              const cell = document.createElement('span');
+              cell.textContent = String(d);
+              track.appendChild(cell);
+            }
+          }
+
+          const startIndex = 10 + fromDigit;
+          const steps = toDigit >= fromDigit ? (toDigit - fromDigit) : (10 - fromDigit + toDigit);
+          const targetIndex = startIndex + steps;
+
+          track.style.transform = `translateY(-${startIndex * 1.1}em)`;
+          digitWrap.appendChild(track);
+          el.appendChild(digitWrap);
+
+          const thisIndex = digitCursor;
+          requestAnimationFrame(() => {
+            track.style.transitionDuration = `${540 + (thisIndex * 70)}ms`;
+            track.style.transitionDelay = `${thisIndex * 55}ms`;
+            track.style.transform = `translateY(-${targetIndex * 1.1}em)`;
+          });
+
+          digitCursor += 1;
+        } else {
+          const sep = document.createElement('span');
+          sep.className = 'odometer-separator';
+          sep.textContent = ch;
+          el.appendChild(sep);
+        }
+      }
+
+      if (suffix) {
+        const suffixEl = document.createElement('span');
+        suffixEl.className = 'odometer-affix';
+        suffixEl.textContent = suffix;
+        el.appendChild(suffixEl);
+      }
+
+      el.dataset.odometerDigits = targetDigits.join('');
+      el.dataset.odometerRaw = rawText;
+      /* Persist the clean value so future reads never fall back to
+         the garbled textContent of 30-cell digit tracks. */
+      el.dataset.odometerValue = rawText;
+    });
+
+    /* Re-attach observer after all mutations are done */
+    if (obs) {
+      obs.observe(root.nodeType === 1 ? root : document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+  },
+
+  /**
+   * Watch for dynamic content updates and animate newly rendered stats.
+   * @param {Element} root
+   */
+  initStatOdometerObserver(root = document.body) {
+    if (!root || this._odometerObserver) return;
+
+    this.animateStatOdometers(root);
+
+    this._odometerObserver = new MutationObserver(() => {
+      if (this._odometerScheduled) return;
+      this._odometerScheduled = setTimeout(() => {
+        this.animateStatOdometers(root);
+        this._odometerScheduled = null;
+      }, 80);
+    });
+
+    this._odometerObserver.observe(root, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
   },
 
   /* --------------------------------------------------------

@@ -214,7 +214,7 @@ const Auth = {
         manage_terms: true,
         global_search: true,
         export_data: true,
-        // SysAdmin cannot create FA/PA records
+        // SysAdmin cannot create Financial Assistance/Personal Assistance records
         create_fa: false,
         create_pa: false
       },
