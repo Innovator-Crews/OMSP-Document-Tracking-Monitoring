@@ -136,12 +136,19 @@
 .landing-nav-logo {
   width: 36px;
   height: 36px;
-  background: var(--primary-700);
+  background: #fff;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--primary-700);
+}
+
+.landing-logo-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
 }
 
 .landing-nav-name {
@@ -257,6 +264,19 @@
   z-index: 1;
 }
 
+.landing-hero-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.landing-hero-logo {
+  width: clamp(84px, 14vw, 138px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(29, 78, 216, 0.16));
+}
+
 .landing-hero-badge {
   display: inline-flex;
   align-items: center;
@@ -273,6 +293,13 @@
 
 .landing-hero-badge .icon {
   color: var(--primary-500);
+}
+
+.landing-badge-logo {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
 }
 
 .landing-hero h1 {
@@ -452,6 +479,49 @@
   font-size: var(--text-xl);
   font-weight: var(--font-bold);
   color: var(--neutral-800);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  line-height: 1.12;
+  min-height: 1.34em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rolling-digit {
+  position: relative;
+  width: 0.72em;
+  height: 1.15em;
+  overflow: hidden;
+}
+
+.rolling-digit-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.2, 1);
+  will-change: transform;
+}
+
+.rolling-digit-track span {
+  display: block;
+  height: 1.15em;
+  line-height: 1.15em;
+  text-align: center;
+}
+
+.rolling-sep,
+.rolling-suffix {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.landing-footer-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: -3px;
 }
 
 .landing-mockup-stat-label {
@@ -1493,6 +1563,32 @@
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* ── Scroll reveal / scrollytelling motion ───────────────── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  filter: blur(2px);
+  transition:
+    opacity 0.65s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.6s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.scroll-reveal.reveal-left {
+  transform: translateX(-28px) translateY(12px) scale(0.985);
+}
+
+.scroll-reveal.reveal-right {
+  transform: translateX(28px) translateY(12px) scale(0.985);
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  filter: blur(0);
 }
 
 .fade-in[style*="animation-delay"] {
