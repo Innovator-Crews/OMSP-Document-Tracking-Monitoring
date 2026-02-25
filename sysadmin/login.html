@@ -25,9 +25,9 @@
       background: rgba(99, 102, 241, 0.15);
       color: #A5B4FC;
     }
-    .login-logo {
-      background: var(--neutral-900);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    /* Admin accent bar override (D) */
+    .login-form-panel::before {
+      background: linear-gradient(90deg, #6366f1, #4338ca);
     }
     .admin-label {
       display: inline-flex;
@@ -91,7 +91,19 @@
 
   <!-- ════ LEFT: Admin Promo Panel ════ -->
   <div class="login-promo">
+    <!-- Animated orbs (F) -->
+    <div class="login-promo-orbs" aria-hidden="true">
+      <div class="login-orb login-orb-1"></div>
+      <div class="login-orb login-orb-2"></div>
+      <div class="login-orb login-orb-3"></div>
+    </div>
+    <!-- SP Logo watermark (B) -->
+    <div class="login-promo-watermark" aria-hidden="true">
+      <img src="../assets/images/SP-logo-nobg.png" alt="" />
+    </div>
     <div class="login-promo-inner fade-in">
+      <!-- Province bar (H) -->
+      <div class="login-promo-ph-bar">Republic of the Philippines &bull; Province of Bataan &bull; Sangguniang Panlalawigan</div>
       <div class="login-promo-badge">
         <span id="promo-badge-icon"></span>
         System Administration
@@ -187,6 +199,7 @@
               <div class="demo-btn-role">System Administrator</div>
               <div class="demo-btn-email">admin@omsp.gov.ph / admin123</div>
             </div>
+            <div class="demo-btn-use"></div>
           </button>
         </div>
       </div>
@@ -229,7 +242,10 @@
 
       // Logo & label
       document.getElementById('admin-label').innerHTML = Icons.render('shield-check', 14) + ' Administrator';
-      document.getElementById('login-logo-icon').innerHTML = Icons.render('shield', 32);
+      document.getElementById('login-logo-icon').innerHTML = '<img src="../assets/images/SP-logo-nobg.png" alt="SP Logo" />';
+      document.querySelectorAll('.demo-btn-use').forEach(el => {
+        el.innerHTML = Icons.render('arrow-right', 14);
+      });
 
       // Login button
       document.getElementById('login-submit-btn').innerHTML = Icons.render('log-in', 20) + ' Sign In as Admin';
