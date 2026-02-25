@@ -493,11 +493,11 @@
 }
 
 .landing-footer-logo {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
   display: inline-block;
-  vertical-align: -3px;
+  vertical-align: -5px;
 }
 
 .landing-mockup-stat-label {
@@ -1142,6 +1142,34 @@
   margin-top: var(--space-3);
 }
 
+/* Email */
+.landing-bm-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-xs);
+  color: var(--primary-600);
+  text-decoration: none;
+  margin-top: var(--space-2);
+  padding: 4px 10px;
+  border: 1px solid var(--primary-200);
+  border-radius: var(--radius-full);
+  background: var(--primary-50);
+  transition: all 0.2s ease;
+  word-break: break-all;
+}
+
+.landing-bm-email:hover {
+  background: var(--primary-100);
+  border-color: var(--primary-300);
+  color: var(--primary-700);
+}
+
+.landing-bm-email .icon {
+  flex-shrink: 0;
+  color: var(--primary-500);
+}
+
 /* Empty state */
 .landing-bm-empty {
   text-align: center;
@@ -1503,23 +1531,65 @@
 }
 
 .landing-footer-brand {
-  max-width: 280px;
+  max-width: 360px;
 }
 
 .landing-footer-brand-name {
-  font-size: var(--text-lg);
+  font-size: var(--text-2xl);
   font-weight: var(--font-bold);
   color: #fff;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  letter-spacing: -0.01em;
+}
+
+.landing-footer-brand-tagline {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--primary-400);
+  margin-bottom: var(--space-2);
 }
 
 .landing-footer-brand-desc {
   font-size: var(--text-sm);
   line-height: var(--leading-relaxed);
   color: var(--neutral-500);
+  margin-bottom: var(--space-4);
+}
+
+.landing-footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.landing-footer-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--neutral-500);
+  line-height: var(--leading-relaxed);
+}
+
+.landing-footer-contact-item .icon {
+  color: var(--primary-400);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.landing-footer-contact-link {
+  color: var(--primary-400);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.landing-footer-contact-link:hover {
+  color: var(--primary-300);
+  text-decoration: underline;
 }
 
 .landing-footer-links-group {

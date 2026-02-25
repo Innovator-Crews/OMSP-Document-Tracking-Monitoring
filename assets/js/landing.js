@@ -49,6 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('bm-search-icon').innerHTML = Icons.render('search', 16);
   const bmEmptyIcon = document.getElementById('bm-empty-icon');
   if (bmEmptyIcon) bmEmptyIcon.innerHTML = Icons.render('search', 32);
+  // Inject mail icon into each BM email link
+  document.querySelectorAll('.landing-bm-email').forEach(link => {
+    const email = link.getAttribute('href').replace('mailto:', '');
+    link.innerHTML = Icons.render('mail', 12) + ' ' + email;
+  });
 
   // Team section
   document.getElementById('team-label-icon').innerHTML = Icons.render('code', 16);
@@ -62,6 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Footer
   document.getElementById('footer-logo-icon').innerHTML =
     '<img src="assets/images/SP-logo-nobg.png" alt="SP Logo" class="landing-footer-logo" />';
+  const fcPin   = document.getElementById('footer-contact-icon-pin');
+  const fcPhone = document.getElementById('footer-contact-icon-phone');
+  const fcMail  = document.getElementById('footer-contact-icon-mail');
+  if (fcPin)   fcPin.innerHTML   = Icons.render('map-pin', 13);
+  if (fcPhone) fcPhone.innerHTML = Icons.render('phone', 13);
+  if (fcMail)  fcMail.innerHTML  = Icons.render('mail', 13);
 
 
   /* ================================================================
