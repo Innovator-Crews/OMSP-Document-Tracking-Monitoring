@@ -31,6 +31,7 @@
       </a>
       <div class="landing-nav-links" id="nav-links">
         <a href="#features" class="landing-nav-link">Features</a>
+        <a href="#workflow" class="landing-nav-link">Workflow</a>
         <a href="#roles" class="landing-nav-link">User Roles</a>
         <a href="#team" class="landing-nav-link">Team</a>
         <a href="pages/login.html" class="landing-nav-cta" id="nav-login-btn">
@@ -82,28 +83,28 @@
         <div class="landing-mockup-body">
           <div class="landing-mockup-sidebar">
             <div class="landing-mockup-sidebar-item active" id="mock-nav-dash">Dashboard</div>
-            <div class="landing-mockup-sidebar-item" id="mock-nav-fa">FA Records</div>
-            <div class="landing-mockup-sidebar-item" id="mock-nav-pa">PA Records</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-fa">Financial Assistance Records</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-pa">Personal Assistance Records</div>
             <div class="landing-mockup-sidebar-item" id="mock-nav-search">Global Search</div>
             <div class="landing-mockup-sidebar-item" id="mock-nav-reports">Reports</div>
           </div>
           <div class="landing-mockup-content">
             <div class="landing-mockup-stat-grid">
               <div class="landing-mockup-stat">
-                <div class="landing-mockup-stat-val">247</div>
-                <div class="landing-mockup-stat-label">FA Records</div>
+                <div class="landing-mockup-stat-val" data-target="247">1</div>
+                <div class="landing-mockup-stat-label">Financial Assistance Records</div>
               </div>
               <div class="landing-mockup-stat">
-                <div class="landing-mockup-stat-val">183</div>
-                <div class="landing-mockup-stat-label">PA Records</div>
+                <div class="landing-mockup-stat-val" data-target="183">1</div>
+                <div class="landing-mockup-stat-label">Personal Assistance Records</div>
               </div>
               <div class="landing-mockup-stat">
-                <div class="landing-mockup-stat-val">12</div>
+                <div class="landing-mockup-stat-val" data-target="12">1</div>
                 <div class="landing-mockup-stat-label">Board Members</div>
               </div>
             </div>
             <div class="landing-mockup-card">
-              <div class="landing-mockup-card-title">Recent FA Submissions</div>
+              <div class="landing-mockup-card-title">Recent Financial Assistance Submissions</div>
               <div class="landing-mockup-row">
                 <span style="flex:1">FA-2025-0142 — Cruz, J.</span>
                 <span class="landing-mockup-badge landing-mockup-badge-success">Compliant</span>
@@ -130,92 +131,191 @@
         <div class="landing-section-label">
           <span id="feat-label-icon"></span> Platform Features
         </div>
-        <h2 class="landing-section-title">Everything you need to manage legislative records</h2>
+        <h2 class="landing-section-title">A living workspace for record operations</h2>
         <p class="landing-section-desc">
-          Purpose-built tools for the Sangguniang Panlalawigan to streamline
-          document tracking, compliance monitoring, and budget oversight.
+          Compact cards with active status, verification movement, and contextual
+          titles for Financial Assistance, Personal Assistance, and budget workflows.
         </p>
       </div>
-      <div class="landing-features-grid">
-        <!-- Feature 1 -->
-        <div class="landing-feature-card">
+      <div class="landing-bento-grid">
+        <article class="landing-feature-card feature-mini feature-fa">
           <div class="landing-feature-icon landing-feature-icon-blue" id="feat-icon-fa"></div>
-          <h3 class="landing-feature-title">FA Record Management</h3>
+          <h3 class="landing-feature-title">Financial Assistance Intake</h3>
           <p class="landing-feature-desc">
             Create, track, and manage Financial Assistance records with
             full audit trails, category tagging, and compliance status tracking.
           </p>
-        </div>
-        <!-- Feature 2 -->
-        <div class="landing-feature-card">
+          <div class="feature-live-meter" aria-hidden="true">
+            <span class="feature-live-fill"></span>
+          </div>
+          <div class="feature-inline-preview">
+            <span class="feature-pill">Validation Active</span>
+            <span class="feature-pill">Auto Logs</span>
+          </div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-pa">
           <div class="landing-feature-icon landing-feature-icon-teal" id="feat-icon-pa"></div>
-          <h3 class="landing-feature-title">PA Record Tracking</h3>
+          <h3 class="landing-feature-title">Personal Assistance Tracking</h3>
           <p class="landing-feature-desc">
             Monitor Personal Assistance records for each board member with
             detailed entries, searchable archives, and progress indicators.
           </p>
-        </div>
-        <!-- Feature 3 -->
-        <div class="landing-feature-card">
+          <div class="feature-activity-dot" aria-hidden="true"></div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-budget">
           <div class="landing-feature-icon landing-feature-icon-amber" id="feat-icon-budget"></div>
           <h3 class="landing-feature-title">Budget Monitoring</h3>
           <p class="landing-feature-desc">
             Real-time budget allocation, utilization tracking, and per-member
             financial reports with visual breakdowns and trend analysis.
           </p>
-        </div>
-        <!-- Feature 4 -->
-        <div class="landing-feature-card">
+          <div class="budget-progress-bar" aria-hidden="true">
+            <span class="budget-progress-fill"></span>
+          </div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-search">
           <div class="landing-feature-icon landing-feature-icon-green" id="feat-icon-search"></div>
           <h3 class="landing-feature-title">Global Search</h3>
           <p class="landing-feature-desc">
             Powerful full-text search across all records, categories, and
             board members with advanced filters and instant results.
           </p>
-        </div>
-        <!-- Feature 5 -->
-        <div class="landing-feature-card">
+          <div class="feature-search-blink" aria-hidden="true"></div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-reports">
           <div class="landing-feature-icon landing-feature-icon-red" id="feat-icon-reports"></div>
           <h3 class="landing-feature-title">Analytics &amp; Reports</h3>
           <p class="landing-feature-desc">
             Generate comprehensive reports with charts and export options.
             Track compliance rates, submission trends, and category distribution.
           </p>
-        </div>
-        <!-- Feature 6 -->
-        <div class="landing-feature-card">
+          <div class="feature-inline-preview">
+            <span class="feature-pill">Export Ready</span>
+          </div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-security">
           <div class="landing-feature-icon landing-feature-icon-purple" id="feat-icon-security"></div>
           <h3 class="landing-feature-title">Role-Based Access</h3>
           <p class="landing-feature-desc">
             Secure authentication with role-specific permissions for
             System Admins, Board Members, and Secretary Staff.
           </p>
-        </div>
+          <div class="feature-inline-preview">
+            <span class="feature-pill">Session Protected</span>
+            <span class="feature-pill">Action Logs</span>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════ STATS BAR ══════════════════════── -->
-  <div class="landing-stats-bar">
-    <div class="landing-stats-grid">
-      <div>
-        <div class="landing-stat-value">12</div>
-        <div class="landing-stat-label">Board Members</div>
+  <!-- ═══════════════════════ STORY STRIP ═════════════════════── -->
+  <section class="landing-section landing-story-strip" id="workflow">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">Workflow Story Strip</div>
+        <h2 class="landing-section-title">Problem → Process → Outcome</h2>
+        <p class="landing-section-desc">
+          A narrative view of how the system turns fragmented records into
+          clear, accountable, and report-ready operations.
+        </p>
       </div>
-      <div>
-        <div class="landing-stat-value">3</div>
-        <div class="landing-stat-label">User Roles</div>
-      </div>
-      <div>
-        <div class="landing-stat-value">6</div>
-        <div class="landing-stat-label">Core Modules</div>
-      </div>
-      <div>
-        <div class="landing-stat-value">100%</div>
-        <div class="landing-stat-label">Open Source</div>
+
+      <div class="story-timeline">
+        <article class="story-step">
+          <div class="story-content">
+            <p class="story-kicker">Problem</p>
+            <h3 class="story-title">Scattered submissions and delayed verification</h3>
+            <p class="story-desc">
+              Records arrive with inconsistent formats, missing attachments, and
+              little visibility on who is waiting for action.
+            </p>
+          </div>
+          <div class="story-screen">
+            <div class="story-screen-topbar">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="story-screen-body">
+              <div class="story-screen-row muted"></div>
+              <div class="story-screen-row danger"></div>
+              <div class="story-screen-row warning"></div>
+              <div class="story-screen-row muted"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-step reverse">
+          <div class="story-content">
+            <p class="story-kicker">Process</p>
+            <h3 class="story-title">Structured capture with built-in status tracking</h3>
+            <p class="story-desc">
+              Staff and board members work on a guided flow with tags,
+              instant search, and activity history per record.
+            </p>
+          </div>
+          <div class="story-screen">
+            <div class="story-screen-topbar">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="story-screen-body">
+              <div class="story-screen-pill"></div>
+              <div class="story-screen-row success"></div>
+              <div class="story-screen-row success"></div>
+              <div class="story-screen-row muted"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-step">
+          <div class="story-content">
+            <p class="story-kicker">Outcome</p>
+            <h3 class="story-title">Faster reporting and cleaner budget accountability</h3>
+            <p class="story-desc">
+              Decision makers get timeline clarity, export-ready summaries,
+              and near real-time budget utilization snapshots.
+            </p>
+          </div>
+          <div class="story-screen">
+            <div class="story-screen-topbar">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="story-screen-body">
+              <div class="story-screen-chart"></div>
+              <div class="story-screen-row success"></div>
+              <div class="story-screen-row muted"></div>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ═══════════════════════ METRIC CHIPS BAND ═══════════════── -->
+  <section class="landing-stats-band">
+    <div class="landing-stats-band-inner">
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value">12</div>
+        <div class="landing-metric-label">Board Members</div>
+      </div>
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value">3</div>
+        <div class="landing-metric-label">User Roles</div>
+      </div>
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value">6</div>
+        <div class="landing-metric-label">Core Modules</div>
+      </div>
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value">100%</div>
+        <div class="landing-metric-label">Traceable Updates</div>
+      </div>
+    </div>
+  </section>
 
   <!-- ═══════════════════════ USER ROLES ═════════════════════── -->
   <section class="landing-section landing-roles-section" id="roles">
@@ -250,11 +350,11 @@
           <div class="landing-role-icon landing-role-icon-bm" id="role-icon-bm"></div>
           <h3 class="landing-role-title">Board Member</h3>
           <p class="landing-role-desc">
-            Personal dashboard to view your own FA/PA records,
+            Personal dashboard to view your own Financial Assistance and Personal Assistance records,
             budget allocation, and compliance status.
           </p>
           <div class="landing-role-features">
-            <div class="landing-role-feature"><span id="role-check-5"></span> View personal FA &amp; PA records</div>
+            <div class="landing-role-feature"><span id="role-check-5"></span> View personal Financial Assistance &amp; Personal Assistance records</div>
             <div class="landing-role-feature"><span id="role-check-6"></span> Monitor budget utilization</div>
             <div class="landing-role-feature"><span id="role-check-7"></span> Track compliance status</div>
             <div class="landing-role-feature"><span id="role-check-8"></span> Read-only secure access</div>
@@ -266,10 +366,10 @@
           <h3 class="landing-role-title">Secretary / Staff</h3>
           <p class="landing-role-desc">
             Day-to-day record entry and management for assigned board members.
-            Create, edit, and track FA/PA submissions.
+            Create, edit, and track Financial Assistance/Personal Assistance submissions.
           </p>
           <div class="landing-role-features">
-            <div class="landing-role-feature"><span id="role-check-9"></span> Create &amp; edit FA/PA records</div>
+            <div class="landing-role-feature"><span id="role-check-9"></span> Create &amp; edit Financial Assistance / Personal Assistance records</div>
             <div class="landing-role-feature"><span id="role-check-10"></span> Manage assigned members</div>
             <div class="landing-role-feature"><span id="role-check-11"></span> Search &amp; filter records</div>
             <div class="landing-role-feature"><span id="role-check-12"></span> Export data &amp; reports</div>
@@ -364,6 +464,7 @@
           <div class="landing-footer-col">
             <h4>Platform</h4>
             <a href="#features">Features</a>
+            <a href="#workflow">Workflow</a>
             <a href="#roles">User Roles</a>
             <a href="#team">Team</a>
           </div>
@@ -401,8 +502,8 @@
 
       // Mockup sidebar icons
       document.getElementById('mock-nav-dash').innerHTML = Icons.render('dashboard', 14) + ' Dashboard';
-      document.getElementById('mock-nav-fa').innerHTML = Icons.render('file-text', 14) + ' FA Records';
-      document.getElementById('mock-nav-pa').innerHTML = Icons.render('clipboard-list', 14) + ' PA Records';
+      document.getElementById('mock-nav-fa').innerHTML = Icons.render('file-text', 14) + ' Financial Assistance Records';
+      document.getElementById('mock-nav-pa').innerHTML = Icons.render('clipboard-list', 14) + ' Personal Assistance Records';
       document.getElementById('mock-nav-search').innerHTML = Icons.render('search', 14) + ' Global Search';
       document.getElementById('mock-nav-reports').innerHTML = Icons.render('bar-chart', 14) + ' Reports';
 
@@ -596,6 +697,15 @@
 
         el._counterAnimationId = requestAnimationFrame(tick);
       }
+
+      // Initial count-up: start from 1 and settle to configured target
+      statVals.forEach((el, index) => {
+        const target = parseInt(el.getAttribute('data-target') || el.textContent, 10) || 1;
+        el.textContent = '1';
+        setTimeout(() => {
+          animateCounterValue(el, target, 900 + index * 220);
+        }, 180 + index * 120);
+      });
 
       function animateMockupRow() {
         if (!mockupRows.length) return;
