@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Mockup sidebar icons
   document.getElementById('mock-nav-dash').innerHTML = Icons.render('dashboard', 14) + ' Dashboard';
-  document.getElementById('mock-nav-fa').innerHTML = Icons.render('file-text', 14) + ' Financial Assistance Records';
-  document.getElementById('mock-nav-pa').innerHTML = Icons.render('clipboard-list', 14) + ' Personal Assistance Records';
+  document.getElementById('mock-nav-fa').innerHTML = Icons.render('file-text', 14) + ' Financial Assistance';
+  document.getElementById('mock-nav-pa').innerHTML = Icons.render('clipboard-list', 14) + ' Personal Assistance';
   document.getElementById('mock-nav-search').innerHTML = Icons.render('search', 14) + ' Global Search';
   document.getElementById('mock-nav-reports').innerHTML = Icons.render('bar-chart', 14) + ' Reports';
 
@@ -44,6 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.innerHTML = Icons.render('check', 16);
   }
 
+  // Board Members section
+  document.getElementById('bm-label-icon').innerHTML = Icons.render('users', 16);
+  document.getElementById('bm-search-icon').innerHTML = Icons.render('search', 16);
+  const bmEmptyIcon = document.getElementById('bm-empty-icon');
+  if (bmEmptyIcon) bmEmptyIcon.innerHTML = Icons.render('search', 32);
+
   // Team section
   document.getElementById('team-label-icon').innerHTML = Icons.render('code', 16);
   document.getElementById('team-ic-portfolio').innerHTML = Icons.render('external-link', 14) + ' Website';
@@ -63,6 +69,53 @@ document.addEventListener('DOMContentLoaded', () => {
      ================================================================ */
   if (typeof Utils !== 'undefined' && typeof Utils.animateStatOdometers === 'function') {
     Utils.animateStatOdometers(document, '.landing-metric-value');
+  }
+
+
+  /* ================================================================
+     BOARD MEMBERS – filter & search
+     ================================================================ */
+  const bmGrid    = document.getElementById('bm-grid');
+  const bmCards   = bmGrid ? Array.from(bmGrid.querySelectorAll('.landing-bm-card')) : [];
+  const bmSearch  = document.getElementById('bm-search');
+  const bmPills   = document.querySelectorAll('.landing-bm-pill');
+  const bmEmpty   = document.getElementById('bm-empty');
+  let bmActiveDistrict = 'all';
+
+  function filterBoardMembers() {
+    const query = (bmSearch ? bmSearch.value : '').toLowerCase().trim();
+    let visibleCount = 0;
+
+    bmCards.forEach(card => {
+      const district = card.getAttribute('data-district');
+      const name     = (card.getAttribute('data-name') || '').toLowerCase();
+      const text     = card.textContent.toLowerCase();
+
+      const matchDistrict = bmActiveDistrict === 'all' || district === bmActiveDistrict;
+      const matchSearch   = !query || name.includes(query) || text.includes(query);
+
+      if (matchDistrict && matchSearch) {
+        card.classList.remove('hide');
+        visibleCount++;
+      } else {
+        card.classList.add('hide');
+      }
+    });
+
+    if (bmEmpty) bmEmpty.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  bmPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      bmPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      bmActiveDistrict = pill.getAttribute('data-district');
+      filterBoardMembers();
+    });
+  });
+
+  if (bmSearch) {
+    bmSearch.addEventListener('input', filterBoardMembers);
   }
 
 
@@ -167,78 +220,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ================================================================
-     MOCKUP – rolling digit helpers (scoped to .landing-mockup-stat-val)
+     MOCKUP – smooth counting animation (no rolling digits)
      ================================================================ */
-  function createDigitTrack(startDigit) {
-    const digitWrap = document.createElement('span');
-    digitWrap.className = 'rolling-digit';
-
-    const track = document.createElement('span');
-    track.className = 'rolling-digit-track';
-
-    for (let i = 0; i < 3; i++) {
-      for (let d = 0; d <= 9; d++) {
-        const cell = document.createElement('span');
-        cell.textContent = String(d);
-        track.appendChild(cell);
-      }
-    }
-
-    const startIndex = 10 + startDigit;
-    track.style.transform = `translateY(-${startIndex * 1.15}em)`;
-    digitWrap.appendChild(track);
-    return { digitWrap, track, startIndex };
-  }
-
   function getStatValue(el) {
     const raw = el.dataset.value || el.textContent || '0';
     const value = parseInt(String(raw).replace(/\D/g, ''), 10);
     return Number.isNaN(value) ? 0 : value;
   }
 
-  function setRollingStatValue(el, targetValue, duration) {
+  function smoothCountTo(el, from, to, duration) {
     if (!el) return;
-    duration = duration || 560;
+    const suffix = el.dataset.suffix || '';
+    const startTime = performance.now();
+    duration = duration || 1200;
+
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease-out cubic for smooth deceleration
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(from + (to - from) * eased);
+      el.textContent = current + suffix;
+      el.dataset.value = String(current);
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  function setStatValue(el, targetValue) {
+    if (!el) return;
     const currentValue = getStatValue(el);
     const nextValue = Math.max(0, Math.round(targetValue));
-    const suffix = el.dataset.suffix || '';
-
-    if (currentValue === nextValue) { el.dataset.value = String(nextValue); return; }
-
-    const currentStr = String(currentValue);
-    const nextStr    = String(nextValue);
-    const maxLen = Math.max(currentStr.length, nextStr.length);
-    const fromDigits = currentStr.padStart(maxLen, '0').split('');
-    const toDigits   = nextStr.padStart(maxLen, '0').split('');
-
-    el.innerHTML = '';
-
-    toDigits.forEach((digitChar, index) => {
-      const fromDigit = parseInt(fromDigits[index], 10);
-      const toDigit   = parseInt(digitChar, 10);
-      if (Number.isNaN(fromDigit) || Number.isNaN(toDigit)) return;
-
-      const { digitWrap, track, startIndex } = createDigitTrack(fromDigit);
-      el.appendChild(digitWrap);
-
-      const steps = toDigit >= fromDigit ? (toDigit - fromDigit) : (10 - fromDigit + toDigit);
-      const targetIndex = startIndex + steps;
-
-      requestAnimationFrame(() => {
-        track.style.transitionDuration = `${duration + (index * 80)}ms`;
-        track.style.transitionDelay    = `${index * 65}ms`;
-        track.style.transform = `translateY(-${targetIndex * 1.15}em)`;
-      });
-    });
-
-    if (suffix) {
-      const suffixEl = document.createElement('span');
-      suffixEl.className = 'rolling-suffix';
-      suffixEl.textContent = suffix;
-      el.appendChild(suffixEl);
-    }
-
-    el.dataset.value = String(nextValue);
+    if (currentValue === nextValue) return;
+    smoothCountTo(el, currentValue, nextValue, 600);
   }
 
 
@@ -248,20 +262,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const mockupRows = document.querySelectorAll('.landing-mockup-row');
   const statVals   = document.querySelectorAll('.landing-mockup-stat-val');
 
-  // Count-up from 1 to configured target
+  // Count-up from 1 to configured target with smooth animation
   statVals.forEach((el, index) => {
     const target = parseInt(el.getAttribute('data-target') || el.textContent, 10) || 1;
     const suffix = el.dataset.suffix || '';
     el.dataset.value = '1';
+    el.dataset.suffix = suffix;
     el.textContent = '1' + suffix;
-    setTimeout(() => setRollingStatValue(el, target, 780 + index * 180), 180 + index * 120);
+    setTimeout(() => smoothCountTo(el, 1, target, 1400 + index * 200), 300 + index * 150);
   });
 
 
   /* ================================================================
      SCROLL-REVEAL – feature cards & story steps
      ================================================================ */
-  const revealTargets = document.querySelectorAll('.landing-feature-card, .story-step, .glass-chip');
+  const revealTargets = document.querySelectorAll('.landing-feature-card, .story-step, .glass-chip, .landing-bm-card');
 
   revealTargets.forEach((el, index) => {
     el.classList.add('scroll-reveal', index % 2 === 0 ? 'reveal-left' : 'reveal-right');
@@ -319,8 +334,15 @@ document.addEventListener('DOMContentLoaded', () => {
       firstRow.style.transform = 'translateY(0)';
     });
 
-    if (statVals[0]) setRollingStatValue(statVals[0], getStatValue(statVals[0]) + 1);
-    if (statVals[1] && Math.random() > 0.6) setRollingStatValue(statVals[1], getStatValue(statVals[1]) + 1);
+    /* Pulse glow on the mockup card */
+    const mockupCard = document.querySelector('.landing-mockup-card');
+    if (mockupCard) {
+      mockupCard.classList.add('live-pulse');
+      setTimeout(() => mockupCard.classList.remove('live-pulse'), 800);
+    }
+
+    if (statVals[0]) setStatValue(statVals[0], getStatValue(statVals[0]) + 1);
+    if (statVals[1] && Math.random() > 0.6) setStatValue(statVals[1], getStatValue(statVals[1]) + 1);
   }
 
   setInterval(animateMockupRow, 3000);

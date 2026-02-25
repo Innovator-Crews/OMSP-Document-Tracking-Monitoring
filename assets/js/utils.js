@@ -478,7 +478,7 @@ const Utils = {
           const steps = toDigit >= fromDigit ? (toDigit - fromDigit) : (10 - fromDigit + toDigit);
           const targetIndex = startIndex + steps;
 
-          track.style.transform = `translateY(-${startIndex * 1.1}em)`;
+          track.style.transform = `translateY(-${startIndex * 1}em)`;
           digitWrap.appendChild(track);
           el.appendChild(digitWrap);
 
@@ -486,7 +486,7 @@ const Utils = {
           requestAnimationFrame(() => {
             track.style.transitionDuration = `${540 + (thisIndex * 70)}ms`;
             track.style.transitionDelay = `${thisIndex * 55}ms`;
-            track.style.transform = `translateY(-${targetIndex * 1.1}em)`;
+            track.style.transform = `translateY(-${targetIndex * 1}em)`;
           });
 
           digitCursor += 1;
