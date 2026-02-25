@@ -86,6 +86,9 @@ const App = {
     // Setup profile in sidebar
     Auth.setupSidebarProfile();
 
+    // Sidebar scroll preservation — restore saved position & ensure active link is visible
+    this.restoreSidebarScroll();
+
     // Mobile menu toggle
     const menuToggle = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
@@ -206,6 +209,50 @@ const App = {
       const size = el.classList.contains('empty-state-icon') ? 32 : 20;
       el.innerHTML = Icons.render(iconName, size);
     });
+  },
+
+  /**
+   * Restore sidebar scroll position so the active nav item remains visible
+   * across page navigations (saves/restores via sessionStorage).
+   */
+  restoreSidebarScroll() {
+    const sidebarNav = document.getElementById('sidebar-nav');
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebarNav) return;
+
+    // Restore saved scroll positions
+    const savedNavScroll = sessionStorage.getItem('omsp_sidebar_nav_scroll');
+    if (savedNavScroll) {
+      sidebarNav.scrollTop = parseInt(savedNavScroll, 10);
+    }
+    if (sidebar) {
+      const savedSidebarScroll = sessionStorage.getItem('omsp_sidebar_scroll');
+      if (savedSidebarScroll) {
+        sidebar.scrollTop = parseInt(savedSidebarScroll, 10);
+      }
+    }
+
+    // Ensure active link is scrolled into view
+    requestAnimationFrame(() => {
+      const activeLink = sidebarNav.querySelector('.nav-link.active');
+      if (activeLink) {
+        const navRect = sidebarNav.getBoundingClientRect();
+        const linkRect = activeLink.getBoundingClientRect();
+        if (linkRect.top < navRect.top || linkRect.bottom > navRect.bottom) {
+          activeLink.scrollIntoView({ block: 'center', behavior: 'instant' });
+        }
+      }
+    });
+
+    // Persist scroll position on scroll events
+    sidebarNav.addEventListener('scroll', () => {
+      sessionStorage.setItem('omsp_sidebar_nav_scroll', sidebarNav.scrollTop);
+    });
+    if (sidebar) {
+      sidebar.addEventListener('scroll', () => {
+        sessionStorage.setItem('omsp_sidebar_scroll', sidebar.scrollTop);
+      });
+    }
   },
 
   /**
