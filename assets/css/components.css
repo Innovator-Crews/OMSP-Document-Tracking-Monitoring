@@ -255,6 +255,44 @@
   font-weight: var(--font-bold);
   color: var(--neutral-800);
   margin-bottom: var(--space-1);
+  overflow: hidden;
+  min-height: 1.3em;
+}
+
+.odometer-value {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1.1;
+  gap: 1px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.odometer-digit {
+  position: relative;
+  width: 0.72em;
+  height: 1.1em;
+  overflow: hidden;
+}
+
+.odometer-track {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.2, 1);
+  will-change: transform;
+}
+
+.odometer-track span {
+  display: block;
+  height: 1.1em;
+  line-height: 1.1em;
+  text-align: center;
+}
+
+.odometer-separator,
+.odometer-affix {
+  display: inline-flex;
+  align-items: baseline;
 }
 .stat-subtext {
   font-size: var(--text-sm);

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OMSP Document Tracking &amp; Monitoring System</title>
+  <link rel="icon" type="image/png" href="assets/images/SP-logo-nobg.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/main.css" />
@@ -26,7 +27,9 @@
   <nav class="landing-nav" id="landing-nav">
     <div class="landing-nav-inner">
       <a href="#" class="landing-nav-brand">
-        <div class="landing-nav-logo" id="nav-logo-icon"></div>
+        <div class="landing-nav-logo" id="nav-logo-icon">
+          <img src="assets/images/SP-logo-nobg.png" alt="SP Logo" class="landing-logo-img" />
+        </div>
         <span class="landing-nav-name">OMSP Tracker</span>
       </a>
       <div class="landing-nav-links" id="nav-links">
@@ -48,8 +51,13 @@
   <!-- ═══════════════════════ HERO ═══════════════════════────── -->
   <section class="landing-hero">
     <div class="landing-hero-inner fade-in">
+      <div class="landing-hero-logo-wrap">
+        <img src="assets/images/SP-logo-nobg.png" alt="Sangguniang Panlalawigan Logo" class="landing-hero-logo" />
+      </div>
       <div class="landing-hero-badge">
-        <span id="hero-badge-icon"></span>
+        <span id="hero-badge-icon">
+          <img src="assets/images/SP-logo-nobg.png" alt="SP Logo" class="landing-badge-logo" />
+        </span>
         Sangguniang Panlalawigan — Province of Bataan
       </div>
       <h1>
@@ -99,8 +107,8 @@
                 <div class="landing-mockup-stat-label">Personal Assistance Records</div>
               </div>
               <div class="landing-mockup-stat">
-                <div class="landing-mockup-stat-val" data-target="12">1</div>
-                <div class="landing-mockup-stat-label">Board Members</div>
+                <div class="landing-mockup-stat-val" data-target="100" data-suffix="%">1%</div>
+                <div class="landing-mockup-stat-label">Compliance Rate</div>
               </div>
             </div>
             <div class="landing-mockup-card">
@@ -299,19 +307,19 @@
   <section class="landing-stats-band">
     <div class="landing-stats-band-inner">
       <div class="landing-metric-chip">
-        <div class="landing-metric-value">12</div>
+        <div class="landing-metric-value" data-odometer>12</div>
         <div class="landing-metric-label">Board Members</div>
       </div>
       <div class="landing-metric-chip">
-        <div class="landing-metric-value">3</div>
+        <div class="landing-metric-value" data-odometer>3</div>
         <div class="landing-metric-label">User Roles</div>
       </div>
       <div class="landing-metric-chip">
-        <div class="landing-metric-value">6</div>
+        <div class="landing-metric-value" data-odometer>6</div>
         <div class="landing-metric-label">Core Modules</div>
       </div>
       <div class="landing-metric-chip">
-        <div class="landing-metric-value">100%</div>
+        <div class="landing-metric-value" data-odometer>100%</div>
         <div class="landing-metric-label">Traceable Updates</div>
       </div>
     </div>
@@ -486,264 +494,8 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="assets/js/utils.js"></script>
   <script src="assets/js/icons.js"></script>
-  <script>
-    // ── Inject SVG icons ──────────────────────────────────────
-    document.addEventListener('DOMContentLoaded', () => {
-      // Nav
-      document.getElementById('nav-logo-icon').innerHTML = Icons.render('landmark', 20);
-      document.getElementById('nav-login-btn').innerHTML = Icons.render('log-in', 16) + ' Sign In';
-      document.getElementById('mobile-toggle').innerHTML = Icons.render('menu', 24);
-
-      // Hero
-      document.getElementById('hero-badge-icon').innerHTML = Icons.render('sparkles', 16);
-      document.getElementById('hero-cta-login').innerHTML = Icons.render('log-in', 20) + ' Staff / Board Member Login';
-      document.getElementById('hero-cta-admin').innerHTML = Icons.render('shield', 20) + ' Admin Portal';
-
-      // Mockup sidebar icons
-      document.getElementById('mock-nav-dash').innerHTML = Icons.render('dashboard', 14) + ' Dashboard';
-      document.getElementById('mock-nav-fa').innerHTML = Icons.render('file-text', 14) + ' Financial Assistance Records';
-      document.getElementById('mock-nav-pa').innerHTML = Icons.render('clipboard-list', 14) + ' Personal Assistance Records';
-      document.getElementById('mock-nav-search').innerHTML = Icons.render('search', 14) + ' Global Search';
-      document.getElementById('mock-nav-reports').innerHTML = Icons.render('bar-chart', 14) + ' Reports';
-
-      // Features icons
-      document.getElementById('feat-label-icon').innerHTML = Icons.render('zap', 16);
-      document.getElementById('feat-icon-fa').innerHTML = Icons.render('file-text', 24);
-      document.getElementById('feat-icon-pa').innerHTML = Icons.render('clipboard-list', 24);
-      document.getElementById('feat-icon-budget').innerHTML = Icons.render('wallet', 24);
-      document.getElementById('feat-icon-search').innerHTML = Icons.render('search', 24);
-      document.getElementById('feat-icon-reports').innerHTML = Icons.render('bar-chart', 24);
-      document.getElementById('feat-icon-security').innerHTML = Icons.render('shield-check', 24);
-
-      // Roles section
-      document.getElementById('roles-label-icon').innerHTML = Icons.render('users', 16);
-      document.getElementById('role-icon-admin').innerHTML = Icons.render('shield', 28);
-      document.getElementById('role-icon-bm').innerHTML = Icons.render('user', 28);
-      document.getElementById('role-icon-staff').innerHTML = Icons.render('edit', 28);
-
-      // Role check marks
-      for (let i = 1; i <= 12; i++) {
-        const el = document.getElementById('role-check-' + i);
-        if (el) el.innerHTML = Icons.render('check', 16);
-      }
-
-      // Team section
-      document.getElementById('team-label-icon').innerHTML = Icons.render('code', 16);
-
-      // Team portfolio links icons
-      document.getElementById('team-ic-portfolio').innerHTML = Icons.render('external-link', 14) + ' Website';
-      document.getElementById('team-buva-portfolio').innerHTML = Icons.render('external-link', 14) + ' Website';
-
-      // CTA buttons
-      document.getElementById('cta-staff-btn').innerHTML = Icons.render('log-in', 20) + ' Staff / Board Member';
-      document.getElementById('cta-admin-btn').innerHTML = Icons.render('shield', 20) + ' System Administrator';
-
-      // Footer
-      document.getElementById('footer-logo-icon').innerHTML = Icons.render('landmark', 18);
-
-      // ── Nav scroll effect — hide on scroll down, show on scroll up ──
-      const nav = document.getElementById('landing-nav');
-      let lastScrollY = 0;
-      let navHidden = false;
-      window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-        nav.classList.toggle('scrolled', currentScrollY > 20);
-        if (currentScrollY > lastScrollY && currentScrollY > 80 && !navHidden) {
-          nav.style.transform = 'translateY(-100%)';
-          navHidden = true;
-        } else if (currentScrollY < lastScrollY && navHidden) {
-          nav.style.transform = 'translateY(0)';
-          navHidden = false;
-        }
-        lastScrollY = currentScrollY;
-      });
-
-      // ── Smooth scrolling for anchor links ─────────────────
-      document.querySelectorAll('a[href^="#"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = document.querySelector(link.getAttribute('href'));
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-      });
-
-      // ── Section active-state in navbar (scrollspy) ───────
-      const sectionNavLinks = Array.from(document.querySelectorAll('.landing-nav-link[href^="#"]'));
-      const sectionTargets = sectionNavLinks
-        .map(link => {
-          const id = link.getAttribute('href');
-          const section = id ? document.querySelector(id) : null;
-          return section ? { link, section } : null;
-        })
-        .filter(Boolean);
-
-      function setActiveSectionLink(targetId) {
-        sectionNavLinks.forEach(link => {
-          const isActive = link.getAttribute('href') === targetId;
-          link.classList.toggle('active', isActive);
-          link.setAttribute('aria-current', isActive ? 'true' : 'false');
-        });
-      }
-
-      if (sectionTargets.length) {
-        setActiveSectionLink('#features');
-        const sectionObserver = new IntersectionObserver(
-          (entries) => {
-            const visible = entries
-              .filter(entry => entry.isIntersecting)
-              .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-            if (visible.length) {
-              setActiveSectionLink('#' + visible[0].target.id);
-            }
-          },
-          {
-            root: null,
-            rootMargin: '-40% 0px -45% 0px',
-            threshold: [0.2, 0.4, 0.6]
-          }
-        );
-
-        sectionTargets.forEach(({ section }) => sectionObserver.observe(section));
-      }
-
-      // ── Mobile menu toggle ────────────────────────────────
-      const toggle = document.getElementById('mobile-toggle');
-      const links = document.getElementById('nav-links');
-      const backdrop = document.getElementById('nav-backdrop');
-
-      function openMobileNav() {
-        links.style.display = 'flex';
-        links.style.flexDirection = 'column';
-        links.style.position = 'absolute';
-        links.style.top = '56px';
-        links.style.left = '0';
-        links.style.right = '0';
-        links.style.background = '#fff';
-        links.style.padding = '16px';
-        links.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
-        links.style.borderRadius = '0 0 12px 12px';
-        links.style.zIndex = '99';
-        backdrop.classList.add('active');
-        toggle.innerHTML = Icons.render('x', 24);
-      }
-
-      function closeMobileNav() {
-        links.style.display = 'none';
-        backdrop.classList.remove('active');
-        toggle.innerHTML = Icons.render('menu', 24);
-      }
-
-      toggle.addEventListener('click', () => {
-        const isOpen = links.style.display === 'flex';
-        isOpen ? closeMobileNav() : openMobileNav();
-      });
-
-      backdrop.addEventListener('click', closeMobileNav);
-
-      // Close on nav link click (mobile)
-      links.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-          if (window.innerWidth <= 768) closeMobileNav();
-        });
-      });
-
-      // ── Mockup live-feed animation ────────────────────────
-      const mockupNames = [
-        'Cruz, J.', 'Santos, M.', 'Reyes, A.', 'Garcia, L.',
-        'Torres, R.', 'Flores, D.', 'Rivera, P.', 'Mendoza, C.',
-        'Lopez, K.', 'Dela Cruz, F.', 'Bautista, E.', 'Villanueva, S.'
-      ];
-      const mockupStatuses = [
-        { text: 'Compliant', cls: 'landing-mockup-badge-success' },
-        { text: 'Pending', cls: 'landing-mockup-badge-warning' },
-        { text: 'Compliant', cls: 'landing-mockup-badge-success' },
-        { text: 'Approved', cls: 'landing-mockup-badge-success' }
-      ];
-      let faCounter = 143;
-      const mockupRows = document.querySelectorAll('.landing-mockup-row');
-      const statVals = document.querySelectorAll('.landing-mockup-stat-val');
-
-      function animateCounterValue(el, targetValue, duration = 550) {
-        if (!el) return;
-        const currentValue = parseInt(el.textContent, 10);
-        if (Number.isNaN(currentValue) || currentValue === targetValue) {
-          el.textContent = String(targetValue);
-          return;
-        }
-
-        if (el._counterAnimationId) {
-          cancelAnimationFrame(el._counterAnimationId);
-        }
-
-        const startValue = currentValue;
-        const delta = targetValue - startValue;
-        const startTime = performance.now();
-
-        function tick(now) {
-          const progress = Math.min((now - startTime) / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const nextValue = Math.round(startValue + delta * eased);
-          el.textContent = String(nextValue);
-
-          if (progress < 1) {
-            el._counterAnimationId = requestAnimationFrame(tick);
-          } else {
-            el._counterAnimationId = null;
-          }
-        }
-
-        el._counterAnimationId = requestAnimationFrame(tick);
-      }
-
-      // Initial count-up: start from 1 and settle to configured target
-      statVals.forEach((el, index) => {
-        const target = parseInt(el.getAttribute('data-target') || el.textContent, 10) || 1;
-        el.textContent = '1';
-        setTimeout(() => {
-          animateCounterValue(el, target, 900 + index * 220);
-        }, 180 + index * 120);
-      });
-
-      function animateMockupRow() {
-        if (!mockupRows.length) return;
-        faCounter++;
-        const name = mockupNames[Math.floor(Math.random() * mockupNames.length)];
-        const status = mockupStatuses[Math.floor(Math.random() * mockupStatuses.length)];
-        const faNum = String(faCounter).padStart(4, '0');
-
-        // Shift rows down (last row gets new data, others shift)
-        for (let i = mockupRows.length - 1; i > 0; i--) {
-          mockupRows[i].innerHTML = mockupRows[i - 1].innerHTML;
-        }
-        // Animate first row with new entry
-        const firstRow = mockupRows[0];
-        firstRow.style.opacity = '0';
-        firstRow.style.transform = 'translateY(-8px)';
-        firstRow.innerHTML =
-          '<span style="flex:1">FA-2025-' + faNum + ' — ' + name + '</span>' +
-          '<span class="landing-mockup-badge ' + status.cls + '">' + status.text + '</span>';
-        requestAnimationFrame(() => {
-          firstRow.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-          firstRow.style.opacity = '1';
-          firstRow.style.transform = 'translateY(0)';
-        });
-
-        // Slowly increment stat counters
-        if (statVals[0]) {
-          const currentFa = parseInt(statVals[0].textContent, 10) || 0;
-          animateCounterValue(statVals[0], currentFa + 1);
-        }
-        if (statVals[1] && Math.random() > 0.6) {
-          const currentPa = parseInt(statVals[1].textContent, 10) || 0;
-          animateCounterValue(statVals[1], currentPa + 1);
-        }
-      }
-
-      setInterval(animateMockupRow, 3000);
-    });
-  </script>
+  <script src="assets/js/landing.js"></script>
 </body>
 </html>
