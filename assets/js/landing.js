@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Footer
   document.getElementById('footer-logo-icon').innerHTML =
-    '<img src="assets/images/SP-logo-nobg.png" alt="SP Logo" class="landing-footer-logo" />';
+    '<img src="assets/images/SP-favicon.png" alt="SP Logo" class="landing-footer-logo" />';
   const fcPin   = document.getElementById('footer-contact-icon-pin');
   const fcPhone = document.getElementById('footer-contact-icon-phone');
   const fcMail  = document.getElementById('footer-contact-icon-mail');
