@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — OMSP Document Tracking</title>
+  <link rel='icon' type='image/png' href='../assets/images/SP-logo-nobg.png' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/animations.css" />
+  <link rel="stylesheet" href="../assets/css/pages/login.css" />
+</head>
+<body class="login-page">
+
+  <!-- ════ LEFT: Promotional Panel ════ -->
+  <div class="login-promo">
+    <div class="login-promo-inner fade-in">
+      <div class="login-promo-badge">
+        <span id="promo-badge-icon"></span>
+        Document Tracking System
+      </div>
+
+      <h1>Streamline Your Legislative Records</h1>
+      <p class="login-promo-desc">
+        Access the full suite of tools for tracking Financial Accountability
+        reports, Program Accomplishments, and board member records.
+      </p>
+
+      <!-- Feature highlights -->
+      <div class="login-promo-features">
+        <div class="login-promo-feature">
+          <div class="login-promo-feature-icon" id="promo-feat-1-icon"></div>
+          <div class="login-promo-feature-text">
+            <h3>Financial Assistance &amp; Personal Assistance Records</h3>
+            <p>Create, manage, and track financial and program records with full audit trails.</p>
+          </div>
+        </div>
+        <div class="login-promo-feature">
+          <div class="login-promo-feature-icon" id="promo-feat-2-icon"></div>
+          <div class="login-promo-feature-text">
+            <h3>Budget Monitoring</h3>
+            <p>Real-time budget utilization tracking with per-member allocation breakdowns.</p>
+          </div>
+        </div>
+        <div class="login-promo-feature">
+          <div class="login-promo-feature-icon" id="promo-feat-3-icon"></div>
+          <div class="login-promo-feature-text">
+            <h3>Analytics &amp; Reports</h3>
+            <p>Generate compliance reports, trend analytics, and exportable data summaries.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="login-promo-links">
+        <a href="../index.html" class="login-promo-link" id="promo-link-home">
+          Learn More
+        </a>
+        <a href="../sysadmin/login.html" class="login-promo-link" id="promo-link-admin">
+          Admin Portal
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ RIGHT: Login Form ════ -->
+  <div class="login-form-panel">
+    <div class="login-card">
+      <!-- Logo -->
+      <div class="logo-section">
+        <div class="login-logo" id="login-logo-icon"></div>
+        <h1>Welcome Back</h1>
+        <p class="subtitle">Sangguniang Panlalawigan — Province of Bataan</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="login-form" novalidate>
+        <div class="form-group">
+          <label for="login-email" class="form-label">Email Address</label>
+          <input type="email" id="login-email" class="form-input" placeholder="Enter your email" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" id="toggle-pw" aria-label="Toggle password visibility"></button>
+          </div>
+        </div>
+
+        <div id="login-error" class="banner banner-danger hidden" role="alert"></div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="login-submit-btn">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Demo Divider -->
+      <div class="login-divider"><span>Demo Accounts</span></div>
+
+      <!-- Demo Accounts -->
+      <div class="demo-section">
+        <div class="demo-accounts">
+          <button type="button" class="demo-btn" onclick="fillDemo('admin@omsp.gov.ph','admin123')">
+            <div class="demo-btn-icon demo-btn-icon-admin" id="demo-icon-admin"></div>
+            <div class="demo-btn-info">
+              <div class="demo-btn-role">SysAdmin</div>
+              <div class="demo-btn-email">admin@omsp.gov.ph</div>
+            </div>
+          </button>
+          <button type="button" class="demo-btn" onclick="fillDemo('cruz@omsp.gov.ph','bm123')">
+            <div class="demo-btn-icon demo-btn-icon-bm" id="demo-icon-bm"></div>
+            <div class="demo-btn-info">
+              <div class="demo-btn-role">Board Member</div>
+              <div class="demo-btn-email">cruz@omsp.gov.ph</div>
+            </div>
+          </button>
+          <button type="button" class="demo-btn" onclick="fillDemo('secretary1@omsp.gov.ph','sec123')">
+            <div class="demo-btn-icon demo-btn-icon-staff" id="demo-icon-staff"></div>
+            <div class="demo-btn-info">
+              <div class="demo-btn-role">Secretary / Staff</div>
+              <div class="demo-btn-email">secretary1@omsp.gov.ph</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin portal link -->
+      <a href="../sysadmin/login.html" class="admin-portal-link" id="admin-portal-link">
+        Looking for the Admin Portal?
+      </a>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <p class="copyright">&copy; 2025 Innovator Crews &amp; BUVA. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/activity-logger.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../assets/js/router.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script>
+    function fillDemo(email, password) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = password;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inject SVG icons
+      document.getElementById('promo-badge-icon').innerHTML = Icons.render('sparkles', 14);
+      document.getElementById('promo-feat-1-icon').innerHTML = Icons.render('file-text', 20);
+      document.getElementById('promo-feat-2-icon').innerHTML = Icons.render('wallet', 20);
+      document.getElementById('promo-feat-3-icon').innerHTML = Icons.render('bar-chart', 20);
+      document.getElementById('promo-link-home').innerHTML = Icons.render('arrow-left', 16) + ' Learn More';
+      document.getElementById('promo-link-admin').innerHTML = Icons.render('shield', 16) + ' Admin Portal';
+      document.getElementById('login-logo-icon').innerHTML = Icons.render('landmark', 32);
+
+      // Login button
+      document.getElementById('login-submit-btn').innerHTML = Icons.render('log-in', 20) + ' Sign In';
+
+      // Password toggle
+      const togglePw = document.getElementById('toggle-pw');
+      togglePw.innerHTML = Icons.render('eye', 18);
+      togglePw.addEventListener('click', () => {
+        const pwInput = document.getElementById('login-password');
+        const isPassword = pwInput.type === 'password';
+        pwInput.type = isPassword ? 'text' : 'password';
+        togglePw.innerHTML = Icons.render(isPassword ? 'eye-off' : 'eye', 18);
+      });
+
+      // Demo icons
+      document.getElementById('demo-icon-admin').innerHTML = Icons.render('shield', 18);
+      document.getElementById('demo-icon-bm').innerHTML = Icons.render('user', 18);
+      document.getElementById('demo-icon-staff').innerHTML = Icons.render('edit', 18);
+
+      // Admin portal link
+      document.getElementById('admin-portal-link').innerHTML =
+        Icons.render('shield-check', 16) + ' Looking for the Admin Portal?';
+    });
+  </script>
+</body>
+</html>

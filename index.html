@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OMSP Document Tracking &amp; Monitoring System</title>
+  <link rel="icon" type="image/png" href="assets/images/SP-logo-nobg.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/pages/landing.css" />
+</head>
+<body class="landing-page">
+
+  <!-- ═══════════════════════ ANIMATED BACKGROUND ═══════════════ -->
+  <div class="landing-bg-animation" aria-hidden="true">
+    <div class="landing-bg-orb landing-bg-orb-1"></div>
+    <div class="landing-bg-orb landing-bg-orb-2"></div>
+    <div class="landing-bg-orb landing-bg-orb-3"></div>
+    <div class="landing-bg-orb landing-bg-orb-4"></div>
+    <div class="landing-bg-orb landing-bg-orb-5"></div>
+  </div>
+
+  <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+  <nav class="landing-nav" id="landing-nav">
+    <div class="landing-nav-inner">
+      <a href="#" class="landing-nav-brand">
+        <div class="landing-nav-logo" id="nav-logo-icon">
+          <img src="assets/images/SP-logo-nobg.png" alt="SP Logo" class="landing-logo-img" />
+        </div>
+        <span class="landing-nav-name">OMSP Tracker</span>
+      </a>
+      <div class="landing-nav-links" id="nav-links">
+        <a href="#features" class="landing-nav-link">Features</a>
+        <a href="#workflow" class="landing-nav-link">Workflow</a>
+        <a href="#roles" class="landing-nav-link">User Roles</a>
+        <a href="#team" class="landing-nav-link">Team</a>
+        <a href="pages/login.html" class="landing-nav-cta" id="nav-login-btn">
+          Sign In
+        </a>
+      </div>
+      <button class="landing-nav-mobile-toggle" id="mobile-toggle" aria-label="Toggle menu"></button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav backdrop -->
+  <div class="landing-nav-backdrop" id="nav-backdrop"></div>
+
+  <!-- ═══════════════════════ HERO ═══════════════════════────── -->
+  <section class="landing-hero">
+    <div class="landing-hero-inner fade-in">
+      <div class="landing-hero-logo-wrap">
+        <img src="assets/images/SP-logo-nobg.png" alt="Sangguniang Panlalawigan Logo" class="landing-hero-logo" />
+      </div>
+      <div class="landing-hero-badge">
+        <span id="hero-badge-icon">
+          <img src="assets/images/SP-logo-nobg.png" alt="SP Logo" class="landing-badge-logo" />
+        </span>
+        Sangguniang Panlalawigan — Province of Bataan
+      </div>
+      <h1>
+        OMSP Document<br/>
+        <span class="text-gradient">Tracking &amp; Monitoring</span>
+      </h1>
+      <p class="landing-hero-desc">
+        A comprehensive system for tracking Financial Assistance records,
+        Personal Assistance reports, and legislative records for the Office of the
+        Majority &amp; Secretary of the Panlalawigan.
+      </p>
+      <div class="landing-hero-actions">
+        <a href="pages/login.html" class="landing-btn-primary" id="hero-cta-login">
+          Staff / Board Member Login
+        </a>
+        <a href="sysadmin/login.html" class="landing-btn-secondary" id="hero-cta-admin">
+          Admin Portal
+        </a>
+      </div>
+    </div>
+
+    <!-- App Preview Mockup -->
+    <div class="landing-hero-visual fade-in" style="animation-delay: 0.2s;">
+      <div class="landing-hero-mockup">
+        <div class="landing-mockup-toolbar">
+          <span class="landing-mockup-dot"></span>
+          <span class="landing-mockup-dot"></span>
+          <span class="landing-mockup-dot"></span>
+          <span class="landing-mockup-url">omsp-tracking.vercel.app/pages/dashboard</span>
+        </div>
+        <div class="landing-mockup-body">
+          <div class="landing-mockup-sidebar">
+            <div class="landing-mockup-sidebar-item active" id="mock-nav-dash">Dashboard</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-fa">Financial Assistance Records</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-pa">Personal Assistance Records</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-search">Global Search</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-reports">Reports</div>
+          </div>
+          <div class="landing-mockup-content">
+            <div class="landing-mockup-stat-grid">
+              <div class="landing-mockup-stat">
+                <div class="landing-mockup-stat-val" data-target="247">1</div>
+                <div class="landing-mockup-stat-label">Financial Assistance Records</div>
+              </div>
+              <div class="landing-mockup-stat">
+                <div class="landing-mockup-stat-val" data-target="183">1</div>
+                <div class="landing-mockup-stat-label">Personal Assistance Records</div>
+              </div>
+              <div class="landing-mockup-stat">
+                <div class="landing-mockup-stat-val" data-target="100" data-suffix="%">1%</div>
+                <div class="landing-mockup-stat-label">Compliance Rate</div>
+              </div>
+            </div>
+            <div class="landing-mockup-card">
+              <div class="landing-mockup-card-title">Recent Financial Assistance Submissions</div>
+              <div class="landing-mockup-row">
+                <span style="flex:1">FA-2025-0142 — Cruz, J.</span>
+                <span class="landing-mockup-badge landing-mockup-badge-success">Compliant</span>
+              </div>
+              <div class="landing-mockup-row">
+                <span style="flex:1">FA-2025-0141 — Santos, M.</span>
+                <span class="landing-mockup-badge landing-mockup-badge-warning">Pending</span>
+              </div>
+              <div class="landing-mockup-row">
+                <span style="flex:1">FA-2025-0140 — Reyes, A.</span>
+                <span class="landing-mockup-badge landing-mockup-badge-success">Compliant</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ FEATURES ═══════════════════════── -->
+  <section class="landing-section" id="features">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">
+          <span id="feat-label-icon"></span> Platform Features
+        </div>
+        <h2 class="landing-section-title">A living workspace for record operations</h2>
+        <p class="landing-section-desc">
+          Compact cards with active status, verification movement, and contextual
+          titles for Financial Assistance, Personal Assistance, and budget workflows.
+        </p>
+      </div>
+      <div class="landing-bento-grid">
+        <article class="landing-feature-card feature-mini feature-fa">
+          <div class="landing-feature-icon landing-feature-icon-blue" id="feat-icon-fa"></div>
+          <h3 class="landing-feature-title">Financial Assistance Intake</h3>
+          <p class="landing-feature-desc">
+            Create, track, and manage Financial Assistance records with
+            full audit trails, category tagging, and compliance status tracking.
+          </p>
+          <div class="feature-live-meter" aria-hidden="true">
+            <span class="feature-live-fill"></span>
+          </div>
+          <div class="feature-inline-preview">
+            <span class="feature-pill">Validation Active</span>
+            <span class="feature-pill">Auto Logs</span>
+          </div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-pa">
+          <div class="landing-feature-icon landing-feature-icon-teal" id="feat-icon-pa"></div>
+          <h3 class="landing-feature-title">Personal Assistance Tracking</h3>
+          <p class="landing-feature-desc">
+            Monitor Personal Assistance records for each board member with
+            detailed entries, searchable archives, and progress indicators.
+          </p>
+          <div class="feature-activity-dot" aria-hidden="true"></div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-budget">
+          <div class="landing-feature-icon landing-feature-icon-amber" id="feat-icon-budget"></div>
+          <h3 class="landing-feature-title">Budget Monitoring</h3>
+          <p class="landing-feature-desc">
+            Real-time budget allocation, utilization tracking, and per-member
+            financial reports with visual breakdowns and trend analysis.
+          </p>
+          <div class="budget-progress-bar" aria-hidden="true">
+            <span class="budget-progress-fill"></span>
+          </div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-search">
+          <div class="landing-feature-icon landing-feature-icon-green" id="feat-icon-search"></div>
+          <h3 class="landing-feature-title">Global Search</h3>
+          <p class="landing-feature-desc">
+            Powerful full-text search across all records, categories, and
+            board members with advanced filters and instant results.
+          </p>
+          <div class="feature-search-blink" aria-hidden="true"></div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-reports">
+          <div class="landing-feature-icon landing-feature-icon-red" id="feat-icon-reports"></div>
+          <h3 class="landing-feature-title">Analytics &amp; Reports</h3>
+          <p class="landing-feature-desc">
+            Generate comprehensive reports with charts and export options.
+            Track compliance rates, submission trends, and category distribution.
+          </p>
+          <div class="feature-inline-preview">
+            <span class="feature-pill">Export Ready</span>
+          </div>
+        </article>
+
+        <article class="landing-feature-card feature-mini feature-security">
+          <div class="landing-feature-icon landing-feature-icon-purple" id="feat-icon-security"></div>
+          <h3 class="landing-feature-title">Role-Based Access</h3>
+          <p class="landing-feature-desc">
+            Secure authentication with role-specific permissions for
+            System Admins, Board Members, and Secretary Staff.
+          </p>
+          <div class="feature-inline-preview">
+            <span class="feature-pill">Session Protected</span>
+            <span class="feature-pill">Action Logs</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ STORY STRIP ═════════════════════── -->
+  <section class="landing-section landing-story-strip" id="workflow">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">Workflow Story Strip</div>
+        <h2 class="landing-section-title">Problem → Process → Outcome</h2>
+        <p class="landing-section-desc">
+          A narrative view of how the system turns fragmented records into
+          clear, accountable, and report-ready operations.
+        </p>
+      </div>
+
+      <div class="story-timeline">
+        <article class="story-step">
+          <div class="story-content">
+            <p class="story-kicker">Problem</p>
+            <h3 class="story-title">Scattered submissions and delayed verification</h3>
+            <p class="story-desc">
+              Records arrive with inconsistent formats, missing attachments, and
+              little visibility on who is waiting for action.
+            </p>
+          </div>
+          <div class="story-screen">
+            <div class="story-screen-topbar">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="story-screen-body">
+              <div class="story-screen-row muted"></div>
+              <div class="story-screen-row danger"></div>
+              <div class="story-screen-row warning"></div>
+              <div class="story-screen-row muted"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-step reverse">
+          <div class="story-content">
+            <p class="story-kicker">Process</p>
+            <h3 class="story-title">Structured capture with built-in status tracking</h3>
+            <p class="story-desc">
+              Staff and board members work on a guided flow with tags,
+              instant search, and activity history per record.
+            </p>
+          </div>
+          <div class="story-screen">
+            <div class="story-screen-topbar">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="story-screen-body">
+              <div class="story-screen-pill"></div>
+              <div class="story-screen-row success"></div>
+              <div class="story-screen-row success"></div>
+              <div class="story-screen-row muted"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-step">
+          <div class="story-content">
+            <p class="story-kicker">Outcome</p>
+            <h3 class="story-title">Faster reporting and cleaner budget accountability</h3>
+            <p class="story-desc">
+              Decision makers get timeline clarity, export-ready summaries,
+              and near real-time budget utilization snapshots.
+            </p>
+          </div>
+          <div class="story-screen">
+            <div class="story-screen-topbar">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="story-screen-body">
+              <div class="story-screen-chart"></div>
+              <div class="story-screen-row success"></div>
+              <div class="story-screen-row muted"></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ METRIC CHIPS BAND ═══════════════── -->
+  <section class="landing-stats-band">
+    <div class="landing-stats-band-inner">
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value" data-odometer>12</div>
+        <div class="landing-metric-label">Board Members</div>
+      </div>
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value" data-odometer>3</div>
+        <div class="landing-metric-label">User Roles</div>
+      </div>
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value" data-odometer>6</div>
+        <div class="landing-metric-label">Core Modules</div>
+      </div>
+      <div class="landing-metric-chip">
+        <div class="landing-metric-value" data-odometer>100%</div>
+        <div class="landing-metric-label">Traceable Updates</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ USER ROLES ═════════════════════── -->
+  <section class="landing-section landing-roles-section" id="roles">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">
+          <span id="roles-label-icon"></span> User Roles
+        </div>
+        <h2 class="landing-section-title">Built for every member of the team</h2>
+        <p class="landing-section-desc">
+          Each role has a tailored experience with the right tools and permissions.
+        </p>
+      </div>
+      <div class="landing-roles-grid">
+        <!-- SysAdmin -->
+        <div class="landing-role-card">
+          <div class="landing-role-icon landing-role-icon-admin" id="role-icon-admin"></div>
+          <h3 class="landing-role-title">System Administrator</h3>
+          <p class="landing-role-desc">
+            Full system control with member management, term configuration,
+            and access to all records and reports.
+          </p>
+          <div class="landing-role-features">
+            <div class="landing-role-feature"><span id="role-check-1"></span> Manage board members &amp; staff</div>
+            <div class="landing-role-feature"><span id="role-check-2"></span> Configure terms &amp; categories</div>
+            <div class="landing-role-feature"><span id="role-check-3"></span> View all activity logs</div>
+            <div class="landing-role-feature"><span id="role-check-4"></span> Generate system-wide reports</div>
+          </div>
+        </div>
+        <!-- Board Member -->
+        <div class="landing-role-card">
+          <div class="landing-role-icon landing-role-icon-bm" id="role-icon-bm"></div>
+          <h3 class="landing-role-title">Board Member</h3>
+          <p class="landing-role-desc">
+            Personal dashboard to view your own Financial Assistance and Personal Assistance records,
+            budget allocation, and compliance status.
+          </p>
+          <div class="landing-role-features">
+            <div class="landing-role-feature"><span id="role-check-5"></span> View personal Financial Assistance &amp; Personal Assistance records</div>
+            <div class="landing-role-feature"><span id="role-check-6"></span> Monitor budget utilization</div>
+            <div class="landing-role-feature"><span id="role-check-7"></span> Track compliance status</div>
+            <div class="landing-role-feature"><span id="role-check-8"></span> Read-only secure access</div>
+          </div>
+        </div>
+        <!-- Secretary/Staff -->
+        <div class="landing-role-card">
+          <div class="landing-role-icon landing-role-icon-staff" id="role-icon-staff"></div>
+          <h3 class="landing-role-title">Secretary / Staff</h3>
+          <p class="landing-role-desc">
+            Day-to-day record entry and management for assigned board members.
+            Create, edit, and track Financial Assistance/Personal Assistance submissions.
+          </p>
+          <div class="landing-role-features">
+            <div class="landing-role-feature"><span id="role-check-9"></span> Create &amp; edit Financial Assistance / Personal Assistance records</div>
+            <div class="landing-role-feature"><span id="role-check-10"></span> Manage assigned members</div>
+            <div class="landing-role-feature"><span id="role-check-11"></span> Search &amp; filter records</div>
+            <div class="landing-role-feature"><span id="role-check-12"></span> Export data &amp; reports</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ TEAM / CREDITS ═════════════════── -->
+  <section class="landing-section landing-team-section" id="team">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">
+          <span id="team-label-icon"></span> Development Team
+        </div>
+        <h2 class="landing-section-title">Built with passion &amp; precision</h2>
+        <p class="landing-section-desc">
+          This system was designed and developed by dedicated professionals
+          committed to modernizing government technology.
+        </p>
+      </div>
+      <div class="landing-team-grid">
+        <!-- Innovator Crews -->
+        <div class="landing-team-card">
+          <div class="landing-team-logo landing-team-logo-ic">IC</div>
+          <h3 class="landing-team-name">Innovator Crews</h3>
+          <p class="landing-team-type">Development Team</p>
+          <p class="landing-team-desc">
+            A forward-thinking development crew specializing in modern web applications,
+            system architecture, and user-centric design. Building tools that make
+            government workflows smarter and more efficient.
+          </p>
+          <div class="landing-team-links">
+            <a href="https://msbp-portfolio.vercel.app/" target="_blank" rel="noopener" class="landing-team-link" id="team-ic-portfolio">
+              Website
+            </a>
+          </div>
+        </div>
+        <!-- BUVA -->
+        <div class="landing-team-card">
+          <div class="landing-team-logo landing-team-logo-buva">BV</div>
+          <h3 class="landing-team-name">BUVA</h3>
+          <p class="landing-team-type">Private Technology Partner</p>
+          <p class="landing-team-desc">
+            A private technology company providing strategic direction, technical
+            consultation, and project management. Partnering with government institutions
+            to deliver robust, scalable solutions.
+          </p>
+          <div class="landing-team-links">
+            <a href="https://backupvirtualassistance.com" target="_blank" rel="noopener" class="landing-team-link" id="team-buva-portfolio">
+              Website
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ CTA SECTION ════════════════════── -->
+  <section class="landing-cta-section">
+    <div class="landing-cta-inner">
+      <h2 class="landing-cta-title">Ready to get started?</h2>
+      <p class="landing-cta-desc">
+        Sign in to access the document tracking system. Choose your portal below.
+      </p>
+      <div class="landing-cta-buttons">
+        <a href="pages/login.html" class="landing-btn-primary" id="cta-staff-btn">
+          Staff / Board Member
+        </a>
+        <a href="sysadmin/login.html" class="landing-btn-secondary" id="cta-admin-btn">
+          System Administrator
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ FOOTER ═════════════════════────── -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-top">
+        <div class="landing-footer-brand">
+          <div class="landing-footer-brand-name">
+            <span id="footer-logo-icon"></span> OMSP Tracker
+          </div>
+          <p class="landing-footer-brand-desc">
+            Document Tracking &amp; Monitoring System for the Office of the Majority
+            &amp; Secretary of the Panlalawigan, Province of Bataan.
+          </p>
+        </div>
+        <div class="landing-footer-links-group">
+          <div class="landing-footer-col">
+            <h4>Platform</h4>
+            <a href="#features">Features</a>
+            <a href="#workflow">Workflow</a>
+            <a href="#roles">User Roles</a>
+            <a href="#team">Team</a>
+          </div>
+          <div class="landing-footer-col">
+            <h4>Access</h4>
+            <a href="pages/login.html">Staff Login</a>
+            <a href="pages/login.html">Board Member Login</a>
+            <a href="sysadmin/login.html">Admin Login</a>
+          </div>
+        </div>
+      </div>
+      <div class="landing-footer-bottom">
+        <span>&copy; 2025 Innovator Crews &amp; BUVA. All rights reserved.</span>
+        <span>
+          Province of Bataan &bull; Sangguniang Panlalawigan
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/landing.js"></script>
+</body>
+</html>

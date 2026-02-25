@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — OMSP Document Tracking</title>
+  <link rel='icon' type='image/png' href='../assets/images/SP-logo-nobg.png' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/animations.css" />
+  <link rel="stylesheet" href="../assets/css/pages/login.css" />
+  <style>
+    /* Admin-specific overrides */
+    .login-promo {
+      background: linear-gradient(135deg, var(--neutral-900) 0%, #1a1a2e 50%, var(--primary-900) 100%);
+    }
+    .login-promo-badge {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.25);
+      color: #A5B4FC;
+    }
+    .login-promo-feature-icon {
+      background: rgba(99, 102, 241, 0.15);
+      color: #A5B4FC;
+    }
+    .login-logo {
+      background: var(--neutral-900);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .admin-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 3px 10px;
+      background: var(--primary-100);
+      color: var(--primary-700);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+      margin-bottom: var(--space-3);
+      transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .back-to-staff {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-top: var(--space-5);
+      padding: var(--space-3);
+      background: var(--neutral-50);
+      border: 1px dashed var(--neutral-300);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--neutral-600);
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      max-width: 100%;
+    }
+    .back-to-staff:hover {
+      background: var(--primary-50);
+      border-color: var(--primary-300);
+      color: var(--primary-700);
+      transform: translateY(-1px);
+    }
+
+    /* Admin responsive overrides */
+    @media screen and (max-width: 960px) {
+      .login-promo-inner {
+        text-align: center;
+      }
+      .login-promo-links {
+        justify-content: center;
+      }
+    }
+    @media screen and (max-width: 480px) {
+      .admin-label {
+        font-size: 10px;
+        padding: 2px 8px;
+      }
+      .back-to-staff {
+        font-size: var(--text-xs);
+        padding: var(--space-2);
+      }
+    }
+  </style>
+</head>
+<body class="login-page">
+
+  <!-- ════ LEFT: Admin Promo Panel ════ -->
+  <div class="login-promo">
+    <div class="login-promo-inner fade-in">
+      <div class="login-promo-badge">
+        <span id="promo-badge-icon"></span>
+        System Administration
+      </div>
+
+      <h1>Admin Control Center</h1>
+      <p class="login-promo-desc">
+        Manage board members, staff accounts, system configuration,
+        and oversee all document tracking operations.
+      </p>
+
+      <div class="login-promo-features">
+        <div class="login-promo-feature">
+          <div class="login-promo-feature-icon" id="promo-feat-1-icon"></div>
+          <div class="login-promo-feature-text">
+            <h3>Member Management</h3>
+            <p>Add, edit, and manage all 12 board member profiles and staff accounts.</p>
+          </div>
+        </div>
+        <div class="login-promo-feature">
+          <div class="login-promo-feature-icon" id="promo-feat-2-icon"></div>
+          <div class="login-promo-feature-text">
+            <h3>Term Configuration</h3>
+            <p>Set up legislative terms, categories, and system-wide parameters.</p>
+          </div>
+        </div>
+        <div class="login-promo-feature">
+          <div class="login-promo-feature-icon" id="promo-feat-3-icon"></div>
+          <div class="login-promo-feature-text">
+            <h3>Activity Monitoring</h3>
+            <p>Full audit trail of all system activities with detailed logging.</p>
+          </div>
+        </div>
+        <div class="login-promo-feature">
+          <div class="login-promo-feature-icon" id="promo-feat-4-icon"></div>
+          <div class="login-promo-feature-text">
+            <h3>System-Wide Reports</h3>
+            <p>Generate comprehensive analytics across all board members and records.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-promo-links">
+        <a href="../index.html" class="login-promo-link" id="promo-link-home">
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ RIGHT: Admin Login Form ════ -->
+  <div class="login-form-panel">
+    <div class="login-card">
+      <!-- Logo -->
+      <div class="logo-section">
+        <div class="admin-label" id="admin-label">Administrator</div>
+        <div class="login-logo" id="login-logo-icon"></div>
+        <h1>Admin Sign In</h1>
+        <p class="subtitle">OMSP Document Tracking — Province of Bataan</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="login-form" novalidate>
+        <div class="form-group">
+          <label for="login-email" class="form-label">Admin Email</label>
+          <input type="email" id="login-email" class="form-input" placeholder="admin@omsp.gov.ph" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" id="toggle-pw" aria-label="Toggle password visibility"></button>
+          </div>
+        </div>
+
+        <div id="login-error" class="banner banner-danger hidden" role="alert"></div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="login-submit-btn">
+          Sign In as Admin
+        </button>
+      </form>
+
+      <!-- Demo Divider -->
+      <div class="login-divider"><span>Demo Account</span></div>
+
+      <!-- Demo -->
+      <div class="demo-section">
+        <div class="demo-accounts">
+          <button type="button" class="demo-btn" onclick="fillDemo('admin@omsp.gov.ph','admin123')">
+            <div class="demo-btn-icon demo-btn-icon-admin" id="demo-icon-admin"></div>
+            <div class="demo-btn-info">
+              <div class="demo-btn-role">System Administrator</div>
+              <div class="demo-btn-email">admin@omsp.gov.ph / admin123</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Back to staff login -->
+      <a href="../pages/login.html" class="back-to-staff" id="back-to-staff-link">
+        Staff / Board Member Login
+      </a>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <p class="copyright">&copy; 2025 Innovator Crews &amp; BUVA. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/activity-logger.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../assets/js/router.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script>
+    function fillDemo(email, password) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = password;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inject SVG icons
+      document.getElementById('promo-badge-icon').innerHTML = Icons.render('shield', 14);
+      document.getElementById('promo-feat-1-icon').innerHTML = Icons.render('users', 20);
+      document.getElementById('promo-feat-2-icon').innerHTML = Icons.render('settings', 20);
+      document.getElementById('promo-feat-3-icon').innerHTML = Icons.render('activity', 20);
+      document.getElementById('promo-feat-4-icon').innerHTML = Icons.render('bar-chart', 20);
+      document.getElementById('promo-link-home').innerHTML = Icons.render('arrow-left', 16) + ' Back to Home';
+
+      // Logo & label
+      document.getElementById('admin-label').innerHTML = Icons.render('shield-check', 14) + ' Administrator';
+      document.getElementById('login-logo-icon').innerHTML = Icons.render('shield', 32);
+
+      // Login button
+      document.getElementById('login-submit-btn').innerHTML = Icons.render('log-in', 20) + ' Sign In as Admin';
+
+      // Password toggle
+      const togglePw = document.getElementById('toggle-pw');
+      togglePw.innerHTML = Icons.render('eye', 18);
+      togglePw.addEventListener('click', () => {
+        const pwInput = document.getElementById('login-password');
+        const isPassword = pwInput.type === 'password';
+        pwInput.type = isPassword ? 'text' : 'password';
+        togglePw.innerHTML = Icons.render(isPassword ? 'eye-off' : 'eye', 18);
+      });
+
+      // Demo icon
+      document.getElementById('demo-icon-admin').innerHTML = Icons.render('shield', 18);
+
+      // Back to staff
+      document.getElementById('back-to-staff-link').innerHTML =
+        Icons.render('arrow-left', 16) + ' Staff / Board Member Login';
+    });
+  </script>
+</body>
+</html>

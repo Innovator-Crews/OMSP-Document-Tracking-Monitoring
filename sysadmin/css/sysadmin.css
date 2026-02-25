@@ -1,0 +1,144 @@
+/**
+ * ============================================================
+ * OMSP Document Tracking / Monitoring
+ * SysAdmin CSS — Styles specific to admin management pages
+ * ============================================================
+ * Supplements assets/css/pages/admin.css with sysadmin-only styles
+ */
+
+/* Management page header actions */
+.mgmt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.mgmt-header-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--neutral-800);
+}
+
+.mgmt-header-subtitle {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+  margin-top: 2px;
+}
+
+/* Board member card grid */
+.bm-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.bm-card {
+  background: #fff;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  transition: all var(--transition-base);
+}
+
+.bm-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-200);
+}
+
+.bm-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.bm-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-100);
+  color: var(--primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-bold);
+  font-size: var(--text-lg);
+}
+
+.bm-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bm-card-name {
+  font-weight: var(--font-semibold);
+  color: var(--neutral-800);
+  font-size: var(--text-base);
+}
+
+.bm-card-district {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+}
+
+.bm-card-term {
+  font-size: var(--text-xs);
+  color: var(--neutral-400);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.bm-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--neutral-100);
+  margin-top: var(--space-3);
+}
+
+/* Staff assignment list */
+.staff-assignment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.staff-assignment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--space-2);
+  background: var(--primary-50);
+  color: var(--primary-700);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+/* Archive status indicators */
+.archive-pending {
+  border-left: 3px solid var(--accent-500);
+}
+
+.archive-approved {
+  border-left: 3px solid var(--success-500);
+}
+
+/* Responsive */
+@media screen and (max-width: 640px) {
+  .bm-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mgmt-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

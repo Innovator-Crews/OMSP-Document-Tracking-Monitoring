@@ -1,0 +1,85 @@
+/* ═══════════════════════════════════════════════════════════
+   FA NEW — New Financial Assistance Form
+   Page: pages/fa-new.html
+   Overrides: forms.css, components.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Budget Info Display ──────────────────────────────────── */
+#budget-info {
+  background: var(--blue-50, #eff6ff);
+  border: 1px solid var(--blue-200, #bfdbfe);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--blue-800, #1e40af);
+}
+
+#budget-warning {
+  background: var(--red-50, #fef2f2);
+  border: 1px solid var(--red-200, #fecaca);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--red-700, #b91c1c);
+}
+
+/* ── Duplicate Warning ────────────────────────────────────── */
+#duplicate-warning {
+  background: var(--amber-50, #fffbeb);
+  border: 1px solid var(--amber-200, #fde68a);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.duplicate-warning-list {
+  font-size: 0.813rem;
+  color: var(--amber-800, #92400e);
+}
+
+/* ── Waiting Period Buttons ───────────────────────────────── */
+#fa-form .btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#fa-form .btn-group .btn {
+  flex: 1;
+  min-width: 80px;
+  text-align: center;
+}
+
+#fa-form .btn-group .btn.active {
+  background: var(--primary, #1d4ed8);
+  color: #fff;
+  border-color: var(--primary, #1d4ed8);
+}
+
+/* ── Cooling Period Check ─────────────────────────────────── */
+#cooling-period-check {
+  background: var(--amber-50, #fffbeb);
+  border: 1px solid var(--amber-200, #fde68a);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* ── Skip Waiting Section ─────────────────────────────────── */
+#skip-waiting-section,
+#skip-reason-section {
+  border-top: 1px solid var(--border, #e5e7eb);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  #fa-form .btn-group {
+    flex-direction: column;
+  }
+
+  #fa-form .btn-group .btn {
+    min-width: 100%;
+  }
+}

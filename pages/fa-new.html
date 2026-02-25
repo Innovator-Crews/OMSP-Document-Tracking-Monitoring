@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Financial Assistance — OMSP Document Tracking</title>
+  <link rel='icon' type='image/png' href='../assets/images/SP-logo-nobg.png' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/layout.css" />
+  <link rel="stylesheet" href="../assets/css/animations.css" />
+  <link rel="stylesheet" href="../assets/css/pages/forms.css" />
+  <link rel="stylesheet" href="../assets/css/pages/fa-new.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-logo">🏛️</span>
+        <div class="sidebar-brand">
+          <div class="sidebar-brand-name">OMSP Tracker</div>
+          <div class="sidebar-brand-sub">Document Tracking</div>
+        </div>
+        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" title="Collapse sidebar"></button>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+      <div class="sidebar-profile" id="sidebar-profile">
+        <div class="profile-avatar" id="profile-avatar"></div>
+        <div class="profile-info">
+          <div class="profile-name" id="profile-name"></div>
+          <div class="profile-role" id="profile-role"></div>
+        </div>
+      </div>
+      <a href="#" class="sidebar-logout" id="logout-btn">🚪 Sign Out</a>
+    </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="page-header">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <div>
+          <h1 class="page-title" id="page-title">New Financial Assistance</h1>
+        </div>
+        <div class="header-actions">
+          <span class="text-sm text-muted" id="user-name-label"></span>
+          <span class="badge badge-info" id="user-role-label"></span>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="form-container fade-in">
+          <form id="fa-form" class="record-form" novalidate>
+            <!-- Board Member selection -->
+            <div class="form-group">
+              <label for="fa-bm" class="form-label">Board Member <span class="required">*</span></label>
+              <select id="fa-bm" class="form-select" required>
+                <option value="">Select Board Member</option>
+              </select>
+            </div>
+
+            <!-- Budget display (set by JS after BM selection) -->
+            <div id="budget-info" style="display:none"></div>
+
+            <!-- Beneficiary name (with duplicate search) -->
+            <div class="form-group">
+              <label for="fa-patient-name" class="form-label">Beneficiary / Patient Name <span class="required">*</span></label>
+              <input type="text" id="fa-patient-name" class="form-input" placeholder="Last Name, First Name Middle Name" required autocomplete="off" />
+              <input type="hidden" id="fa-beneficiary-id" />
+            </div>
+
+            <!-- Duplicate warning (populated by JS) -->
+            <div id="duplicate-warning" style="display:none" class="duplicate-warning-list"></div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label for="fa-address" class="form-label">Address</label>
+              <input type="text" id="fa-address" class="form-input" placeholder="Barangay, Municipality" />
+            </div>
+
+            <!-- Cooling period check (populated by JS) -->
+            <div id="cooling-period-check" style="display:none"></div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label for="fa-category" class="form-label">Case Type / Category <span class="required">*</span></label>
+              <select id="fa-category" class="form-select" required>
+                <option value="">Select Category</option>
+              </select>
+            </div>
+
+            <!-- Custom category (if "Other" selected) -->
+            <div id="fa-category-custom" class="form-group" style="display:none">
+              <label class="form-label">Specify Category <span class="required">*</span></label>
+              <input type="text" class="form-input" placeholder="Enter custom category" />
+            </div>
+
+            <!-- Amount -->
+            <div class="form-group">
+              <label for="fa-amount" class="form-label">Amount Approved <span class="required">*</span></label>
+              <input type="number" id="fa-amount" class="form-input" placeholder="0.00" min="1" step="0.01" required />
+            </div>
+
+            <!-- Budget warning (shown when amount exceeds remaining) -->
+            <div id="budget-warning" style="display:none"></div>
+
+            <!-- Wait duration (button group) -->
+            <div class="form-group">
+              <label class="form-label">Waiting Period</label>
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-secondary active" data-duration="3">3 Months</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-duration="6">6 Months</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-duration="12">12 Months</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-duration="custom">Custom</button>
+              </div>
+              <input type="number" id="fa-duration-custom-value" class="form-input mt-xs" style="display:none" placeholder="Months" min="1" max="24" />
+            </div>
+
+            <!-- Skip waiting section (shown when cooling period is active) -->
+            <div id="skip-waiting-section" style="display:none">
+              <div class="form-group">
+                <label class="form-check">
+                  <input type="checkbox" id="fa-skip-waiting" />
+                  <span>Skip waiting period for this record</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Skip reason (shown when skip checkbox is checked) -->
+            <div id="skip-reason-section" style="display:none">
+              <div class="form-group">
+                <label for="fa-skip-reason" class="form-label">Reason for skipping <span class="required">*</span></label>
+                <textarea id="fa-skip-reason" class="form-input form-textarea" rows="2" placeholder="Why is the waiting period being skipped?"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-check">
+                  <input type="checkbox" id="fa-skip-bm-noted" />
+                  <span>Board Member has been notified</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Date -->
+            <div class="form-group">
+              <label for="fa-date" class="form-label">Date <span class="required">*</span></label>
+              <input type="date" id="fa-date" class="form-input" required />
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group">
+              <label for="fa-notes" class="form-label">Notes</label>
+              <textarea id="fa-notes" class="form-input form-textarea" rows="3" placeholder="Optional notes..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="fa-submit-btn">Submit Financial Assistance Record</button>
+              <a href="fa-list.html" class="btn btn-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal-container"></div>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/activity-logger.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/validators.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../assets/js/export.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/router.js"></script>
+  <script src="../assets/js/modules/fa-module.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>

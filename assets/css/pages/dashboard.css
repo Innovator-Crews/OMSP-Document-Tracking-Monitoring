@@ -1,0 +1,257 @@
+/**
+ * ============================================================
+ * OMSP Document Tracking / Monitoring
+ * Dashboard Page CSS - Dashboard-specific layouts
+ * ============================================================
+ */
+
+/* Dashboard-specific overrides */
+.dashboard-content {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Welcome header enhancements */
+.page-body > .mb-lg:first-child h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--neutral-900);
+  letter-spacing: -0.01em;
+}
+.page-body > .mb-lg:first-child p.text-muted {
+  font-size: var(--text-base);
+  margin-top: var(--space-1);
+}
+
+/* Two-column dashboard layout (main + sidebar) */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--space-6);
+}
+
+@media screen and (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Recent records list */
+.recent-records {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.recent-record-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  transition: background var(--transition-fast);
+  cursor: pointer;
+}
+.recent-record-item:hover {
+  background: var(--neutral-50);
+}
+
+/* Record icons for SVG */
+.record-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.record-icon-fa {
+  background: var(--primary-50);
+  color: var(--primary-600);
+}
+.record-icon-pa {
+  background: var(--secondary-50);
+  color: var(--secondary-600);
+}
+.record-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.recent-record-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.recent-record-icon.fa {
+  background: var(--primary-50);
+  color: var(--primary-600);
+}
+.recent-record-icon.pa {
+  background: var(--secondary-50);
+  color: var(--secondary-600);
+}
+.recent-record-content {
+  flex: 1;
+  min-width: 0;
+}
+.recent-record-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--neutral-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recent-record-detail {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.recent-record-amount {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--neutral-700);
+  white-space: nowrap;
+}
+
+/* Record info block */
+.record-info {
+  flex: 1;
+  min-width: 0;
+}
+.record-name {
+  font-weight: var(--font-medium);
+  color: var(--neutral-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.record-meta {
+  font-size: var(--text-sm);
+  color: var(--neutral-500);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.record-amount {
+  text-align: right;
+  flex-shrink: 0;
+}
+.amount-value {
+  font-weight: var(--font-semibold);
+  color: var(--neutral-800);
+}
+
+/* Pending items widget */
+.pending-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.pending-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--neutral-100);
+}
+.pending-item:last-child { border-bottom: none; }
+.pending-label {
+  font-size: var(--text-base);
+  color: var(--neutral-700);
+}
+.pending-count {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--primary-700);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* Budget mini chart (simple bar) */
+.budget-mini {
+  margin-top: var(--space-3);
+}
+.budget-mini-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+.budget-mini-label { color: var(--neutral-500); }
+.budget-mini-value { font-weight: var(--font-semibold); color: var(--neutral-800); }
+
+/* Section links in card headers */
+.section-link {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--primary-600);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.section-link:hover {
+  color: var(--primary-700);
+}
+
+/* Empty state mini */
+.empty-state-mini {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--neutral-400);
+  font-size: var(--text-sm);
+}
+
+/* Stat icon SVG sizing */
+.stat-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ============================================================
+   ROLE-SPECIFIC DASHBOARD WELCOME AREA
+   ============================================================ */
+
+/* Base welcome heading */
+.dashboard-welcome h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--neutral-900);
+  letter-spacing: -0.015em;
+  margin-bottom: var(--space-1);
+}
+.dashboard-welcome p.text-muted {
+  font-size: var(--text-base);
+  color: var(--neutral-500);
+}
+
+/* BM: amber left border accent */
+[data-role="board_member"] .mb-lg:first-child h2 {
+  border-left: 4px solid var(--accent-500);
+  padding-left: var(--space-3);
+}
+
+/* Secretary: teal left border accent */
+[data-role="secretary"] .mb-lg:first-child h2 {
+  border-left: 4px solid var(--secondary-600);
+  padding-left: var(--space-3);
+}
+
+/* Recent record item hover uses role accent bg */
+[data-role="board_member"] .recent-record-item:hover {
+  background: var(--accent-50);
+}
+[data-role="secretary"] .recent-record-item:hover {
+  background: var(--secondary-50);
+}

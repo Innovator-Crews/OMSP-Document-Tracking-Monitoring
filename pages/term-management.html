@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Term & Archive — OMSP Document Tracking</title>
+  <link rel='icon' type='image/png' href='../assets/images/SP-logo-nobg.png' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/layout.css" />
+  <link rel="stylesheet" href="../assets/css/animations.css" />
+  <link rel="stylesheet" href="../assets/css/pages/admin.css" />
+  <link rel="stylesheet" href="../assets/css/pages/term-management.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-logo">🏛️</span>
+        <div class="sidebar-brand">
+          <div class="sidebar-brand-name">OMSP Tracker</div>
+          <div class="sidebar-brand-sub">Document Tracking</div>
+        </div>
+        <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" title="Collapse sidebar"></button>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+      <div class="sidebar-profile" id="sidebar-profile">
+        <div class="profile-avatar" id="profile-avatar"></div>
+        <div class="profile-info">
+          <div class="profile-name" id="profile-name"></div>
+          <div class="profile-role" id="profile-role"></div>
+        </div>
+      </div>
+      <a href="#" class="sidebar-logout" id="logout-btn">🚪 Sign Out</a>
+    </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <main class="main-content">
+      <header class="page-header">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <div>
+          <h1 class="page-title" id="page-title">Term & Archive</h1>
+        </div>
+        <div class="header-actions">
+          <span class="text-sm text-muted" id="user-name-label"></span>
+          <span class="badge badge-info" id="user-role-label"></span>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- BM: Term info + request archive (rendered by TermManager for board_member) -->
+        <div id="term-info-section" class="fade-in"></div>
+
+        <!-- Admin: Pending archive requests (rendered by TermManager for sysadmin) -->
+        <div id="pending-requests" class="fade-in mb-lg">
+          <h3 class="mb-md">Pending Archive Requests</h3>
+          <div class="loading-spinner"></div>
+        </div>
+
+        <!-- Admin: Term overview (rendered by TermManager for sysadmin) -->
+        <div id="term-overview" class="fade-in"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal-container"></div>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/activity-logger.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/validators.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../assets/js/export.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/router.js"></script>
+  <script src="../assets/js/modules/term-manager.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>
