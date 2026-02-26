@@ -340,6 +340,13 @@
 .badge-freq-monitor { background: var(--accent-100); color: var(--accent-700); }
 .badge-freq-high { background: var(--danger-100); color: var(--danger-700); }
 
+/* Flagged row (cross-BM indicator) */
+.row-flagged {
+  background-color: #FFFBEB !important;
+  border-left: 3px solid var(--accent-500);
+}
+.row-flagged:hover { background-color: #FEF3C7 !important; }
+
 /* Status badges */
 .badge-ongoing { background: var(--primary-100); color: var(--primary-700); }
 .badge-successful { background: var(--success-100); color: var(--success-700); }
