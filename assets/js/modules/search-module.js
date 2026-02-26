@@ -138,6 +138,7 @@ const SearchModule = {
 
   renderBeneficiaryResult(ben) {
     const freq = Storage.getFrequencyLevel(ben.beneficiary_id);
+    const crossInfo = Storage.getCrossBMInfo(ben.beneficiary_id);
 
     // Get all records for this beneficiary
     const faRecords = Storage.getAll(KEYS.FA_RECORDS).filter(r => r.beneficiary_id === ben.beneficiary_id && !r.is_archived);
@@ -145,8 +146,12 @@ const SearchModule = {
     const totalFA = faRecords.reduce((s, r) => s + (r.amount_approved || 0), 0);
     const totalPA = paRecords.reduce((s, r) => s + (r.amount_provided || 0), 0);
 
+    const crossBMBadge = crossInfo.bm_count > 1
+      ? `<span class="badge badge-warning" title="Assisted by: ${crossInfo.bm_names.join(', ')}">${Icons.get('alert-triangle', 12)} ${crossInfo.bm_count} BMs</span>`
+      : '';
+
     return `
-      <div class="result-card" onclick="SearchModule.showBeneficiaryDetail('${ben.beneficiary_id}')">
+      <div class="result-card${crossInfo.bm_count > 1 ? ' row-flagged' : ''}" onclick="SearchModule.showBeneficiaryDetail('${ben.beneficiary_id}')">
         <div class="result-header">
           <div class="d-flex align-center gap-sm">
             <div class="avatar">${Utils.getInitials(ben.full_name)}</div>
@@ -155,12 +160,16 @@ const SearchModule = {
               <span class="text-muted text-sm">${Utils.escapeHtml(ben.municipality || ben.address || '—')}</span>
             </div>
           </div>
-          <span class="badge ${Utils.getFrequencyClass(freq.level)}">${freq.level} (${freq.total}x)</span>
+          <div class="d-flex gap-xs">
+            ${crossBMBadge}
+            <span class="badge ${Utils.getFrequencyClass(freq.level)}">${freq.level} (${freq.total}x)</span>
+          </div>
         </div>
         <div class="result-meta">
           <span class="badge badge-primary">Beneficiary</span>
           <span>FA: ${faRecords.length} records (${Utils.formatCurrency(totalFA)})</span>
           <span>PA: ${paRecords.length} records (${Utils.formatCurrency(totalPA)})</span>
+          ${crossInfo.bm_count > 1 ? `<span class="text-sm text-muted">BMs: ${crossInfo.bm_names.join(', ')}</span>` : ''}
         </div>
       </div>
     `;
@@ -300,6 +309,237 @@ const SearchModule = {
         <div class="empty-state-icon">${Icons.render('search', 32)}</div>
         <h3 class="empty-state-title">Search</h3>
         <p class="empty-state-text">${message}</p>
+      </div>
+    `;
+  },
+
+  /* --------------------------------------------------------
+   * SEARCH ARCHIVES — searches only archived / past-term records
+   * -------------------------------------------------------- */
+
+  initArchives() {
+    const user = Auth.requireAuth();
+    if (!user) return;
+
+    const container = document.getElementById('search-archives-content');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="search-bar mb-md">
+        <div class="form-group" style="max-width:600px">
+          <div class="d-flex gap-sm">
+            <input type="text" id="archive-search-input" class="form-input" placeholder="Search archived FA / PA records by beneficiary name, ID..." autofocus />
+            <button class="btn btn-primary" id="archive-search-btn">${Icons.get('search', 16)} Search</button>
+          </div>
+        </div>
+        <div class="d-flex gap-sm mt-sm">
+          <button class="btn btn-sm btn-secondary active" data-archive-type="all">All</button>
+          <button class="btn btn-sm btn-secondary" data-archive-type="fa">FA Records</button>
+          <button class="btn btn-sm btn-secondary" data-archive-type="pa">PA Records</button>
+          <button class="btn btn-sm btn-secondary" data-archive-type="letters">Incoming Letters</button>
+        </div>
+      </div>
+      <div id="archive-result-count" class="text-muted text-sm mb-sm"></div>
+      <div id="archive-results">
+        <div class="empty-state">
+          <div class="empty-state-icon">${Icons.get('archive', 32)}</div>
+          <h3 class="empty-state-title">Search Archives</h3>
+          <p class="empty-state-text">Search through archived and past-term records</p>
+        </div>
+      </div>
+    `;
+
+    this._archiveType = 'all';
+
+    const input = document.getElementById('archive-search-input');
+    const searchBtn = document.getElementById('archive-search-btn');
+    const typeToggles = container.querySelectorAll('[data-archive-type]');
+
+    if (input) {
+      input.addEventListener('input', Utils.debounce(() => {
+        this._performArchiveSearch(input.value.trim(), user);
+      }, 300));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this._performArchiveSearch(input.value.trim(), user);
+        }
+      });
+    }
+
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => {
+        this._performArchiveSearch(input.value.trim(), user);
+      });
+    }
+
+    typeToggles.forEach(btn => {
+      btn.addEventListener('click', () => {
+        typeToggles.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this._archiveType = btn.dataset.archiveType;
+        if (input.value.trim()) this._performArchiveSearch(input.value.trim(), user);
+      });
+    });
+  },
+
+  _performArchiveSearch(query, user) {
+    const resultsEl = document.getElementById('archive-results');
+    const countEl = document.getElementById('archive-result-count');
+    if (!resultsEl) return;
+
+    if (!query || query.length < 2) {
+      countEl.textContent = '';
+      resultsEl.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">${Icons.get('archive', 32)}</div>
+          <h3 class="empty-state-title">Search Archives</h3>
+          <p class="empty-state-text">Type at least 2 characters to search</p>
+        </div>
+      `;
+      return;
+    }
+
+    const q = query.toLowerCase();
+    const results = [];
+
+    // Search archived FA
+    if (this._archiveType === 'all' || this._archiveType === 'fa') {
+      let faRecords = Storage.getAll(KEYS.FA_RECORDS).filter(r => r.is_archived);
+      if (user.role === 'board_member') {
+        const bms = Storage.query(KEYS.BOARD_MEMBERS, { user_id: user.user_id });
+        if (bms.length) faRecords = faRecords.filter(r => r.bm_id === bms[0].bm_id);
+      } else if (user.role === 'secretary') {
+        const assigned = Auth.getAssignedBMs();
+        const bmIds = assigned.map(b => b.bm_id);
+        faRecords = faRecords.filter(r => bmIds.includes(r.bm_id));
+      }
+      faRecords.filter(r =>
+        (r.patient_name && r.patient_name.toLowerCase().includes(q)) ||
+        (r.fa_id && r.fa_id.toLowerCase().includes(q))
+      ).forEach(r => results.push({ type: 'fa', data: r }));
+    }
+
+    // Search archived PA
+    if (this._archiveType === 'all' || this._archiveType === 'pa') {
+      let paRecords = Storage.getAll(KEYS.PA_RECORDS).filter(r => r.is_archived);
+      if (user.role === 'board_member') {
+        const bms = Storage.query(KEYS.BOARD_MEMBERS, { user_id: user.user_id });
+        if (bms.length) paRecords = paRecords.filter(r => r.bm_id === bms[0].bm_id);
+      }
+      paRecords.filter(r =>
+        (r.client_name && r.client_name.toLowerCase().includes(q)) ||
+        (r.pa_id && r.pa_id.toLowerCase().includes(q)) ||
+        (r.event_purpose && r.event_purpose.toLowerCase().includes(q))
+      ).forEach(r => results.push({ type: 'pa', data: r }));
+    }
+
+    // Search archived incoming letters
+    if (this._archiveType === 'all' || this._archiveType === 'letters') {
+      let letters = Storage.getAll(KEYS.INCOMING_LETTERS).filter(l => l.is_archived);
+      if (user.role === 'secretary') {
+        const assigned = Auth.getAssignedBMs();
+        const bmIds = assigned.map(b => b.bm_id);
+        letters = letters.filter(l => bmIds.includes(l.bm_id));
+      } else if (user.role === 'board_member') {
+        const bms = Storage.query(KEYS.BOARD_MEMBERS, { user_id: user.user_id });
+        if (bms.length) letters = letters.filter(l => l.bm_id === bms[0].bm_id);
+      }
+      letters.filter(l =>
+        l.sender_name.toLowerCase().includes(q) ||
+        (l.event && l.event.toLowerCase().includes(q)) ||
+        (l.purpose && l.purpose.toLowerCase().includes(q))
+      ).forEach(l => results.push({ type: 'letter', data: l }));
+    }
+
+    countEl.textContent = `${results.length} archived result${results.length !== 1 ? 's' : ''} for "${Utils.escapeHtml(query)}"`;
+
+    if (results.length === 0) {
+      resultsEl.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">${Icons.get('archive', 32)}</div>
+          <h3 class="empty-state-title">No Results</h3>
+          <p class="empty-state-text">No archived records match "${Utils.escapeHtml(query)}"</p>
+        </div>
+      `;
+      return;
+    }
+
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
+    resultsEl.innerHTML = results.map(r => {
+      if (r.type === 'fa') return this._renderArchivedFA(r.data, bms);
+      if (r.type === 'pa') return this._renderArchivedPA(r.data, bms);
+      if (r.type === 'letter') return this._renderArchivedLetter(r.data, bms);
+      return '';
+    }).join('');
+  },
+
+  _renderArchivedFA(record, bms) {
+    const bm = bms.find(b => b.bm_id === record.bm_id);
+    const bmUser = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null;
+    return `
+      <div class="result-card">
+        <div class="result-header">
+          <div>
+            <h4 class="result-title">${Utils.escapeHtml(record.patient_name)}</h4>
+            <span class="text-muted text-sm">FA: ${record.fa_id} • Archived</span>
+          </div>
+          <span class="badge badge-secondary">Archived FA</span>
+        </div>
+        <div class="result-meta">
+          <span>${Utils.formatCurrency(record.amount_approved)}</span>
+          <span>BM: ${Utils.escapeHtml(bmUser ? bmUser.full_name : '—')}</span>
+          <span>${Utils.formatDate(record.created_at)}</span>
+          ${record.archived_at ? `<span>Archived: ${Utils.formatDate(record.archived_at)}</span>` : ''}
+        </div>
+      </div>
+    `;
+  },
+
+  _renderArchivedPA(record, bms) {
+    const bm = bms.find(b => b.bm_id === record.bm_id);
+    const bmUser = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null;
+    return `
+      <div class="result-card">
+        <div class="result-header">
+          <div>
+            <h4 class="result-title">${Utils.escapeHtml(record.client_name)}</h4>
+            <span class="text-muted text-sm">PA: ${record.pa_id} • Archived</span>
+          </div>
+          <span class="badge badge-secondary">Archived PA</span>
+        </div>
+        <div class="result-meta">
+          <span>${Utils.formatCurrency(record.amount_provided)}</span>
+          <span>BM: ${Utils.escapeHtml(bmUser ? bmUser.full_name : '—')}</span>
+          <span>${Utils.formatDate(record.created_at)}</span>
+          ${record.archived_at ? `<span>Archived: ${Utils.formatDate(record.archived_at)}</span>` : ''}
+        </div>
+      </div>
+    `;
+  },
+
+  _renderArchivedLetter(letter, bms) {
+    const bm = bms.find(b => b.bm_id === letter.bm_id);
+    const bmUser = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null;
+    const catMap = {
+      'Cultural Activities': 'badge-info',
+      'Solicitations': 'badge-warning',
+      'Invitation Letters': 'badge-accent'
+    };
+    return `
+      <div class="result-card">
+        <div class="result-header">
+          <div>
+            <h4 class="result-title">${Utils.escapeHtml(letter.sender_name)}</h4>
+            <span class="text-muted text-sm">${Utils.escapeHtml(letter.event || letter.purpose || '—')} • Archived</span>
+          </div>
+          <span class="badge ${catMap[letter.category] || 'badge-secondary'}">${Utils.escapeHtml(letter.category)}</span>
+        </div>
+        <div class="result-meta">
+          <span>BM: ${Utils.escapeHtml(bmUser ? bmUser.full_name : '—')}</span>
+          <span>Received: ${Utils.formatDate(letter.date_received)}</span>
+          ${letter.archived_at ? `<span>Archived: ${Utils.formatDate(letter.archived_at)}</span>` : ''}
+        </div>
       </div>
     `;
   }

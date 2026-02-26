@@ -198,7 +198,46 @@ const PAModule = {
     const dupeEl = document.getElementById('pa-duplicate-warning');
     if (dupeEl) dupeEl.style.display = 'none';
 
+    // Check cross-BM info
+    this.checkCrossBM(beneficiaryId);
+
     Notifications.info(`Selected: ${ben.full_name}`);
+  },
+
+  /**
+   * Check cross-BM assistance info for a beneficiary
+   */
+  checkCrossBM(beneficiaryId) {
+    const bmId = document.getElementById('pa-bm')?.value;
+    if (!bmId || !beneficiaryId) return;
+
+    let alertEl = document.getElementById('cross-bm-alert');
+    if (!alertEl) {
+      alertEl = document.createElement('div');
+      alertEl.id = 'cross-bm-alert';
+      alertEl.style.display = 'none';
+      const dupeEl = document.getElementById('pa-duplicate-warning');
+      if (dupeEl) {
+        dupeEl.parentNode.insertBefore(alertEl, dupeEl.nextSibling);
+      }
+    }
+
+    const crossInfo = Storage.getCrossBMInfo(beneficiaryId, bmId);
+    if (crossInfo.bm_count > 0) {
+      alertEl.style.display = 'block';
+      alertEl.innerHTML = `
+        <div class="banner banner-warning mb-sm">
+          <div class="banner-content">
+            <strong>${Icons.get('alert-triangle', 14)} Cross-BM Alert:</strong> This beneficiary has received assistance from <strong>${crossInfo.bm_count} other Board Member${crossInfo.bm_count > 1 ? 's' : ''}</strong>.
+            <div class="mt-xs text-sm">
+              ${crossInfo.details.map(d => `<div>• <strong>${Utils.escapeHtml(d.name)}</strong> (${d.district}): ${d.fa_count} FA (${Utils.formatCurrency(d.fa_total)}), ${d.pa_count} PA (${Utils.formatCurrency(d.pa_total)})</div>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      alertEl.style.display = 'none';
+    }
   },
 
   submitNewPA(form) {
@@ -386,7 +425,7 @@ const PAModule = {
     if (records.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="6" class="text-center p-xl">
+          <td colspan="8" class="text-center p-xl">
             <div class="empty-state">
               <div class="empty-state-icon">${Icons.render('clipboard-list', 32)}</div>
               <h3 class="empty-state-title">No Personal Assistance Records</h3>
@@ -407,9 +446,20 @@ const PAModule = {
       const cat = categories.find(c => c.id === r.category_id);
       const categoryName = r.category_custom || (cat ? cat.name : 'Unknown');
 
+      // Frequency badge
+      const freq = r.beneficiary_id ? Storage.getFrequencyLevel(r.beneficiary_id) : { level: 'normal', total: 0 };
+      const freqBadge = `<span class="badge ${Utils.getFrequencyClass(freq.level)}" title="${freq.total} assists this month">${freq.level === 'normal' ? freq.total : freq.level.toUpperCase() + ' (' + freq.total + ')'}</span>`;
+
+      // Cross-BM flag
+      const crossInfo = r.beneficiary_id ? Storage.getCrossBMInfo(r.beneficiary_id, r.bm_id) : { bm_count: 0 };
+      const crossBMFlag = crossInfo.bm_count > 0
+        ? `<span class="badge badge-warning" title="Also assisted by: ${crossInfo.bm_names.join(', ')}">${Icons.get('alert-triangle', 12)} ${crossInfo.bm_count} other BM${crossInfo.bm_count > 1 ? 's' : ''}</span>`
+        : '';
+
       return `
-        <tr>
-          <td><strong>${Utils.escapeHtml(r.client_name)}</strong></td>
+        <tr${crossInfo.bm_count > 0 ? ' class="row-flagged"' : ''}>
+          <td><strong>${Utils.escapeHtml(r.client_name)}</strong>${crossBMFlag ? ' ' + crossBMFlag : ''}</td>
+          <td>${freqBadge}</td>
           <td>${Utils.escapeHtml(categoryName)}</td>
           <td class="text-right">${Utils.formatCurrency(r.amount_provided)}</td>
           <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>

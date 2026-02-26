@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Financial Assistance Records — OMSP Document Tracking</title>
+  <title>Search Archives — OMSP Document Tracking</title>
   <link rel='icon' type='image/png' href='../assets/images/SP-favicon.png' />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../assets/css/components.css" />
   <link rel="stylesheet" href="../assets/css/layout.css" />
   <link rel="stylesheet" href="../assets/css/animations.css" />
-  <link rel="stylesheet" href="../assets/css/pages/fa-list.css" />
+  <link rel="stylesheet" href="../assets/css/pages/search.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -40,60 +40,18 @@
       <header class="page-header">
         <button class="menu-toggle" id="menu-toggle">☰</button>
         <div>
-          <h1 class="page-title" id="page-title">Financial Assistance Records</h1>
+          <h1 class="page-title" id="page-title">Search Archives</h1>
         </div>
         <div class="header-actions">
-          <a href="fa-new.html" class="btn btn-primary btn-sm" id="new-fa-btn">➕ New Financial Assistance</a>
           <span class="text-sm text-muted" id="user-name-label"></span>
           <span class="badge badge-info" id="user-role-label"></span>
         </div>
       </header>
 
       <div class="page-body">
-        <!-- Filters -->
-        <div class="filter-bar mb-md" id="fa-filters">
-          <div class="filter-group">
-            <select id="filter-bm" class="form-input form-input-sm">
-              <option value="">All Board Members</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <select id="filter-status" class="form-input form-input-sm">
-              <option value="">All Statuses</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Successful">Successful</option>
-              <option value="Denied">Denied</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <input type="text" id="filter-search" class="form-input form-input-sm" placeholder="Search beneficiary..." />
-          </div>
-          <button class="btn btn-secondary btn-sm" id="export-csv-btn">📤 Export</button>
+        <div id="search-archives-content" class="fade-in">
+          <div class="loading-spinner"></div>
         </div>
-
-        <!-- Table -->
-        <div class="table-container fade-in">
-          <table class="data-table" id="fa-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Beneficiary</th>
-                <th>Freq</th>
-                <th>Board Member</th>
-                <th>Category</th>
-                <th class="text-right">Amount</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="fa-table-body">
-              <tr><td colspan="8" class="text-center text-muted">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination" id="fa-pagination"></div>
       </div>
     </main>
   </div>
@@ -109,7 +67,7 @@
   <script src="../assets/js/export.js"></script>
   <script src="../assets/js/icons.js"></script>
   <script src="../assets/js/router.js"></script>
-  <script src="../assets/js/modules/fa-module.js"></script>
+  <script src="../assets/js/modules/search-module.js"></script>
   <script src="../assets/js/app.js"></script>
 </body>
 </html>
