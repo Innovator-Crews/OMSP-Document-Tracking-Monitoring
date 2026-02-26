@@ -345,5 +345,252 @@ const BoardMemberModule = {
       closeModal();
       onSave(amount, desc);
     });
+  },
+
+  // ─── Secretary Activity Logs (BM Oversight) ───────────────────────────────
+  initSecretaryLogs() {
+    const container = document.getElementById('secretary-logs-content');
+    if (!container) return;
+
+    const user = Auth.getCurrentUser();
+    const bmData = Auth.getCurrentBMData();
+    if (!bmData) {
+      container.innerHTML = '<p class="text-muted">Board member data not found.</p>';
+      return;
+    }
+
+    // Get secretaries assigned to this BM
+    const secretaries = Storage.getSecretariesForBM(bmData.bm_id);
+    const secretaryUserIds = secretaries.map(s => s.user ? s.user.user_id : null).filter(Boolean);
+
+    // Get all activity logs from these secretaries
+    const allLogs = Storage.getAll(KEYS.ACTIVITY_LOGS) || [];
+    const secLogs = allLogs
+      .filter(log => secretaryUserIds.includes(log.user_id))
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    const bmInfo = Storage.getBMWithTermInfo(bmData.bm_id);
+
+    let html = `
+      <div class="mb-lg">
+        <h2 class="mb-xs">Secretary Activity Logs</h2>
+        <p class="text-muted">
+          View all actions performed by your assigned secretaries
+          ${bmInfo ? ` · <span class="badge badge-info">${bmInfo.term_badge}</span>` : ''}
+          ${bmInfo && bmInfo.is_reelected ? '<span class="badge badge-accent ml-xs">Re-elected</span>' : ''}
+        </p>
+      </div>
+
+      <div class="grid-2-col gap-md mb-lg">
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">${Icons.render('users', 22)}</div>
+          <div class="stat-label">Assigned Secretaries</div>
+          <div class="stat-value">${secretaries.length}</div>
+        </div>
+        <div class="stat-card stat-card-teal">
+          <div class="stat-icon stat-icon-teal">${Icons.render('activity', 22)}</div>
+          <div class="stat-label">Total Actions</div>
+          <div class="stat-value">${secLogs.length}</div>
+        </div>
+      </div>
+
+      ${secretaries.length > 0 ? `
+        <div class="card mb-lg">
+          <div class="card-header">
+            <h3 class="card-title">My Secretaries</h3>
+          </div>
+          <div class="card-body">
+            <div class="d-flex gap-md flex-wrap">
+              ${secretaries.map(s => `
+                <div class="badge badge-info" style="padding: 8px 16px; font-size: var(--text-sm);">
+                  ${Icons.render('user', 14)} ${s.user ? Utils.escapeHtml(s.user.full_name) : 'Unknown'}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      ${secLogs.length > 0 ? `
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Activity History</h3>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Secretary</th>
+                  <th>Action</th>
+                  <th>Type</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${secLogs.slice(0, 100).map(log => `
+                  <tr>
+                    <td class="text-sm">${Utils.formatDateTime(log.created_at)}</td>
+                    <td><strong>${Utils.escapeHtml(log.user_name || 'Unknown')}</strong></td>
+                    <td>${Utils.escapeHtml(log.action)}</td>
+                    <td><span class="badge badge-${log.action_type === 'create' ? 'success' : log.action_type === 'delete' ? 'danger' : 'info'}">${log.action_type || 'action'}</span></td>
+                    <td class="text-sm text-muted">${Utils.escapeHtml(log.details || '—')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ` : `
+        <div class="empty-state">
+          <div class="empty-state-icon">${Icons.render('activity', 48)}</div>
+          <h3 class="empty-state-title">No Secretary Activity Yet</h3>
+          <p class="empty-state-text">Activity logs from your assigned secretaries will appear here.</p>
+        </div>
+      `}
+    `;
+
+    container.innerHTML = html;
+  },
+
+  // ─── Archives Page (Past Term Records) ────────────────────────────────────
+  initArchives() {
+    const container = document.getElementById('archives-content');
+    if (!container) return;
+
+    const user = Auth.getCurrentUser();
+    const bmData = Auth.getCurrentBMData();
+    if (!bmData) {
+      container.innerHTML = '<p class="text-muted">Board member data not found.</p>';
+      return;
+    }
+
+    const bmInfo = Storage.getBMWithTermInfo(bmData.bm_id);
+    const terms = bmData.terms || [{ term_number: bmData.current_term_number || 1, term_start: bmData.term_start, term_end: bmData.term_end, status: 'active' }];
+
+    // Get archived FA/PA records
+    const archivedFA = Storage.getAll(KEYS.FA_RECORDS).filter(r => r.bm_id === bmData.bm_id && r.is_archived);
+    const archivedPA = Storage.getAll(KEYS.PA_RECORDS).filter(r => r.bm_id === bmData.bm_id && r.is_archived);
+
+    let html = `
+      <div class="mb-lg">
+        <h2 class="mb-xs">Past Term Archives</h2>
+        <p class="text-muted">
+          View records from your previous terms
+          ${bmInfo ? ` · <span class="badge badge-info">${bmInfo.term_badge}</span>` : ''}
+          ${bmInfo && bmInfo.is_reelected ? '<span class="badge badge-accent ml-xs">Re-elected</span>' : ''}
+        </p>
+      </div>
+
+      <div class="grid-3-col gap-md mb-lg">
+        <div class="stat-card stat-card-blue">
+          <div class="stat-icon stat-icon-blue">${Icons.render('calendar', 22)}</div>
+          <div class="stat-label">Total Terms</div>
+          <div class="stat-value">${terms.length}</div>
+        </div>
+        <div class="stat-card stat-card-teal">
+          <div class="stat-icon stat-icon-teal">${Icons.render('file-text', 22)}</div>
+          <div class="stat-label">Archived FA Records</div>
+          <div class="stat-value">${archivedFA.length}</div>
+        </div>
+        <div class="stat-card stat-card-amber">
+          <div class="stat-icon stat-icon-amber">${Icons.render('clipboard-list', 22)}</div>
+          <div class="stat-label">Archived PA Records</div>
+          <div class="stat-value">${archivedPA.length}</div>
+        </div>
+      </div>
+
+      <div class="card mb-lg">
+        <div class="card-header">
+          <h3 class="card-title">Term History</h3>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr><th>Term</th><th>Start</th><th>End</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              ${terms.map(t => `
+                <tr>
+                  <td><span class="badge badge-info">${Utils.ordinal ? Utils.ordinal(t.term_number) : t.term_number} Term</span></td>
+                  <td>${Utils.formatDate(t.term_start)}</td>
+                  <td>${Utils.formatDate(t.term_end)}</td>
+                  <td><span class="badge badge-${t.status === 'active' ? 'success' : 'neutral'}">${t.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      ${archivedFA.length > 0 ? `
+        <div class="card mb-lg">
+          <div class="card-header">
+            <h3 class="card-title">Archived Financial Assistance Records</h3>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr><th>ID</th><th>Beneficiary</th><th>Category</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                ${archivedFA.map(r => {
+                  const cat = Storage.getById(KEYS.FA_CATEGORIES, r.case_type_id, 'id');
+                  return `
+                    <tr>
+                      <td class="text-sm">${r.fa_id}</td>
+                      <td><strong>${Utils.escapeHtml(r.patient_name)}</strong></td>
+                      <td>${cat ? Utils.escapeHtml(cat.name) : r.case_type_custom || '—'}</td>
+                      <td>${Utils.formatCurrency(r.amount_approved || 0)}</td>
+                      <td><span class="badge badge-${r.status === 'Successful' ? 'success' : 'warning'}">${r.status}</span></td>
+                      <td class="text-sm">${Utils.formatDate(r.created_at)}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ` : ''}
+
+      ${archivedPA.length > 0 ? `
+        <div class="card mb-lg">
+          <div class="card-header">
+            <h3 class="card-title">Archived Personal Assistance Records</h3>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr><th>ID</th><th>Client</th><th>Category</th><th>Amount</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                ${archivedPA.map(r => {
+                  const cat = Storage.getById(KEYS.PA_CATEGORIES, r.category_id, 'id');
+                  return `
+                    <tr>
+                      <td class="text-sm">${r.pa_id}</td>
+                      <td><strong>${Utils.escapeHtml(r.client_name)}</strong></td>
+                      <td>${cat ? Utils.escapeHtml(cat.name) : '—'}</td>
+                      <td>${Utils.formatCurrency(r.amount_provided || 0)}</td>
+                      <td class="text-sm">${Utils.formatDate(r.created_at)}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ` : ''}
+
+      ${archivedFA.length === 0 && archivedPA.length === 0 ? `
+        <div class="empty-state">
+          <div class="empty-state-icon">${Icons.render('archive', 48)}</div>
+          <h3 class="empty-state-title">No Archived Records</h3>
+          <p class="empty-state-text">Records from previous terms will appear here after term archival is completed.</p>
+        </div>
+      ` : ''}
+    `;
+
+    container.innerHTML = html;
   }
 };
