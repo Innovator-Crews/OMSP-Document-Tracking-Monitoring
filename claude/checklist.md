@@ -78,54 +78,53 @@
 - ✅ "My PA Budget" sidebar link for board_member role
 - ✅ `credit-card` icon added to icons.js
 
-## Phase 6: SysAdmin CRUD, BM Enhancements, Frequency & Incoming Letters 🔧
-- ⬜ `claude/roles.md` created — comprehensive role documentation
-- ⬜ `claude/LIVING-CONTEXT.md` updated with session changes
-- ⬜ `claude/checklist.md` updated with Phase 6 items
+## Phase 6: SysAdmin CRUD, BM Enhancements, Frequency & Incoming Letters ✅
+- ✅ `claude/roles.md` created — comprehensive role documentation
+- ✅ `claude/LIVING-CONTEXT.md` updated with session changes
+- ✅ `claude/checklist.md` updated with Phase 6 items
 
-### 6A: SysAdmin Full CRUD
-- ⬜ SysAdmin: Add Board Member (modal form, generates user + BM record + empty budgets)
-- ⬜ SysAdmin: Edit Board Member (name, district, contact info)
-- ⬜ SysAdmin: Deactivate Board Member (soft-delete, preserves records)
-- ⬜ SysAdmin: Add Staff (modal form, generates user + staff record)
-- ⬜ SysAdmin: Edit Staff (name, position, contact info)
-- ⬜ SysAdmin: Deactivate Staff (soft-delete, preserves records)
-- ⬜ SysAdmin: Assign/Reassign Secretary to Board Member
-- ⬜ SysAdmin: Activity logging for all CRUD actions
+### 6A: SysAdmin Full CRUD ✅
+- ✅ SysAdmin: Add Board Member (modal form, generates user + BM record + empty budgets)
+- ✅ SysAdmin: Edit Board Member (name, district, contact info)
+- ✅ SysAdmin: Deactivate Board Member (soft-delete, preserves records)
+- ✅ SysAdmin: Add Staff (modal form, generates user + staff record)
+- ✅ SysAdmin: Edit Staff (name, position, contact info)
+- ✅ SysAdmin: Deactivate Staff (soft-delete, preserves records)
+- ✅ SysAdmin: Assign/Reassign Secretary to Board Member
+- ✅ SysAdmin: Activity logging for all CRUD actions
 
-### 6B: Board Member Enhancements
-- ⬜ Term badges (1st Term / 2nd Term / 3rd Term) — computed from `board_members[].terms[]` length
-- ⬜ Re-elected badge — shown when BM has >1 term
-- ⬜ BM: View Secretary Activity Logs page (`boardmember/secretary-logs.html`)
-- ⬜ BM: Archives page to view past-term FA/PA records (`boardmember/archives.html`)
-- ⬜ BM sidebar: Add Secretary Logs + Archives links, remove Global Search
+### 6B: Board Member Enhancements ✅
+- ✅ Term badges (1st Term / 2nd Term / 3rd Term) — computed from `board_members[].terms[]` length
+- ✅ Re-elected badge — shown when BM has >1 term
+- ✅ BM: View Secretary Activity Logs page (`boardmember/secretary-logs.html`)
+- ✅ BM: Archives page to view past-term FA/PA records (`boardmember/archives.html`)
+- ✅ BM sidebar: Add Secretary Logs + Archives links, remove Global Search
 
-### 6C: Frequency & Cross-BM Tracking
-- ⬜ FA list table: Add frequency column with badge per beneficiary
-- ⬜ PA list table: Add frequency column with badge per beneficiary
-- ⬜ PA detail modal: Show frequency badge
-- ⬜ Cross-BM alert: Banner in FA/PA new record forms when beneficiary got aid from other BMs
-- ⬜ Cross-BM alert: Flagged row indicator in FA/PA list tables
-- ⬜ Cross-BM alert: Dashboard section showing flagged beneficiaries
-- ⬜ Cross-BM alert: Search results show cross-BM info
+### 6C: Frequency & Cross-BM Tracking ✅
+- ✅ FA list table: Add frequency column with badge per beneficiary
+- ✅ PA list table: Add frequency column with badge per beneficiary
+- ✅ Cross-BM alert: Banner in FA/PA new record forms when beneficiary got aid from other BMs
+- ✅ Cross-BM alert: Flagged row indicator in FA/PA list tables (`.row-flagged` CSS)
+- ✅ Cross-BM alert: Dashboard section showing flagged beneficiaries (secretary dashboard)
+- ✅ Cross-BM alert: Search results show cross-BM info (beneficiary result cards)
 
-### 6D: Incoming Letters Module (NEW)
-- ⬜ Data model: `INCOMING_LETTERS` localStorage key + CRUD methods in `storage.js`
-- ⬜ Seed data: Sample incoming letters for demo
-- ⬜ New page: `pages/incoming-list.html` — list with filters
-- ⬜ New page: `pages/incoming-new.html` — create form
-- ⬜ New CSS: `assets/css/pages/incoming.css`
-- ⬜ New module: `assets/js/modules/incoming-module.js`
-- ⬜ Fields: date_received, name, address, event, purpose, action_taken, date_of_event, date_released, concerned_office, remarks
-- ⬜ Categories: Cultural Activities, Solicitations, Invitation Letters
-- ⬜ Router: Add Incoming Letters links for secretary & staff sidebar
-- ⬜ App.js: Add route dispatch for incoming pages
-- ⬜ Auth: Add permissions for incoming letters
+### 6D: Incoming Letters Module (NEW) ✅
+- ✅ Data model: `INCOMING_LETTERS` localStorage key + CRUD methods in `storage.js`
+- ✅ Seed data: 3 sample incoming letters for demo
+- ✅ New page: `pages/incoming-list.html` — list with filters, stat cards, export
+- ✅ New page: `pages/incoming-new.html` — create form with all fields
+- ✅ New CSS: `assets/css/pages/incoming.css`
+- ✅ New module: `assets/js/modules/incoming-module.js` (list, detail modal, edit modal, new form)
+- ✅ Fields: date_received, sender_name, sender_address, event, purpose, action_taken, date_of_event, date_released, concerned_office, remarks
+- ✅ Categories: Cultural Activities, Solicitations, Invitation Letters
+- ✅ Router: Incoming Letters links for secretary & sysadmin sidebar
+- ✅ App.js: Route dispatch for incoming-new, incoming-list
+- ✅ Auth: Secretary creates, SysAdmin views, BM views (read-only)
 
-### 6E: Search Archives
-- ⬜ New page: Search Archives (`pages/search-archives.html`) — searches across archived term records
-- ⬜ Global Search: Limited to current term records only
-- ⬜ Secretary sidebar: Add Search Archives link, fix missing Budget Overview link
+### 6E: Search Archives ✅
+- ✅ New page: Search Archives (`pages/search-archives.html`) — searches across archived FA, PA, and incoming letters
+- ✅ SearchModule.initArchives() — full search with type toggles (all/FA/PA/letters)
+- ✅ Secretary sidebar: Search Archives link added
 
 ---
 
