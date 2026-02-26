@@ -1,14 +1,14 @@
 # OMSP Tracker — Living Context Document
 
 > **Purpose:** This is a living reference that Claude reads before every change and updates after every session.  
-> **Last updated:** 2026-02-25  
-> **Session:** Landing page design improvements + initial system audit
+> **Last updated:** 2026-02-26  
+> **Session:** SysAdmin CRUD, BM enhancements, Frequency tracking, Incoming Letters module
 
 ---
 
 ## 1. SYSTEM OVERVIEW
 
-**What it is:** A document tracking & monitoring system for the Office of the Majority & Secretary of the Panlalawigan (OMSP), Province of Bataan. Tracks Financial Assistance (FA) and Personal Assistance (PA) records for 12 Board Members.
+**What it is:** A document tracking & monitoring system for the Office of the Majority & Secretary of the Panlalawigan (OMSP), Province of Bataan. Tracks Financial Assistance (FA), Personal Assistance (PA), and Incoming Letters for 12 Board Members.
 
 **Tech stack:** Static HTML/CSS/JS (vanilla ES6+), localStorage for data, deployed on Vercel.  
 **Future:** localStorage → Firebase after MVP supervisor feedback.
@@ -21,9 +21,9 @@
 
 | Role | Login Page | Can Create | Can View | Special Powers | Demo Creds |
 |------|-----------|-----------|---------|----------------|------------|
-| **SysAdmin** | `sysadmin/login.html` | Nothing (read-only) | ALL data | Manage users, approve archives, manage terms, make categories permanent | `admin@omsp.gov.ph` / `admin123` |
-| **Board Member** | `pages/login.html` | Nothing | Own FA/PA + own budget | Edit own FA base budget, manage own PA budget pool, request term archive, approve "skip waiting" | `cruz@omsp.gov.ph` / `bm123` |
-| **Secretary** | `pages/login.html` | FA + PA records | Assigned BMs' FA, ALL PA | Add custom categories, export data | `secretary1@omsp.gov.ph` / `sec123` |
+| **SysAdmin** | `sysadmin/login.html` | Users, Assignments | ALL data | CRUD BMs & staff, approve archives, manage terms, make categories permanent | `admin@omsp.gov.ph` / `admin123` |
+| **Board Member** | `pages/login.html` | Budget entries only | Own FA/PA/Letters + own budget | Edit own FA base budget, manage own PA budget pool, request term archive, view secretary logs, browse archives | `cruz@omsp.gov.ph` / `bm123` |
+| **Secretary** | `pages/login.html` | FA + PA + Incoming Letters | Assigned BMs' FA, ALL PA, assigned Letters | Add custom categories, export data | `secretary1@omsp.gov.ph` / `sec123` |
 
 ### Critical access rules:
 - **FA is PRIVATE** — only the BM's assigned secretary + that BM + SysAdmin can see FA records
@@ -199,19 +199,21 @@ staff/js/staff.js                   ← Staff utility helpers
 
 ---
 
-## 9. QUESTIONS FOR THE USER (Endpoints needing clarification)
+## 9. RESOLVED QUESTIONS
 
-1. **SysAdmin user management:** The sysadmin pages (`bm-management.html`, `staff-management.html`) currently seem read-only. Should I implement full CRUD (add/edit/deactivate board members and staff) or is that already done and I'm missing it?
+1. **SysAdmin user management:** ✅ RESOLVED — Implementing full CRUD (Add/Edit/Deactivate) for BMs and Staff.
+2. **Secretary ↔ BM assignment UI:** ✅ RESOLVED — Building assignment management into Staff Management page.
+3. **Re-election concept:** ✅ RESOLVED — Same account re-used. BM gets "Re-elected" badge + archives page for past terms.
+4. **Term history for BM:** ✅ RESOLVED — Dedicated Archives page with FA/PA/Letters grouped by term.
+5. **Frequency badges in lists:** ✅ RESOLVED — New column in FA/PA tables + which BMs gave assistance.
+6. **Cross-BM alert:** ✅ RESOLVED — All of the above: (a) list row badge, (b) form warning, (c) dashboard section, (d) search results.
+7. **Global search scope:** ✅ RESOLVED — Global Search = current term only. Separate "Search Archives" for all terms.
 
-2. **Secretary ↔ BM assignment UI:** How does a SysAdmin assign a secretary to a board member? Is there a UI for this or is it seed-data only for now?
-
-3. **Board Member "skip waiting" approval flow:** Where does the BM approve a secretary's request to skip the cooling-off period? Is it a notification/modal on their dashboard, or a separate page?
-
-4. **PA transparency scope:** "All secretaries see all PA records" — does this mean secretaries from ALL board members, or only active/non-archived ones?
-
-5. **Login page redesign:** What specific improvements do you want for the admin, board member, and staff login pages? Same structural layout but better visuals? Or a complete redesign? Any specific branding/color direction?
-
-6. **Mobile sidebar behavior:** Currently at ≤768px the collapse button is hidden. Does the sidebar become a hamburger slide-out, or is it always visible on mobile?
+### Still open:
+- **Board Member "skip waiting" approval flow:** Where does the BM approve? Notification/modal on dashboard or separate page?
+- **PA transparency scope:** Secretaries from ALL board members, or only active/non-archived ones?
+- **Login page redesign:** Specific improvements wanted? Same layout + better visuals, or full redesign?
+- **Mobile sidebar behavior:** Hamburger slide-out, or always visible?
 
 ---
 
@@ -228,14 +230,40 @@ staff/js/staff.js                   ← Staff utility helpers
 | 2026-02-25 | Mobile stat grid keeps 3 columns (reduced padding) vs orphan | `assets/css/pages/landing.css` |
 | 2026-02-25 | CTA section gets mesh gradient + conic-gradient pattern | `assets/css/pages/landing.css` |
 | 2026-02-25 | Created this living context document | `claude/LIVING-CONTEXT.md` |
+| 2026-02-26 | Created `claude/roles.md` — full role interaction docs | `claude/roles.md` |
+| 2026-02-26 | SysAdmin CRUD: Add/Edit/Deactivate BMs with modals | `sysadmin/js/sysadmin.js` |
+| 2026-02-26 | SysAdmin CRUD: Add/Edit/Deactivate Staff + assignment mgmt | `sysadmin/js/sysadmin.js` |
+| 2026-02-26 | BM: Term badge + Re-elected badge on dashboard/sidebar | Multiple |
+| 2026-02-26 | BM: Secretary activity logs page | `boardmember/` |
+| 2026-02-26 | BM: Archives page for past term records | `boardmember/` |
+| 2026-02-26 | Frequency badges in FA/PA list tables + cross-BM info | `fa-module.js`, `pa-module.js` |
+| 2026-02-26 | Cross-BM alerts: list rows, form banners, dashboard section | Multiple |
+| 2026-02-26 | Incoming Letters module (new feature) | New files |
+| 2026-02-26 | Storage: added INCOMING_LETTERS key + seed data | `storage.js` |
+| 2026-02-26 | Router: updated sidebar nav for all roles + new pages | `router.js` |
 
 ---
 
-## 11. NEXT PLANNED WORK
+## 11. CURRENT SESSION WORK (2026-02-26)
+
+- [x] Create `claude/roles.md` documentation
+- [x] Update LIVING-CONTEXT.md & checklist.md
+- [ ] SysAdmin CRUD: Full Add/Edit/Deactivate for BMs
+- [ ] SysAdmin CRUD: Full Add/Edit/Deactivate for Staff + assignment UI
+- [ ] BM: Term badges (1st/2nd/3rd) + Re-elected badge
+- [ ] BM: Secretary activity logs page
+- [ ] BM: Archives page for past term records
+- [ ] Frequency badges in FA/PA list tables + cross-BM info
+- [ ] Cross-BM alerts (list rows, form banners, dashboard flagged section)
+- [ ] Incoming Letters module (new feature — Cultural Activities / Solicitations / Invitation Letters)
+- [ ] Storage: new key INCOMING_LETTERS + data model + seed data
+- [ ] Router: update sidebar nav for all roles + new pages
+- [ ] Search Archives feature (separate from Global Search)
+
+## 12. FUTURE WORK
 
 - [ ] Improve login pages (admin, board member, staff) — design + UX polish
 - [ ] Add role guards to sysadmin/ and boardmember/ pages
 - [ ] Fix `created_by` vs `encoded_by` field mismatch in staff.js
-- [ ] Wire SysAdmin CRUD for board member & staff management
-- [ ] Address Board Member sidebar showing Global Search (permission mismatch)
-- [ ] Add Budget link to Secretary sidebar nav
+- [ ] Page-by-page quality audit (Phase 5 checklist)
+- [ ] Responsive verification on all authenticated pages

@@ -78,9 +78,58 @@
 - ✅ "My PA Budget" sidebar link for board_member role
 - ✅ `credit-card` icon added to icons.js
 
+## Phase 6: SysAdmin CRUD, BM Enhancements, Frequency & Incoming Letters 🔧
+- ⬜ `claude/roles.md` created — comprehensive role documentation
+- ⬜ `claude/LIVING-CONTEXT.md` updated with session changes
+- ⬜ `claude/checklist.md` updated with Phase 6 items
+
+### 6A: SysAdmin Full CRUD
+- ⬜ SysAdmin: Add Board Member (modal form, generates user + BM record + empty budgets)
+- ⬜ SysAdmin: Edit Board Member (name, district, contact info)
+- ⬜ SysAdmin: Deactivate Board Member (soft-delete, preserves records)
+- ⬜ SysAdmin: Add Staff (modal form, generates user + staff record)
+- ⬜ SysAdmin: Edit Staff (name, position, contact info)
+- ⬜ SysAdmin: Deactivate Staff (soft-delete, preserves records)
+- ⬜ SysAdmin: Assign/Reassign Secretary to Board Member
+- ⬜ SysAdmin: Activity logging for all CRUD actions
+
+### 6B: Board Member Enhancements
+- ⬜ Term badges (1st Term / 2nd Term / 3rd Term) — computed from `board_members[].terms[]` length
+- ⬜ Re-elected badge — shown when BM has >1 term
+- ⬜ BM: View Secretary Activity Logs page (`boardmember/secretary-logs.html`)
+- ⬜ BM: Archives page to view past-term FA/PA records (`boardmember/archives.html`)
+- ⬜ BM sidebar: Add Secretary Logs + Archives links, remove Global Search
+
+### 6C: Frequency & Cross-BM Tracking
+- ⬜ FA list table: Add frequency column with badge per beneficiary
+- ⬜ PA list table: Add frequency column with badge per beneficiary
+- ⬜ PA detail modal: Show frequency badge
+- ⬜ Cross-BM alert: Banner in FA/PA new record forms when beneficiary got aid from other BMs
+- ⬜ Cross-BM alert: Flagged row indicator in FA/PA list tables
+- ⬜ Cross-BM alert: Dashboard section showing flagged beneficiaries
+- ⬜ Cross-BM alert: Search results show cross-BM info
+
+### 6D: Incoming Letters Module (NEW)
+- ⬜ Data model: `INCOMING_LETTERS` localStorage key + CRUD methods in `storage.js`
+- ⬜ Seed data: Sample incoming letters for demo
+- ⬜ New page: `pages/incoming-list.html` — list with filters
+- ⬜ New page: `pages/incoming-new.html` — create form
+- ⬜ New CSS: `assets/css/pages/incoming.css`
+- ⬜ New module: `assets/js/modules/incoming-module.js`
+- ⬜ Fields: date_received, name, address, event, purpose, action_taken, date_of_event, date_released, concerned_office, remarks
+- ⬜ Categories: Cultural Activities, Solicitations, Invitation Letters
+- ⬜ Router: Add Incoming Letters links for secretary & staff sidebar
+- ⬜ App.js: Add route dispatch for incoming pages
+- ⬜ Auth: Add permissions for incoming letters
+
+### 6E: Search Archives
+- ⬜ New page: Search Archives (`pages/search-archives.html`) — searches across archived term records
+- ⬜ Global Search: Limited to current term records only
+- ⬜ Secretary sidebar: Add Search Archives link, fix missing Budget Overview link
+
 ---
 
-## Phase 5: Page-by-Page Quality Audit
+## Phase 7: Page-by-Page Quality Audit
 
 Each page must pass: **HTML structure** ✔ | **CSS styling** ✔ | **JS wiring** ✔ | **Responsive** ✔ | **Overflow-safe** ✔
 
@@ -117,16 +166,25 @@ Each page must pass: **HTML structure** ✔ | **CSS styling** ✔ | **JS wiring*
 |---|------|------|-----|-----------|------------|--------|
 | 17 | My FA Budget | `boardmember/my-fa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
 | 18 | My PA Budget | `boardmember/my-pa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+| 19 | Secretary Logs | `boardmember/secretary-logs.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+| 20 | Archives | `boardmember/archives.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+
+### Authenticated Pages — Secretary/Staff (New)
+| # | Page | HTML | CSS | JS Module | Responsive | Status |
+|---|------|------|-----|-----------|------------|--------|
+| 21 | Incoming Letters List | `pages/incoming-list.html` | `incoming.css` | `incoming-module.js` | 320–1440px | ⬜ |
+| 22 | Incoming Letters New | `pages/incoming-new.html` | `forms.css` + `incoming.css` | `incoming-module.js` | 320–1440px | ⬜ |
+| 23 | Search Archives | `pages/search-archives.html` | `search.css` | `search-module.js` | 320–1440px | ⬜ |
 
 ### Shared Infrastructure (verified across all pages)
 | # | Component | Files | Status |
 |---|-----------|-------|--------|
-| 19 | Sidebar navigation + collapse | `layout.css` + `router.js` + `app.js` | ⬜ |
-| 20 | Icons system | `icons.js` (90+ icons incl. credit-card) + `main.css` | ⬜ |
-| 21 | Modals & toasts | `components.css` + `notifications.js` | ⬜ |
-| 22 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ⬜ |
-| 23 | Sidebar profile + logout | `layout.css` (.sidebar-profile, .sidebar-logout) | ⬜ |
-| 24 | Pagination + Empty states | `utils.js` (paginate, renderPagination, renderEmptyState) | ⬜ |
+| 24 | Sidebar navigation + collapse | `layout.css` + `router.js` + `app.js` | ⬜ |
+| 25 | Icons system | `icons.js` (90+ icons incl. credit-card) + `main.css` | ⬜ |
+| 26 | Modals & toasts | `components.css` + `notifications.js` | ⬜ |
+| 27 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ⬜ |
+| 28 | Sidebar profile + logout | `layout.css` (.sidebar-profile, .sidebar-logout) | ⬜ |
+| 29 | Pagination + Empty states | `utils.js` (paginate, renderPagination, renderEmptyState) | ⬜ |
 
 ---
 
