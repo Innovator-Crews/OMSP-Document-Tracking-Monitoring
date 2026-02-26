@@ -11,6 +11,13 @@
   min-height: 100vh;
   background: var(--neutral-50);
   overflow-x: hidden;
+  position: relative;
+}
+
+.login-promo,
+.login-form-panel {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── LEFT: Promotional Panel ─────────────────────────────── */
@@ -20,7 +27,9 @@
   flex-direction: column;
   justify-content: center;
   padding: var(--space-12) var(--space-10);
-  background: linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 50%, var(--secondary-700) 100%);
+  background:
+    linear-gradient(135deg, rgba(30, 58, 138, 0.92) 0%, rgba(29, 78, 216, 0.88) 50%, rgba(3, 105, 161, 0.90) 100%),
+    url('../../assets/images/TheBunker-bg.jpg') center / cover no-repeat;
   color: #fff;
   position: relative;
   overflow: hidden;

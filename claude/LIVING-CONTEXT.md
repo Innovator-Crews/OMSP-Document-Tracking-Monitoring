@@ -23,7 +23,7 @@
 |------|-----------|-----------|---------|----------------|------------|
 | **SysAdmin** | `sysadmin/login.html` | Users, Assignments | ALL data | CRUD BMs & staff, approve archives, manage terms, make categories permanent | `admin@omsp.gov.ph` / `admin123` |
 | **Board Member** | `pages/login.html` | Budget entries only | Own FA/PA/Letters + own budget | Edit own FA base budget, manage own PA budget pool, request term archive, view secretary logs, browse archives | `cruz@omsp.gov.ph` / `bm123` |
-| **Secretary** | `pages/login.html` | FA + PA + Incoming Letters | Assigned BMs' FA, ALL PA, assigned Letters | Add custom categories, export data | `secretary1@omsp.gov.ph` / `sec123` |
+| **Secretary** | `pages/login.html` | FA + PA + Incoming Letters | Assigned BMs' FA + PA, assigned Letters | Add custom categories, export data | `secretary1@omsp.gov.ph` / `sec123` |
 
 ### Critical access rules:
 - **FA is PRIVATE** — only the BM's assigned secretary + that BM + SysAdmin can see FA records
@@ -210,10 +210,14 @@ staff/js/staff.js                   ← Staff utility helpers
 7. **Global search scope:** ✅ RESOLVED — Global Search = current term only. Separate "Search Archives" for all terms.
 
 ### Still open:
-- **Board Member "skip waiting" approval flow:** Where does the BM approve? Notification/modal on dashboard or separate page?
-- **PA transparency scope:** Secretaries from ALL board members, or only active/non-archived ones?
-- **Login page redesign:** Specific improvements wanted? Same layout + better visuals, or full redesign?
-- **Mobile sidebar behavior:** Hamburger slide-out, or always visible?
+8. **Board Member "skip waiting" approval flow:** ✅ RESOLVED — BM approves in person. No notification/modal needed.
+9. **PA transparency scope:** ✅ RESOLVED — PA is now scoped to assigned BMs only (not all). Archives accessible when staff wants to check past records.
+10. **Login page redesign:** 🔧 PENDING — User wants better visuals with building shadow/opacity effect. Will provide reference photo.
+11. **Mobile sidebar behavior:** ✅ RESOLVED — Hamburger slide-out explained. User will confirm preference.
+
+### Policy changes (this session):
+- **PA scope changed:** Secretaries now see PA only for their assigned BMs (was previously all active BMs).
+- **Cooldown tracking added:** Both FA and PA now record `cooldown_months`, `date_requested`, `remarks`, and display cooldown status badges.
 
 ---
 
@@ -241,6 +245,13 @@ staff/js/staff.js                   ← Staff utility helpers
 | 2026-02-26 | Incoming Letters module (new feature) | New files |
 | 2026-02-26 | Storage: added INCOMING_LETTERS key + seed data | `storage.js` |
 | 2026-02-26 | Router: updated sidebar nav for all roles + new pages | `router.js` |
+| 2026-02-27 | PA scope: changed from transparent to assigned-BM-only | `pa-module.js`, `auth.js` |
+| 2026-02-27 | Sidebar: header padding 12px, removed border-top accent | `layout.css` |
+| 2026-02-27 | Sidebar: removed "Records" from nav labels, added collapsed dividers | `router.js`, `layout.css` |
+| 2026-02-27 | FA/PA: fixed table column order mismatch with HTML headers | `fa-module.js`, `pa-module.js` |
+| 2026-02-27 | Modal: redesigned detail grid (2-col borders, sections, status pills) | `components.css`, `fa-module.js`, `pa-module.js` |
+| 2026-02-27 | Cooldown tracking: added cooldown_months, date_requested, remarks | `fa-module.js`, `pa-module.js`, `utils.js`, `storage.js` |
+| 2026-02-27 | FA/PA forms: cooldown period buttons, date requested, remarks fields | `fa-new.html`, `pa-new.html` |
 
 ---
 

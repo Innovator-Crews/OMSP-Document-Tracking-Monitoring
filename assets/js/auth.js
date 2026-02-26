@@ -239,9 +239,9 @@ const Auth = {
       secretary: {
         view_dashboard: true,
         create_fa: true,     // For assigned BMs
-        create_pa: true,     // All PA is transparent
+        create_pa: true,     // For assigned BMs
         view_fa: true,       // Assigned BMs' FA only
-        view_pa: true,       // All PA (transparent)
+        view_pa: true,       // Assigned BMs' PA only
         view_budget: true,   // Assigned BMs' budget
         global_search: true,
         manage_categories: true, // Custom categories

@@ -116,9 +116,21 @@ const App = {
     // Sidebar collapse toggle (desktop)
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
     if (collapseBtn && sidebar) {
-      // Restore collapse state
+      // Restore collapse state WITHOUT transition animation
       const isCollapsed = localStorage.getItem('omsp_sidebar_collapsed') === 'true';
-      if (isCollapsed) sidebar.classList.add('collapsed');
+      if (isCollapsed) {
+        // Add no-transition class to suppress ALL CSS transitions during restore
+        document.documentElement.classList.add('no-transition');
+        sidebar.classList.add('collapsed');
+        // Force reflow so the browser applies collapsed state immediately
+        sidebar.offsetHeight;
+        // Remove no-transition after the browser has fully painted
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            document.documentElement.classList.remove('no-transition');
+          });
+        });
+      }
 
       collapseBtn.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
@@ -659,4 +671,12 @@ const App = {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
+
+  // Global: close modals when clicking outside (on the overlay)
+  document.addEventListener('click', (e) => {
+    const overlay = e.target.closest('.modal-overlay');
+    if (overlay && e.target === overlay) {
+      overlay.remove();
+    }
+  });
 });

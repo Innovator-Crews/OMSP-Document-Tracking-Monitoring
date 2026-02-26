@@ -445,12 +445,15 @@ const FAModule = {
       amount_requested: amount,
       amount_approved: amount,
       bm_id: formData.bm_id,
+      cooldown_months: waitMonths,
       wait_duration_months: waitMonths,
       wait_duration_custom: customDuration,
+      date_requested: form.querySelector('#fa-date-requested')?.value || null,
       next_available_date: skipWaiting ? null : Utils.addMonths(new Date(), waitMonths),
       skip_waiting_period: skipWaiting,
       skip_reason: skipReason,
       skip_bm_noted: skipBMNoted,
+      remarks: form.querySelector('#fa-remarks')?.value?.trim() || null,
       encoded_by: user.user_id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -606,7 +609,7 @@ const FAModule = {
     if (records.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="8" class="text-center p-xl">
+          <td colspan="10" class="text-center p-xl">
             <div class="empty-state">
               <div class="empty-state-icon">${Icons.render('file-text', 32)}</div>
               <h3 class="empty-state-title">No Financial Assistance Records</h3>
@@ -640,6 +643,7 @@ const FAModule = {
 
       return `
         <tr${crossInfo.bm_count > 0 ? ' class="row-flagged"' : ''}>
+          <td>${Utils.formatDate(r.created_at)}</td>
           <td>
             <div class="d-flex align-center gap-xs">
               <strong>${Utils.escapeHtml(r.patient_name)}</strong>
@@ -647,11 +651,12 @@ const FAModule = {
             </div>
           </td>
           <td>${freqBadge}</td>
+          <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
           <td><span class="badge badge-category-${cat?.is_permanent ? 'permanent' : 'custom'}">${Utils.escapeHtml(categoryName)}</span></td>
           <td class="text-right">${Utils.formatCurrency(r.amount_approved)}</td>
-          <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
           <td><span class="badge badge-status-${Utils.getStatusClass(r.status)}">${r.status}</span></td>
-          <td>${Utils.formatDate(r.created_at)}</td>
+          <td>${r.date_requested ? Utils.formatDate(r.date_requested) : '—'}</td>
+          <td>${(() => { const cd = Utils.getCooldownStatus(r); return `<span class="badge ${cd.badgeClass}">${cd.label}</span>`; })()}</td>
           <td>
             <div class="d-flex gap-xs">
               <button class="btn btn-sm btn-ghost" onclick="FAModule.viewDetail('${r.fa_id}')" title="View">${Icons.render('eye', 16)}</button>
@@ -674,7 +679,7 @@ const FAModule = {
     if (countEl) countEl.textContent = `${totalRecords} record${totalRecords !== 1 ? 's' : ''}`;
 
     if (totalPages <= 1) {
-      paginationEl.innerHTML = '';
+      paginationEl.innerHTML = '<button class="pagination-btn active" disabled>1</button>';
       return;
     }
 
@@ -712,68 +717,95 @@ const FAModule = {
     const cat = Storage.getById(KEYS.FA_CATEGORIES, record.case_type_id, 'id');
     const categoryName = record.case_type_custom || (cat ? cat.name : 'Unknown');
     const freq = record.beneficiary_id ? Storage.getFrequencyLevel(record.beneficiary_id) : null;
+    const cooldown = Utils.getCooldownStatus(record);
 
     const html = `
-      <div class="modal-overlay active" id="fa-detail-modal">
-        <div class="modal animate-fade-in">
+      <div class="modal-overlay active" id="fa-detail-modal" onclick="this.remove()">
+        <div class="modal modal-lg animate-fade-in" onclick="event.stopPropagation()">
           <div class="modal-header">
-            <h3 class="modal-title">Financial Assistance Record Detail</h3>
+            <div>
+              <h3 class="modal-title">Financial Assistance Detail</h3>
+              <span class="modal-record-id">${record.fa_id}</span>
+            </div>
             <button class="modal-close" onclick="document.getElementById('fa-detail-modal').remove()">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" style="padding:0">
             <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label">Record ID</span>
-                <span class="detail-value">${record.fa_id}</span>
-              </div>
+              <div class="detail-section">Beneficiary Information</div>
               <div class="detail-item">
                 <span class="detail-label">Patient Name</span>
                 <span class="detail-value">${Utils.escapeHtml(record.patient_name)}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Category</span>
-                <span class="detail-value"><span class="badge badge-category-${cat?.is_permanent ? 'permanent' : 'custom'}">${Utils.escapeHtml(categoryName)}</span></span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Amount Approved</span>
-                <span class="detail-value text-primary font-semibold">${Utils.formatCurrency(record.amount_approved)}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Board Member</span>
                 <span class="detail-value">${Utils.escapeHtml(bmUser ? bmUser.full_name : '—')}</span>
               </div>
               <div class="detail-item">
+                <span class="detail-label">Category</span>
+                <span class="detail-value"><span class="badge badge-category-${cat?.is_permanent ? 'permanent' : 'custom'}">${Utils.escapeHtml(categoryName)}</span></span>
+              </div>
+              <div class="detail-item">
                 <span class="detail-label">Status</span>
-                <span class="detail-value"><span class="badge badge-status-${Utils.getStatusClass(record.status)}">${record.status}</span></span>
+                <span class="detail-value detail-status"><span class="badge badge-status-${Utils.getStatusClass(record.status)}">${record.status}</span></span>
+              </div>
+
+              <div class="detail-section">Financial Details</div>
+              <div class="detail-item">
+                <span class="detail-label">Amount Approved</span>
+                <span class="detail-value detail-amount">${Utils.formatCurrency(record.amount_approved)}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">Encoded By</span>
-                <span class="detail-value">${Utils.escapeHtml(encoder ? encoder.full_name : '—')}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Created</span>
+                <span class="detail-label">Date Created</span>
                 <span class="detail-value">${Utils.formatDate(record.created_at, 'datetime')}</span>
               </div>
+              ${record.date_requested ? `
               <div class="detail-item">
-                <span class="detail-label">Wait Duration</span>
-                <span class="detail-value">${record.wait_duration_months} months</span>
+                <span class="detail-label">Date Requested</span>
+                <span class="detail-value">${Utils.formatDate(record.date_requested)}</span>
+              </div>
+              ` : ''}
+
+              <div class="detail-section">Cooldown Period</div>
+              <div class="detail-item">
+                <span class="detail-label">Cooldown Duration</span>
+                <span class="detail-value">${record.cooldown_months || record.wait_duration_months || 3} months</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Next Available Date</span>
                 <span class="detail-value">${record.next_available_date ? Utils.formatDate(record.next_available_date) : 'No restriction'}</span>
               </div>
+              <div class="detail-item">
+                <span class="detail-label">Cooldown Status</span>
+                <span class="detail-value"><span class="badge ${cooldown.badgeClass}">${cooldown.label}</span></span>
+              </div>
               ${record.skip_waiting_period ? `
-              <div class="detail-item" style="grid-column: 1 / -1">
+              <div class="detail-item-full">
                 <span class="detail-label">Skip Reason</span>
                 <span class="detail-value">${Utils.escapeHtml(record.skip_reason || '—')}</span>
               </div>
               ` : ''}
               ${freq ? `
-              <div class="detail-item">
+              <div class="detail-item-full">
                 <span class="detail-label">Monthly Frequency</span>
                 <span class="detail-value"><span class="badge ${Utils.getFrequencyClass(freq.level)}">${freq.level} (${freq.total}x this month)</span></span>
               </div>
               ` : ''}
+              ${record.remarks ? `
+              <div class="detail-item-full">
+                <span class="detail-label">Remarks</span>
+                <span class="detail-value">${Utils.escapeHtml(record.remarks)}</span>
+              </div>
+              ` : ''}
+
+              <div class="detail-section">Record Info</div>
+              <div class="detail-item">
+                <span class="detail-label">Encoded By</span>
+                <span class="detail-value">${Utils.escapeHtml(encoder ? encoder.full_name : '—')}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Last Updated</span>
+                <span class="detail-value">${Utils.formatDate(record.updated_at || record.created_at, 'datetime')}</span>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -794,8 +826,8 @@ const FAModule = {
     if (!record) return;
 
     const html = `
-      <div class="modal-overlay active" id="fa-status-modal">
-        <div class="modal modal-sm animate-fade-in">
+      <div class="modal-overlay active" id="fa-status-modal" onclick="this.remove()">
+        <div class="modal modal-sm animate-fade-in" onclick="event.stopPropagation()">
           <div class="modal-header">
             <h3 class="modal-title">Update Status</h3>
             <button class="modal-close" onclick="document.getElementById('fa-status-modal').remove()">&times;</button>

@@ -3,8 +3,8 @@
  * OMSP Document Tracking / Monitoring
  * PA Module - Personal Assistance (from BM's own pocket)
  * ============================================================
- * PA is TRANSPARENT:
- * - All secretaries can see all PA records
+ * PA VISIBILITY:
+ * - Secretaries can see PA for their assigned BMs only
  * - Board Members see only their own PA
  * - SysAdmin can see all PA
  * ============================================================
@@ -42,8 +42,8 @@ const PAModule = {
     const select = document.getElementById('pa-bm');
     if (!select) return;
 
-    // PA can be created for any active BM (transparent)
-    const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
+    // PA can only be created for assigned BMs
+    const bms = Auth.getAssignedBMs();
     select.innerHTML = '<option value="">Select Board Member</option>';
 
     bms.forEach(bm => {
@@ -138,6 +138,19 @@ const PAModule = {
       }, 500));
     }
 
+    // Cooldown duration buttons
+    const durationBtns = document.querySelectorAll('[data-duration]');
+    durationBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        durationBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const customInput = document.getElementById('pa-duration-custom-value');
+        if (customInput) {
+          customInput.style.display = btn.dataset.duration === 'custom' ? 'block' : 'none';
+        }
+      });
+    });
+
     // Skip waiting section
     const skipCheckbox = document.getElementById('pa-skip-waiting');
     if (skipCheckbox) {
@@ -198,10 +211,54 @@ const PAModule = {
     const dupeEl = document.getElementById('pa-duplicate-warning');
     if (dupeEl) dupeEl.style.display = 'none';
 
-    // Check cross-BM info
+    // Check cooling period & cross-BM info
+    this.checkCoolingPeriod(beneficiaryId);
     this.checkCrossBM(beneficiaryId);
 
     Notifications.info(`Selected: ${ben.full_name}`);
+  },
+
+  /**
+   * Check cooling period for a beneficiary with the selected BM
+   */
+  checkCoolingPeriod(beneficiaryId) {
+    const bmId = document.getElementById('pa-bm')?.value;
+    if (!bmId || !beneficiaryId) return;
+
+    const lastPA = Storage.getAll(KEYS.PA_RECORDS)
+      .filter(r => r.beneficiary_id === beneficiaryId && r.bm_id === bmId && !r.is_archived)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
+    let coolingEl = document.getElementById('pa-cooling-period-check');
+    if (!coolingEl) {
+      coolingEl = document.createElement('div');
+      coolingEl.id = 'pa-cooling-period-check';
+      coolingEl.style.display = 'none';
+      const dupeEl = document.getElementById('pa-duplicate-warning');
+      if (dupeEl) {
+        dupeEl.parentNode.insertBefore(coolingEl, dupeEl.nextSibling);
+      }
+    }
+
+    if (lastPA && lastPA.next_available_date && !Utils.isPast(lastPA.next_available_date)) {
+      const daysLeft = Utils.daysUntil(lastPA.next_available_date);
+      coolingEl.style.display = 'block';
+      coolingEl.innerHTML = `
+        <div class="cooling-period cooling-ineligible">
+          <div class="cooling-icon">⏳</div>
+          <div class="cooling-content">
+            <h4>Cooldown Active</h4>
+            <p>This beneficiary is not yet eligible for another PA from this BM.</p>
+            <p><strong>Next available: ${Utils.formatDate(lastPA.next_available_date)}</strong> (${daysLeft} days remaining)</p>
+            <p>Last PA: ${Utils.formatCurrency(lastPA.amount_provided)} on ${Utils.formatDate(lastPA.created_at)}</p>
+          </div>
+        </div>
+      `;
+
+      const skipSection = document.getElementById('pa-skip-reason-section')?.closest('.form-group')?.previousElementSibling;
+    } else {
+      coolingEl.style.display = 'none';
+    }
   },
 
   /**
@@ -283,6 +340,19 @@ const PAModule = {
       beneficiaryId = newBen.beneficiary_id;
     }
 
+    // Get cooldown duration
+    const activeDuration = form.querySelector('[data-duration].active');
+    let cooldownMonths = 3;
+    let customDuration = null;
+    if (activeDuration) {
+      if (activeDuration.dataset.duration === 'custom') {
+        customDuration = parseInt(form.querySelector('#pa-duration-custom-value')?.value) || 3;
+        cooldownMonths = customDuration;
+      } else {
+        cooldownMonths = parseInt(activeDuration.dataset.duration) || 3;
+      }
+    }
+
     const skipWaiting = form.querySelector('#pa-skip-waiting')?.checked || false;
     const skipReason = form.querySelector('#pa-skip-reason')?.value?.trim() || null;
     const skipBMNoted = form.querySelector('#pa-skip-bm-noted')?.checked || false;
@@ -305,9 +375,15 @@ const PAModule = {
       action_taken: formData.action_taken || '',
       amount_provided: amount,
       bm_id: formData.bm_id,
+      cooldown_months: cooldownMonths,
+      wait_duration_months: cooldownMonths,
+      wait_duration_custom: customDuration,
+      date_requested: form.querySelector('#pa-date-requested')?.value || null,
+      next_available_date: skipWaiting ? null : Utils.addMonths(new Date(), cooldownMonths),
       skip_waiting_period: skipWaiting,
       skip_reason: skipReason,
       skip_bm_noted: skipBMNoted,
+      remarks: form.querySelector('#pa-remarks')?.value?.trim() || null,
       encoded_by: user.user_id,
       office_note: formData.office_note,
       flagged_for_review: false,
@@ -360,7 +436,9 @@ const PAModule = {
         bmFilter.style.display = 'none';
         this.currentBM = user.bm_id;
       } else {
-        const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
+        const bms = user.role === 'sysadmin'
+          ? Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived)
+          : Auth.getAssignedBMs();
         bmFilter.innerHTML = '<option value="">All Board Members</option>';
         bms.forEach(bm => {
           const u = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
@@ -393,9 +471,12 @@ const PAModule = {
     const user = Auth.getCurrentUser();
     let records = Storage.getAll(KEYS.PA_RECORDS).filter(r => !r.is_archived);
 
-    // PA is transparent for secretaries - they see all
+    // Filter by BM — secretary only sees assigned BMs
     if (this.currentBM) {
       records = records.filter(r => r.bm_id === this.currentBM);
+    } else if (user.role === 'secretary') {
+      const assignedIds = user.assigned_bm_ids || [];
+      records = records.filter(r => assignedIds.includes(r.bm_id));
     } else if (user.role === 'board_member') {
       records = records.filter(r => r.bm_id === user.bm_id);
     }
@@ -425,7 +506,7 @@ const PAModule = {
     if (records.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="8" class="text-center p-xl">
+          <td colspan="10" class="text-center p-xl">
             <div class="empty-state">
               <div class="empty-state-icon">${Icons.render('clipboard-list', 32)}</div>
               <h3 class="empty-state-title">No Personal Assistance Records</h3>
@@ -458,12 +539,15 @@ const PAModule = {
 
       return `
         <tr${crossInfo.bm_count > 0 ? ' class="row-flagged"' : ''}>
+          <td>${Utils.formatDate(r.created_at)}</td>
           <td><strong>${Utils.escapeHtml(r.client_name)}</strong>${crossBMFlag ? ' ' + crossBMFlag : ''}</td>
           <td>${freqBadge}</td>
+          <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
           <td>${Utils.escapeHtml(categoryName)}</td>
           <td class="text-right">${Utils.formatCurrency(r.amount_provided)}</td>
-          <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
-          <td>${Utils.formatDate(r.created_at)}</td>
+          <td>${Utils.escapeHtml(r.event_purpose || '—')}</td>
+          <td>${r.date_requested ? Utils.formatDate(r.date_requested) : '—'}</td>
+          <td>${(() => { const cd = Utils.getCooldownStatus(r); return `<span class="badge ${cd.badgeClass}">${cd.label}</span>`; })()}</td>
           <td>
             <button class="btn btn-sm btn-ghost" onclick="PAModule.viewDetail('${r.pa_id}')" title="View">${Icons.render('eye', 16)}</button>
           </td>
@@ -480,7 +564,7 @@ const PAModule = {
     if (countEl) countEl.textContent = `${totalRecords} record${totalRecords !== 1 ? 's' : ''}`;
 
     if (totalPages <= 1) {
-      paginationEl.innerHTML = '';
+      paginationEl.innerHTML = '<button class="pagination-btn active" disabled>1</button>';
       return;
     }
 
@@ -509,18 +593,18 @@ const PAModule = {
     const categoryName = record.category_custom || (cat ? cat.name : 'Unknown');
 
     const html = `
-      <div class="modal-overlay active" id="pa-detail-modal">
-        <div class="modal animate-fade-in">
+      <div class="modal-overlay active" id="pa-detail-modal" onclick="this.remove()">
+        <div class="modal modal-lg animate-fade-in" onclick="event.stopPropagation()">
           <div class="modal-header">
-            <h3 class="modal-title">Personal Assistance Record Detail</h3>
+            <div>
+              <h3 class="modal-title">Personal Assistance Detail</h3>
+              <span class="modal-record-id">${record.pa_id}</span>
+            </div>
             <button class="modal-close" onclick="document.getElementById('pa-detail-modal').remove()">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" style="padding:0">
             <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label">Record ID</span>
-                <span class="detail-value">${record.pa_id}</span>
-              </div>
+              <div class="detail-section">Client Information</div>
               <div class="detail-item">
                 <span class="detail-label">Client Name</span>
                 <span class="detail-value">${Utils.escapeHtml(record.client_name)}</span>
@@ -530,39 +614,81 @@ const PAModule = {
                 <span class="detail-value">${Utils.escapeHtml(record.address || '—')}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">Category</span>
-                <span class="detail-value">${Utils.escapeHtml(categoryName)}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Amount Provided</span>
-                <span class="detail-value text-primary font-semibold">${Utils.formatCurrency(record.amount_provided)}</span>
-              </div>
-              <div class="detail-item">
                 <span class="detail-label">Board Member</span>
                 <span class="detail-value">${Utils.escapeHtml(bmUser ? bmUser.full_name : '—')}</span>
               </div>
-              <div class="detail-item" style="grid-column: 1 / -1">
-                <span class="detail-label">Event/Purpose</span>
+              <div class="detail-item">
+                <span class="detail-label">Category</span>
+                <span class="detail-value">${Utils.escapeHtml(categoryName)}</span>
+              </div>
+
+              <div class="detail-section">Financial Details</div>
+              <div class="detail-item">
+                <span class="detail-label">Amount Provided</span>
+                <span class="detail-value detail-amount">${Utils.formatCurrency(record.amount_provided)}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Date Created</span>
+                <span class="detail-value">${Utils.formatDate(record.created_at, 'datetime')}</span>
+              </div>
+              ${record.date_requested ? `
+              <div class="detail-item">
+                <span class="detail-label">Date Requested</span>
+                <span class="detail-value">${Utils.formatDate(record.date_requested)}</span>
+              </div>
+              ` : ''}
+
+              <div class="detail-item-full">
+                <span class="detail-label">Event / Purpose</span>
                 <span class="detail-value">${Utils.escapeHtml(record.event_purpose || '—')}</span>
               </div>
-              <div class="detail-item" style="grid-column: 1 / -1">
+              <div class="detail-item-full">
                 <span class="detail-label">Action Taken</span>
                 <span class="detail-value">${Utils.escapeHtml(record.action_taken || '—')}</span>
               </div>
+              ${record.office_note ? `
+              <div class="detail-item-full">
+                <span class="detail-label">Office Note</span>
+                <span class="detail-value">${Utils.escapeHtml(record.office_note)}</span>
+              </div>
+              ` : ''}
+
+              <div class="detail-section">Cooldown Period</div>
+              <div class="detail-item">
+                <span class="detail-label">Cooldown Duration</span>
+                <span class="detail-value">${record.cooldown_months || record.wait_duration_months || '—'} month${(record.cooldown_months || record.wait_duration_months) > 1 ? 's' : ''}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Next Available Date</span>
+                <span class="detail-value">${record.next_available_date ? Utils.formatDate(record.next_available_date) : '—'}</span>
+              </div>
+              ${(() => { const cooldown = Utils.getCooldownStatus(record); return cooldown.status !== 'none' ? `
+              <div class="detail-item-full">
+                <span class="detail-label">Cooldown Status</span>
+                <span class="detail-value"><span class="badge ${cooldown.badgeClass}">${cooldown.label}</span></span>
+              </div>` : ''; })()}
+              ${record.skip_waiting_period ? `
+              <div class="detail-item-full">
+                <span class="detail-label">Skip Reason</span>
+                <span class="detail-value">${Utils.escapeHtml(record.skip_reason || 'No reason provided')}</span>
+              </div>
+              ` : ''}
+              ${record.remarks ? `
+              <div class="detail-item-full">
+                <span class="detail-label">Remarks</span>
+                <span class="detail-value">${Utils.escapeHtml(record.remarks)}</span>
+              </div>
+              ` : ''}
+
+              <div class="detail-section">Record Info</div>
               <div class="detail-item">
                 <span class="detail-label">Encoded By</span>
                 <span class="detail-value">${Utils.escapeHtml(encoder ? encoder.full_name : '—')}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">Created</span>
-                <span class="detail-value">${Utils.formatDate(record.created_at, 'datetime')}</span>
+                <span class="detail-label">Last Updated</span>
+                <span class="detail-value">${Utils.formatDate(record.updated_at || record.created_at, 'datetime')}</span>
               </div>
-              ${record.office_note ? `
-              <div class="detail-item" style="grid-column: 1 / -1">
-                <span class="detail-label">Office Note</span>
-                <span class="detail-value">${Utils.escapeHtml(record.office_note)}</span>
-              </div>
-              ` : ''}
             </div>
           </div>
           <div class="modal-footer">
@@ -580,6 +706,9 @@ const PAModule = {
 
     if (this.currentBM) {
       records = records.filter(r => r.bm_id === this.currentBM);
+    } else if (user.role === 'secretary') {
+      const assignedIds = user.assigned_bm_ids || [];
+      records = records.filter(r => assignedIds.includes(r.bm_id));
     } else if (user.role === 'board_member') {
       records = records.filter(r => r.bm_id === user.bm_id);
     }

@@ -863,6 +863,64 @@ const Storage = {
         allow_rollover: true
       });
     }
+
+    // Backfill existing records with new cooldown fields
+    this._backfillCooldownFields();
+  },
+
+  /**
+   * Backfill FA/PA records that were created before cooldown columns were added
+   */
+  _backfillCooldownFields() {
+    const faRecords = this.getAll(KEYS.FA_RECORDS);
+    let faChanged = false;
+    faRecords.forEach(r => {
+      if (r.cooldown_months === undefined) {
+        r.cooldown_months = r.wait_duration_months || 3;
+        faChanged = true;
+      }
+      if (r.date_requested === undefined) {
+        r.date_requested = r.created_at ? r.created_at.slice(0, 10) : null;
+        faChanged = true;
+      }
+      if (r.remarks === undefined) {
+        r.remarks = null;
+        faChanged = true;
+      }
+      if (r.next_available_date === undefined && !r.skip_waiting_period) {
+        const months = r.cooldown_months || r.wait_duration_months || 3;
+        r.next_available_date = Utils.addMonths(new Date(r.created_at || Date.now()), months);
+        faChanged = true;
+      }
+    });
+    if (faChanged) this.set(KEYS.FA_RECORDS, faRecords);
+
+    const paRecords = this.getAll(KEYS.PA_RECORDS);
+    let paChanged = false;
+    paRecords.forEach(r => {
+      if (r.cooldown_months === undefined) {
+        r.cooldown_months = r.wait_duration_months || 3;
+        paChanged = true;
+      }
+      if (r.date_requested === undefined) {
+        r.date_requested = r.created_at ? r.created_at.slice(0, 10) : null;
+        paChanged = true;
+      }
+      if (r.remarks === undefined) {
+        r.remarks = null;
+        paChanged = true;
+      }
+      if (r.wait_duration_months === undefined) {
+        r.wait_duration_months = r.cooldown_months || 3;
+        paChanged = true;
+      }
+      if (r.next_available_date === undefined && !r.skip_waiting_period) {
+        const months = r.cooldown_months || 3;
+        r.next_available_date = Utils.addMonths(new Date(r.created_at || Date.now()), months);
+        paChanged = true;
+      }
+    });
+    if (paChanged) this.set(KEYS.PA_RECORDS, paRecords);
   },
 
   /**
@@ -1090,12 +1148,15 @@ const Storage = {
         amount_requested: 5000,
         amount_approved: 5000,
         bm_id: 'bm_001',
+        cooldown_months: 3,
         wait_duration_months: 3,
         wait_duration_custom: null,
+        date_requested: new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10),
         next_available_date: Utils.addMonths(new Date(), 3),
         skip_waiting_period: false,
         skip_reason: null,
         skip_bm_noted: false,
+        remarks: 'Initial seed record',
         encoded_by: 'usr_sec01',
         created_at: now,
         updated_at: now,
@@ -1112,12 +1173,15 @@ const Storage = {
         amount_requested: 10000,
         amount_approved: 10000,
         bm_id: 'bm_002',
+        cooldown_months: 6,
         wait_duration_months: 6,
         wait_duration_custom: null,
+        date_requested: new Date(Date.now() - 5 * 86400000).toISOString().slice(0, 10),
         next_available_date: Utils.addMonths(new Date(), 6),
         skip_waiting_period: false,
         skip_reason: null,
         skip_bm_noted: false,
+        remarks: null,
         encoded_by: 'usr_sec02',
         created_at: now,
         updated_at: now,
@@ -1139,9 +1203,15 @@ const Storage = {
         action_taken: 'Provided assistance',
         amount_provided: 2000,
         bm_id: 'bm_001',
+        cooldown_months: 3,
+        wait_duration_months: 3,
+        wait_duration_custom: null,
+        date_requested: new Date(Date.now() - 1 * 86400000).toISOString().slice(0, 10),
+        next_available_date: Utils.addMonths(new Date(), 3),
         skip_waiting_period: false,
         skip_reason: null,
         skip_bm_noted: false,
+        remarks: null,
         encoded_by: 'usr_sec01',
         office_note: null,
         flagged_for_review: false,

@@ -594,6 +594,25 @@ const Utils = {
     return map[level] || 'badge-freq-normal';
   },
 
+  /**
+   * Get cooldown status for a record
+   * @param {Object} record - FA/PA record with next_available_date
+   * @returns {{ status: string, daysLeft: number, label: string, badgeClass: string }}
+   */
+  getCooldownStatus(record) {
+    if (!record || !record.next_available_date) {
+      return { status: 'none', daysLeft: 0, label: 'No restriction', badgeClass: 'badge-neutral' };
+    }
+    if (record.skip_waiting_period) {
+      return { status: 'skipped', daysLeft: 0, label: 'Skipped', badgeClass: 'badge-warning' };
+    }
+    const daysLeft = this.daysUntil(record.next_available_date);
+    if (daysLeft <= 0) {
+      return { status: 'done', daysLeft: 0, label: 'Cooldown Complete', badgeClass: 'badge-success' };
+    }
+    return { status: 'active', daysLeft, label: `${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining`, badgeClass: 'badge-warning' };
+  },
+
   /* --------------------------------------------------------
    * URL & NAVIGATION
    * -------------------------------------------------------- */

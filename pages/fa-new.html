@@ -107,7 +107,8 @@
 
             <!-- Wait duration (button group) -->
             <div class="form-group">
-              <label class="form-label">Waiting Period</label>
+              <label class="form-label">Cooldown Period</label>
+              <p class="text-sm text-muted mb-xs">How long before this beneficiary can request again from this BM?</p>
               <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-secondary active" data-duration="3">3 Months</button>
                 <button type="button" class="btn btn-sm btn-secondary" data-duration="6">6 Months</button>
@@ -115,6 +116,13 @@
                 <button type="button" class="btn btn-sm btn-secondary" data-duration="custom">Custom</button>
               </div>
               <input type="number" id="fa-duration-custom-value" class="form-input mt-xs" style="display:none" placeholder="Months" min="1" max="24" />
+            </div>
+
+            <!-- Date Requested -->
+            <div class="form-group">
+              <label for="fa-date-requested" class="form-label">Date Requested</label>
+              <input type="date" id="fa-date-requested" class="form-input" />
+              <p class="text-sm text-muted mt-xs">When the beneficiary first requested assistance (if different from today)</p>
             </div>
 
             <!-- Skip waiting section (shown when cooling period is active) -->
@@ -147,10 +155,10 @@
               <input type="date" id="fa-date" class="form-input" required />
             </div>
 
-            <!-- Notes -->
+            <!-- Remarks -->
             <div class="form-group">
-              <label for="fa-notes" class="form-label">Notes</label>
-              <textarea id="fa-notes" class="form-input form-textarea" rows="3" placeholder="Optional notes..."></textarea>
+              <label for="fa-remarks" class="form-label">Remarks / Notes</label>
+              <textarea id="fa-remarks" class="form-input form-textarea" rows="3" placeholder="Any additional remarks about this request..."></textarea>
             </div>
 
             <div class="form-actions">
