@@ -25,6 +25,7 @@ const KEYS = {
   PA_BUDGETS: 'bataan_sp_pa_budgets',
   ACTIVITY_LOGS: 'bataan_sp_activity_logs',
   MONTHLY_FREQUENCY: 'bataan_sp_monthly_frequency',
+  INCOMING_LETTERS: 'bataan_sp_incoming_letters',
   CURRENT_USER: 'bataan_sp_current_user',
   SETTINGS: 'bataan_sp_settings'
 };
@@ -545,6 +546,298 @@ const Storage = {
     };
   },
 
+  /**
+   * Get cross-BM info for a beneficiary
+   * Returns which BMs have provided assistance to this beneficiary
+   * @param {string} beneficiaryId - Beneficiary ID
+   * @param {string} excludeBmId - Optionally exclude a specific BM (e.g. current BM)
+   * @returns {{ bm_names: string[], bm_count: number, fa_total: number, pa_total: number, records: Array }}
+   */
+  getCrossBMInfo(beneficiaryId, excludeBmId = null) {
+    const faRecords = this.query(KEYS.FA_RECORDS, { beneficiary_id: beneficiaryId });
+    const paRecords = this.query(KEYS.PA_RECORDS, { beneficiary_id: beneficiaryId });
+    const allRecords = [...faRecords, ...paRecords];
+
+    // Collect unique BM IDs
+    const bmIds = new Set();
+    allRecords.forEach(r => { if (r.bm_id) bmIds.add(r.bm_id); });
+
+    // Resolve BM names
+    const boardMembers = this.getAll(KEYS.BOARD_MEMBERS);
+    const users = this.getAll(KEYS.USERS);
+    const bmNames = [];
+    const bmDetails = [];
+    bmIds.forEach(bmId => {
+      if (excludeBmId && bmId === excludeBmId) return;
+      const bm = boardMembers.find(b => b.bm_id === bmId);
+      if (bm) {
+        const user = users.find(u => u.user_id === bm.user_id);
+        const name = user ? user.full_name : bm.district_name;
+        bmNames.push(name);
+        const bmFa = faRecords.filter(r => r.bm_id === bmId);
+        const bmPa = paRecords.filter(r => r.bm_id === bmId);
+        bmDetails.push({
+          bm_id: bmId,
+          name,
+          district: bm.district_name,
+          fa_count: bmFa.length,
+          pa_count: bmPa.length,
+          fa_total: bmFa.reduce((s, r) => s + (r.amount_approved || 0), 0),
+          pa_total: bmPa.reduce((s, r) => s + (r.amount_provided || 0), 0)
+        });
+      }
+    });
+
+    return {
+      bm_names: bmNames,
+      bm_count: bmNames.length,
+      fa_total: faRecords.filter(r => !excludeBmId || r.bm_id !== excludeBmId)
+        .reduce((s, r) => s + (r.amount_approved || 0), 0),
+      pa_total: paRecords.filter(r => !excludeBmId || r.bm_id !== excludeBmId)
+        .reduce((s, r) => s + (r.amount_provided || 0), 0),
+      details: bmDetails,
+      records: allRecords
+    };
+  },
+
+  /* --------------------------------------------------------
+   * INCOMING LETTERS OPERATIONS
+   * -------------------------------------------------------- */
+
+  /**
+   * Get all incoming letters, optionally filtered
+   * @param {Object} filters - { category, bm_id, date_from, date_to }
+   * @returns {Array} Filtered and sorted incoming letters
+   */
+  getIncomingLetters(filters = {}) {
+    let letters = this.query(KEYS.INCOMING_LETTERS, {});
+
+    if (filters.category) {
+      letters = letters.filter(l => l.category === filters.category);
+    }
+    if (filters.bm_id) {
+      letters = letters.filter(l => l.bm_id === filters.bm_id);
+    }
+    if (filters.date_from) {
+      letters = letters.filter(l => l.date_received >= filters.date_from);
+    }
+    if (filters.date_to) {
+      letters = letters.filter(l => l.date_received <= filters.date_to);
+    }
+
+    return letters.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+
+  /**
+   * Create a new incoming letter record
+   * @param {Object} data - Letter data
+   * @returns {Object} Created letter record
+   */
+  createIncomingLetter(data) {
+    const now = new Date().toISOString();
+    const letter = {
+      letter_id: this.generateId('ltr'),
+      category: data.category, // 'Cultural Activities' | 'Solicitations' | 'Invitation Letters'
+      date_received: data.date_received,
+      sender_name: data.sender_name,
+      sender_address: data.sender_address || '',
+      event: data.event || '',
+      purpose: data.purpose || '',
+      action_taken: data.action_taken || '',
+      date_of_event: data.date_of_event || null,
+      date_released: data.date_released || null,
+      concerned_office: data.concerned_office || '',
+      remarks: data.remarks || '',
+      bm_id: data.bm_id || null,
+      encoded_by: data.encoded_by,
+      created_at: now,
+      updated_at: now,
+      is_archived: false,
+      archived_at: null
+    };
+    this.add(KEYS.INCOMING_LETTERS, letter);
+    return letter;
+  },
+
+  /**
+   * Update an incoming letter
+   * @param {string} letterId - Letter ID
+   * @param {Object} updates - Fields to update
+   * @returns {boolean} Success
+   */
+  updateIncomingLetter(letterId, updates) {
+    return this.update(KEYS.INCOMING_LETTERS, letterId, updates, 'letter_id');
+  },
+
+  /* --------------------------------------------------------
+   * USER & BOARD MEMBER MANAGEMENT HELPERS
+   * -------------------------------------------------------- */
+
+  /**
+   * Create a new user + board member record
+   * @param {Object} userData - { full_name, email, password, district_name, term_start, term_end, fa_monthly_budget }
+   * @returns {{ user: Object, boardMember: Object }}
+   */
+  createBoardMember(userData) {
+    const now = new Date().toISOString();
+    const userId = this.generateId('usr');
+    const bmId = this.generateId('bm');
+
+    const user = {
+      user_id: userId,
+      email: userData.email,
+      password: userData.password || 'bm123',
+      full_name: userData.full_name,
+      role: 'board_member',
+      is_active: true,
+      is_temp_account: false,
+      created_at: now,
+      last_login: null
+    };
+
+    const boardMember = {
+      bm_id: bmId,
+      user_id: userId,
+      district_name: userData.district_name,
+      current_term_number: 1,
+      term_start: userData.term_start,
+      term_end: userData.term_end,
+      fa_monthly_budget: userData.fa_monthly_budget || 70000,
+      pa_balance: 0,
+      is_active: true,
+      archive_requested: false,
+      archive_requested_at: null,
+      archive_status: 'none',
+      is_archived: false,
+      archived_at: null,
+      archived_by: null,
+      terms: [{
+        term_number: 1,
+        term_start: userData.term_start,
+        term_end: userData.term_end,
+        status: 'active'
+      }]
+    };
+
+    this.add(KEYS.USERS, user);
+    this.add(KEYS.BOARD_MEMBERS, boardMember);
+
+    // Create initial FA budget
+    const yearMonth = Utils.getCurrentYearMonth();
+    this.add(KEYS.MONTHLY_BUDGETS, {
+      log_id: this.generateId('budg'),
+      bm_id: bmId,
+      year_month: yearMonth,
+      base_budget: boardMember.fa_monthly_budget,
+      rollover_amount: 0,
+      rollover_selected: false,
+      total_budget: boardMember.fa_monthly_budget,
+      used_amount: 0,
+      remaining_amount: boardMember.fa_monthly_budget,
+      closed_at: null
+    });
+
+    return { user, boardMember };
+  },
+
+  /**
+   * Create a new user + staff/secretary record
+   * @param {Object} userData - { full_name, email, password, position }
+   * @returns {{ user: Object }}
+   */
+  createStaffUser(userData) {
+    const now = new Date().toISOString();
+    const userId = this.generateId('usr');
+
+    const user = {
+      user_id: userId,
+      email: userData.email,
+      password: userData.password || 'sec123',
+      full_name: userData.full_name,
+      role: 'secretary',
+      is_active: true,
+      is_temp_account: false,
+      created_at: now,
+      last_login: null,
+      position: userData.position || 'Secretary'
+    };
+
+    this.add(KEYS.USERS, user);
+    return { user };
+  },
+
+  /**
+   * Assign a secretary to a board member
+   * @param {string} secretaryUserId - Secretary's user_id
+   * @param {string} bmId - Board member's bm_id
+   * @returns {Object} Assignment record
+   */
+  assignSecretary(secretaryUserId, bmId) {
+    const now = new Date().toISOString();
+
+    // Check if assignment already exists
+    const existing = this.getAll(KEYS.SECRETARY_ASSIGNMENTS)
+      .find(a => a.secretary_user_id === secretaryUserId && a.bm_id === bmId);
+    if (existing) return existing;
+
+    const assignment = {
+      assignment_id: this.generateId('asgn'),
+      secretary_user_id: secretaryUserId,
+      bm_id: bmId,
+      can_add_allowance: false,
+      can_make_permanent_category: false,
+      assigned_at: now
+    };
+    this.add(KEYS.SECRETARY_ASSIGNMENTS, assignment);
+    return assignment;
+  },
+
+  /**
+   * Remove a secretary assignment
+   * @param {string} assignmentId - Assignment ID
+   * @returns {boolean} Success
+   */
+  removeAssignment(assignmentId) {
+    return this.hardDelete(KEYS.SECRETARY_ASSIGNMENTS, assignmentId, 'assignment_id');
+  },
+
+  /**
+   * Get all secretaries assigned to a board member
+   * @param {string} bmId - Board Member ID
+   * @returns {Array} Array of { assignment, user } objects
+   */
+  getSecretariesForBM(bmId) {
+    const assignments = this.getAll(KEYS.SECRETARY_ASSIGNMENTS)
+      .filter(a => a.bm_id === bmId);
+    const users = this.getAll(KEYS.USERS);
+    return assignments.map(a => ({
+      assignment: a,
+      user: users.find(u => u.user_id === a.secretary_user_id) || null
+    }));
+  },
+
+  /**
+   * Get the BM record with term badge info
+   * @param {string} bmId - Board Member ID
+   * @returns {Object} BM with term_badge and is_reelected fields added
+   */
+  getBMWithTermInfo(bmId) {
+    const bm = this.getById(KEYS.BOARD_MEMBERS, bmId, 'bm_id');
+    if (!bm) return null;
+
+    const termCount = bm.terms ? bm.terms.length : (bm.current_term_number || 1);
+    const ordinals = ['1st', '2nd', '3rd', '4th', '5th'];
+    const termBadge = `${ordinals[termCount - 1] || termCount + 'th'} Term`;
+    const isReelected = termCount > 1;
+
+    return {
+      ...bm,
+      term_badge: termBadge,
+      is_reelected: isReelected,
+      term_count: termCount
+    };
+  },
+
   /* --------------------------------------------------------
    * INITIALIZATION & SEEDING
    * -------------------------------------------------------- */
@@ -666,7 +959,8 @@ const Storage = {
         archive_status: 'none',
         is_archived: false,
         archived_at: null,
-        archived_by: null
+        archived_by: null,
+        terms: [{ term_number: 1, term_start: '2025-01-01', term_end: '2028-06-30', status: 'active' }]
       },
       {
         bm_id: 'bm_002',
@@ -683,13 +977,14 @@ const Storage = {
         archive_status: 'none',
         is_archived: false,
         archived_at: null,
-        archived_by: null
+        archived_by: null,
+        terms: [{ term_number: 1, term_start: '2025-01-01', term_end: '2028-06-30', status: 'active' }]
       },
       {
         bm_id: 'bm_003',
         user_id: 'usr_bm03',
         district_name: 'District 3 - Orani',
-        current_term_number: 1,
+        current_term_number: 2,
         term_start: '2025-01-01',
         term_end: '2028-06-30',
         fa_monthly_budget: 70000,
@@ -700,7 +995,11 @@ const Storage = {
         archive_status: 'none',
         is_archived: false,
         archived_at: null,
-        archived_by: null
+        archived_by: null,
+        terms: [
+          { term_number: 1, term_start: '2022-01-01', term_end: '2024-12-31', status: 'archived' },
+          { term_number: 2, term_start: '2025-01-01', term_end: '2028-06-30', status: 'active' }
+        ]
       }
     ];
     this.set(KEYS.BOARD_MEMBERS, boardMembers);
@@ -924,6 +1223,71 @@ const Storage = {
 
     // --- EMPTY COLLECTIONS ---
     this.set(KEYS.MONTHLY_FREQUENCY, []);
+
+    // --- SEED INCOMING LETTERS ---
+    const incomingLetters = [
+      {
+        letter_id: 'ltr_001',
+        category: 'Cultural Activities',
+        date_received: '2025-06-01',
+        sender_name: 'Balanga City Cultural Office',
+        sender_address: 'City Hall, Balanga City, Bataan',
+        event: 'Araw ng Balanga Festival',
+        purpose: 'Request for sponsorship for cultural dance competition',
+        action_taken: 'Forwarded to BM for review',
+        date_of_event: '2025-06-15',
+        date_released: '2025-06-03',
+        concerned_office: 'Office of the Sangguniang Panlalawigan',
+        remarks: 'Annual cultural event sponsorship',
+        bm_id: 'bm_001',
+        encoded_by: 'usr_sec01',
+        created_at: now,
+        updated_at: now,
+        is_archived: false,
+        archived_at: null
+      },
+      {
+        letter_id: 'ltr_002',
+        category: 'Solicitations',
+        date_received: '2025-06-05',
+        sender_name: 'Dinalupihan Farmers Association',
+        sender_address: 'Brgy. San Ramon, Dinalupihan, Bataan',
+        event: '',
+        purpose: 'Requesting financial support for livelihood program',
+        action_taken: 'Under evaluation',
+        date_of_event: null,
+        date_released: null,
+        concerned_office: 'Office of the Provincial Agriculturist',
+        remarks: 'Livelihood assistance request',
+        bm_id: 'bm_002',
+        encoded_by: 'usr_sec02',
+        created_at: now,
+        updated_at: now,
+        is_archived: false,
+        archived_at: null
+      },
+      {
+        letter_id: 'ltr_003',
+        category: 'Invitation Letters',
+        date_received: '2025-06-10',
+        sender_name: 'Provincial Government of Bataan',
+        sender_address: 'Capitol Compound, Balanga City, Bataan',
+        event: 'Provincial Day Celebration',
+        purpose: 'Invitation to attend the Provincial Day celebration',
+        action_taken: 'Confirmed attendance',
+        date_of_event: '2025-07-04',
+        date_released: '2025-06-12',
+        concerned_office: "Governor's Office",
+        remarks: 'BM confirmed attendance',
+        bm_id: 'bm_001',
+        encoded_by: 'usr_sec01',
+        created_at: now,
+        updated_at: now,
+        is_archived: false,
+        archived_at: null
+      }
+    ];
+    this.set(KEYS.INCOMING_LETTERS, incomingLetters);
 
     // --- SEED PA BUDGETS ---
     const paBudgets = [

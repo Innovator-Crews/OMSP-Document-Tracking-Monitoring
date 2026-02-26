@@ -351,6 +351,34 @@ const App = {
         Router.setPageInfo('My Personal Assistance Budget');
         break;
 
+      // BM oversight pages
+      case 'secretary-logs':
+        if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initSecretaryLogs();
+        Router.setPageInfo('Secretary Activity Logs');
+        break;
+
+      case 'archives':
+        if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initArchives();
+        Router.setPageInfo('Past Term Archives');
+        break;
+
+      // Incoming Letters pages
+      case 'incoming-new':
+        if (typeof IncomingModule !== 'undefined') IncomingModule.initNewForm();
+        Router.setPageInfo('New Incoming Letter');
+        break;
+
+      case 'incoming-list':
+        if (typeof IncomingModule !== 'undefined') IncomingModule.initList();
+        Router.setPageInfo('Incoming Letters');
+        break;
+
+      // Search Archives
+      case 'search-archives':
+        if (typeof SearchModule !== 'undefined') SearchModule.initArchives();
+        Router.setPageInfo('Search Archives');
+        break;
+
       default:
         console.log('No module for page:', page);
     }
