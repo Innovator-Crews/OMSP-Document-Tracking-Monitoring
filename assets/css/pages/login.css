@@ -29,7 +29,7 @@
   padding: var(--space-12) var(--space-10);
   background:
     linear-gradient(135deg, rgba(30, 58, 138, 0.92) 0%, rgba(29, 78, 216, 0.88) 50%, rgba(3, 105, 161, 0.90) 100%),
-    url('../../assets/images/TheBunker-bg.jpg') center / cover no-repeat;
+    url('../../images/TheBunker-bg.jpg') center / cover no-repeat;
   color: #fff;
   position: relative;
   overflow: hidden;
