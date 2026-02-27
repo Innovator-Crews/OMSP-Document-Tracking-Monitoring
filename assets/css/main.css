@@ -336,7 +336,6 @@ code {
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-left { text-align: left; }
-.text-uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
 .font-medium { font-weight: var(--font-medium); }
 .font-semibold { font-weight: var(--font-semibold); }
 .font-bold { font-weight: var(--font-bold); }
@@ -384,7 +383,6 @@ code {
 .ml-2 { margin-left: var(--space-2); }
 .ml-auto { margin-left: auto; }
 .mr-2 { margin-right: var(--space-2); }
-.mr-xs { margin-right: var(--space-1); }
 .mx-auto { margin-left: auto; margin-right: auto; }
 
 .p-0 { padding: 0; }
@@ -393,7 +391,6 @@ code {
 .p-4 { padding: var(--space-4); }
 .p-6 { padding: var(--space-6); }
 .p-8 { padding: var(--space-8); }
-.p-xl { padding: var(--space-8); }
 .px-2 { padding-left: var(--space-2); padding-right: var(--space-2); }
 .px-3 { padding-left: var(--space-3); padding-right: var(--space-3); }
 .px-4 { padding-left: var(--space-4); padding-right: var(--space-4); }

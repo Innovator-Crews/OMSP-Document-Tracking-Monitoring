@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In — OMSP Document Tracking</title>
-  <link rel='icon' type='image/png' href='../assets/images/SP-logo-nobg.png' />
+  <link rel='icon' type='image/png' href='../assets/images/SP-favicon.png' />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/main.css" />
@@ -16,7 +16,19 @@
 
   <!-- ════ LEFT: Promotional Panel ════ -->
   <div class="login-promo">
+    <!-- Animated orbs (F) -->
+    <div class="login-promo-orbs" aria-hidden="true">
+      <div class="login-orb login-orb-1"></div>
+      <div class="login-orb login-orb-2"></div>
+      <div class="login-orb login-orb-3"></div>
+    </div>
+    <!-- SP Logo watermark (B) -->
+    <div class="login-promo-watermark" aria-hidden="true">
+      <img src="../assets/images/SP-logo-nobg.png" alt="" />
+    </div>
     <div class="login-promo-inner fade-in">
+      <!-- Province bar (H) -->
+      <div class="login-promo-ph-bar">Republic of the Philippines &bull; Province of Bataan &bull; Sangguniang Panlalawigan</div>
       <div class="login-promo-badge">
         <span id="promo-badge-icon"></span>
         Document Tracking System
@@ -103,19 +115,13 @@
       <!-- Demo Accounts -->
       <div class="demo-section">
         <div class="demo-accounts">
-          <button type="button" class="demo-btn" onclick="fillDemo('admin@omsp.gov.ph','admin123')">
-            <div class="demo-btn-icon demo-btn-icon-admin" id="demo-icon-admin"></div>
-            <div class="demo-btn-info">
-              <div class="demo-btn-role">SysAdmin</div>
-              <div class="demo-btn-email">admin@omsp.gov.ph</div>
-            </div>
-          </button>
           <button type="button" class="demo-btn" onclick="fillDemo('cruz@omsp.gov.ph','bm123')">
             <div class="demo-btn-icon demo-btn-icon-bm" id="demo-icon-bm"></div>
             <div class="demo-btn-info">
               <div class="demo-btn-role">Board Member</div>
               <div class="demo-btn-email">cruz@omsp.gov.ph</div>
             </div>
+            <div class="demo-btn-use"></div>
           </button>
           <button type="button" class="demo-btn" onclick="fillDemo('secretary1@omsp.gov.ph','sec123')">
             <div class="demo-btn-icon demo-btn-icon-staff" id="demo-icon-staff"></div>
@@ -123,14 +129,10 @@
               <div class="demo-btn-role">Secretary / Staff</div>
               <div class="demo-btn-email">secretary1@omsp.gov.ph</div>
             </div>
+            <div class="demo-btn-use"></div>
           </button>
         </div>
       </div>
-
-      <!-- Admin portal link -->
-      <a href="../sysadmin/login.html" class="admin-portal-link" id="admin-portal-link">
-        Looking for the Admin Portal?
-      </a>
 
       <!-- Footer -->
       <div class="login-footer">
@@ -162,7 +164,10 @@
       document.getElementById('promo-feat-3-icon').innerHTML = Icons.render('bar-chart', 20);
       document.getElementById('promo-link-home').innerHTML = Icons.render('arrow-left', 16) + ' Learn More';
       document.getElementById('promo-link-admin').innerHTML = Icons.render('shield', 16) + ' Admin Portal';
-      document.getElementById('login-logo-icon').innerHTML = Icons.render('landmark', 32);
+      document.getElementById('login-logo-icon').innerHTML = '<img src="../assets/images/SP-logo-nobg.png" alt="SP Logo" />';
+      document.querySelectorAll('.demo-btn-use').forEach(el => {
+        el.innerHTML = Icons.render('arrow-right', 14);
+      });
 
       // Login button
       document.getElementById('login-submit-btn').innerHTML = Icons.render('log-in', 20) + ' Sign In';
@@ -178,13 +183,9 @@
       });
 
       // Demo icons
-      document.getElementById('demo-icon-admin').innerHTML = Icons.render('shield', 18);
       document.getElementById('demo-icon-bm').innerHTML = Icons.render('user', 18);
       document.getElementById('demo-icon-staff').innerHTML = Icons.render('edit', 18);
 
-      // Admin portal link
-      document.getElementById('admin-portal-link').innerHTML =
-        Icons.render('shield-check', 16) + ' Looking for the Admin Portal?';
     });
   </script>
 </body>

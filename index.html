@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OMSP Document Tracking &amp; Monitoring System</title>
-  <link rel="icon" type="image/png" href="assets/images/SP-logo-nobg.png" />
+  <link rel="icon" type="image/png" href="assets/images/SP-favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/main.css" />
@@ -35,6 +35,7 @@
       <div class="landing-nav-links" id="nav-links">
         <a href="#features" class="landing-nav-link">Features</a>
         <a href="#workflow" class="landing-nav-link">Workflow</a>
+        <a href="#board-members" class="landing-nav-link">Board</a>
         <a href="#roles" class="landing-nav-link">User Roles</a>
         <a href="#team" class="landing-nav-link">Team</a>
         <a href="pages/login.html" class="landing-nav-cta" id="nav-login-btn">
@@ -55,9 +56,9 @@
         <img src="assets/images/SP-logo-nobg.png" alt="Sangguniang Panlalawigan Logo" class="landing-hero-logo" />
       </div>
       <div class="landing-hero-badge">
-        <span id="hero-badge-icon">
+        <!-- <span id="hero-badge-icon">
           <img src="assets/images/SP-logo-nobg.png" alt="SP Logo" class="landing-badge-logo" />
-        </span>
+        </span> -->
         Sangguniang Panlalawigan — Province of Bataan
       </div>
       <h1>
@@ -91,8 +92,8 @@
         <div class="landing-mockup-body">
           <div class="landing-mockup-sidebar">
             <div class="landing-mockup-sidebar-item active" id="mock-nav-dash">Dashboard</div>
-            <div class="landing-mockup-sidebar-item" id="mock-nav-fa">Financial Assistance Records</div>
-            <div class="landing-mockup-sidebar-item" id="mock-nav-pa">Personal Assistance Records</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-fa">Financial Assistance</div>
+            <div class="landing-mockup-sidebar-item" id="mock-nav-pa">Personal Assistance</div>
             <div class="landing-mockup-sidebar-item" id="mock-nav-search">Global Search</div>
             <div class="landing-mockup-sidebar-item" id="mock-nav-reports">Reports</div>
           </div>
@@ -325,6 +326,273 @@
     </div>
   </section>
 
+  <!-- ═══════════════════════ BOARD MEMBERS SHOWCASE ══════════ -->
+  <section class="landing-section landing-bm-section" id="board-members">
+    <div class="landing-section-inner">
+      <div class="landing-section-header">
+        <div class="landing-section-label">
+          <span id="bm-label-icon"></span> Board Members
+        </div>
+        <h2 class="landing-section-title">The Sangguniang Panlalawigan</h2>
+        <p class="landing-section-desc">
+          Meet the 12 elected board members of the Province of Bataan representing their districts and serving the community.
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div class="landing-bm-filters" id="bm-filters">
+        <div class="landing-bm-search-wrap">
+          <span id="bm-search-icon" class="landing-bm-search-icon"></span>
+          <input type="text" class="landing-bm-search" id="bm-search" placeholder="Search board members..." />
+        </div>
+        <div class="landing-bm-filter-pills">
+          <button class="landing-bm-pill active" data-district="all">All Districts</button>
+          <button class="landing-bm-pill" data-district="1">District 1</button>
+          <button class="landing-bm-pill" data-district="2">District 2</button>
+        </div>
+      </div>
+
+      <!-- Board Members Grid -->
+      <div class="landing-bm-grid" id="bm-grid">
+
+        <!-- BM 1 -->
+        <div class="landing-bm-card" data-district="1" data-name="Hon. Roberto L. Garcia">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-1">
+              <span>RG</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Roberto L. Garcia</h3>
+            <span class="landing-bm-district">District 1</span>
+            <span class="landing-bm-department">Committee on Finance &amp; Appropriation</span>
+            <span class="landing-bm-role">Chairperson</span>
+            <p class="landing-bm-desc">
+              A dedicated public servant committed to transparent budget governance and ensuring proper allocation of financial resources across provincial programs and community welfare initiatives.
+            </p>
+            <a href="mailto:r.garcia@sp.bataan.gov.ph" class="landing-bm-email">r.garcia@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 2 -->
+        <div class="landing-bm-card" data-district="1" data-name="Hon. Maria S. Santos">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-2">
+              <span>MS</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Maria S. Santos</h3>
+            <span class="landing-bm-district">District 1</span>
+            <span class="landing-bm-department">Committee on Health &amp; Social Services</span>
+            <span class="landing-bm-role">Vice Chairperson</span>
+            <p class="landing-bm-desc">
+              Passionately advocating for affordable healthcare and social welfare programs that uplift the quality of life for Bataeño families, especially those in underserved communities.
+            </p>
+            <a href="mailto:m.santos@sp.bataan.gov.ph" class="landing-bm-email">m.santos@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 3 -->
+        <div class="landing-bm-card" data-district="1" data-name="Hon. Antonio R. Cruz">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-3">
+              <span>AC</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Antonio R. Cruz</h3>
+            <span class="landing-bm-district">District 1</span>
+            <span class="landing-bm-department">Committee on Education &amp; Culture</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              Champion of education reform and cultural preservation, working tirelessly to enhance scholarship programs and develop youth-oriented learning centers throughout the province.
+            </p>
+            <a href="mailto:a.cruz@sp.bataan.gov.ph" class="landing-bm-email">a.cruz@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 4 -->
+        <div class="landing-bm-card" data-district="1" data-name="Hon. Elena D. Reyes">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-4">
+              <span>ER</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Elena D. Reyes</h3>
+            <span class="landing-bm-district">District 1</span>
+            <span class="landing-bm-department">Committee on Environment &amp; Natural Resources</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              A strong environmental advocate leading initiatives for sustainable development, coastal habitat protection, and the implementation of renewable energy projects across Bataan.
+            </p>
+            <a href="mailto:e.reyes@sp.bataan.gov.ph" class="landing-bm-email">e.reyes@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 5 -->
+        <div class="landing-bm-card" data-district="1" data-name="Hon. Jaime P. Torres">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-5">
+              <span>JT</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Jaime P. Torres</h3>
+            <span class="landing-bm-district">District 1</span>
+            <span class="landing-bm-department">Committee on Infrastructure &amp; Public Works</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              Focused on modernizing provincial infrastructure including road networks, bridges, and public facilities to boost economic growth and interconnectivity between municipalities.
+            </p>
+            <a href="mailto:j.torres@sp.bataan.gov.ph" class="landing-bm-email">j.torres@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 6 -->
+        <div class="landing-bm-card" data-district="1" data-name="Hon. Patricia M. Flores">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-6">
+              <span>PF</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Patricia M. Flores</h3>
+            <span class="landing-bm-district">District 1</span>
+            <span class="landing-bm-department">Committee on Women &amp; Gender Equality</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              Driving legislative frameworks for gender equality, women's empowerment, and the protection of vulnerable sectors through livelihood programs and legal assistance initiatives.
+            </p>
+            <a href="mailto:p.flores@sp.bataan.gov.ph" class="landing-bm-email">p.flores@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 7 -->
+        <div class="landing-bm-card" data-district="2" data-name="Hon. Ricardo J. Mendoza">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-7">
+              <span>RM</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Ricardo J. Mendoza</h3>
+            <span class="landing-bm-district">District 2</span>
+            <span class="landing-bm-department">Committee on Agriculture &amp; Food Security</span>
+            <span class="landing-bm-role">Chairperson</span>
+            <p class="landing-bm-desc">
+              Spearheading agricultural modernization programs, crop diversification strategies, and farmers' cooperative support systems to strengthen food security across the province.
+            </p>
+            <a href="mailto:r.mendoza@sp.bataan.gov.ph" class="landing-bm-email">r.mendoza@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 8 -->
+        <div class="landing-bm-card" data-district="2" data-name="Hon. Carmela A. Rivera">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-8">
+              <span>CR</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Carmela A. Rivera</h3>
+            <span class="landing-bm-district">District 2</span>
+            <span class="landing-bm-department">Committee on Tourism &amp; Economic Development</span>
+            <span class="landing-bm-role">Vice Chairperson</span>
+            <p class="landing-bm-desc">
+              Promoting Bataan's rich historical heritage and natural attractions to drive tourism growth, while establishing eco-tourism corridors and supporting local hospitality enterprises.
+            </p>
+            <a href="mailto:c.rivera@sp.bataan.gov.ph" class="landing-bm-email">c.rivera@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 9 -->
+        <div class="landing-bm-card" data-district="2" data-name="Hon. Fernando B. Lopez">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-9">
+              <span>FL</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Fernando B. Lopez</h3>
+            <span class="landing-bm-district">District 2</span>
+            <span class="landing-bm-department">Committee on Peace &amp; Order</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              Committed to maintaining public safety and order through collaborative law enforcement programs, community-based anti-crime initiatives, and disaster preparedness protocols.
+            </p>
+            <a href="mailto:f.lopez@sp.bataan.gov.ph" class="landing-bm-email">f.lopez@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 10 -->
+        <div class="landing-bm-card" data-district="2" data-name="Hon. Isabela G. Villanueva">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-10">
+              <span>IV</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Isabela G. Villanueva</h3>
+            <span class="landing-bm-district">District 2</span>
+            <span class="landing-bm-department">Committee on Youth &amp; Sports Development</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              Empowering the youth through sports development, skills training, and leadership programs designed to nurture the next generation of responsible and civic-minded Bataeños.
+            </p>
+            <a href="mailto:i.villanueva@sp.bataan.gov.ph" class="landing-bm-email">i.villanueva@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 11 -->
+        <div class="landing-bm-card" data-district="2" data-name="Hon. Miguel C. Bautista">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-11">
+              <span>MB</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Miguel C. Bautista</h3>
+            <span class="landing-bm-district">District 2</span>
+            <span class="landing-bm-department">Committee on Technology &amp; Innovation</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              Driving digital transformation in provincial governance through smart systems, e-governance platforms, and innovation hubs that modernize public service delivery.
+            </p>
+            <a href="mailto:m.bautista@sp.bataan.gov.ph" class="landing-bm-email">m.bautista@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+        <!-- BM 12 -->
+        <div class="landing-bm-card" data-district="2" data-name="Hon. Sofia T. Dela Cruz">
+          <div class="landing-bm-photo">
+            <div class="landing-bm-photo-placeholder" id="bm-photo-12">
+              <span>SD</span>
+            </div>
+          </div>
+          <div class="landing-bm-info">
+            <h3 class="landing-bm-name">Hon. Sofia T. Dela Cruz</h3>
+            <span class="landing-bm-district">District 2</span>
+            <span class="landing-bm-department">Committee on Labor &amp; Employment</span>
+            <span class="landing-bm-role">Member</span>
+            <p class="landing-bm-desc">
+              Advocating for workers' rights, livelihood creation, and employment opportunities by establishing skills development centers and forging partnerships with private sector industries.
+            </p>
+            <a href="mailto:s.delacruz@sp.bataan.gov.ph" class="landing-bm-email">s.delacruz@sp.bataan.gov.ph</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty state for filters -->
+      <div class="landing-bm-empty" id="bm-empty" style="display:none;">
+        <span id="bm-empty-icon"></span>
+        <p>No board members found matching your search.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════════════ USER ROLES ═════════════════════── -->
   <section class="landing-section landing-roles-section" id="roles">
     <div class="landing-section-inner">
@@ -461,18 +729,38 @@
       <div class="landing-footer-top">
         <div class="landing-footer-brand">
           <div class="landing-footer-brand-name">
-            <span id="footer-logo-icon"></span> OMSP Tracker
+            <span id="footer-logo-icon"></span>
+            <div class="landing-footer-brand-name-text">
+              <span>OMSP Tracker</span>
+              <small>Sangguniang Panlalawigan &bull; Bataan</small>
+            </div>
           </div>
+          <p class="landing-footer-brand-tagline">Document Tracking &amp; Monitoring System</p>
           <p class="landing-footer-brand-desc">
-            Document Tracking &amp; Monitoring System for the Office of the Majority
-            &amp; Secretary of the Panlalawigan, Province of Bataan.
+            Office of the Majority &amp; Secretary of the Panlalawigan,<br />
+            Province of Bataan.
           </p>
+          <div class="landing-footer-contact">
+            <div class="landing-footer-contact-item">
+              <span id="footer-contact-icon-pin"></span>
+              <span>Capitol Compound, Balanga City, Bataan 2100</span>
+            </div>
+            <div class="landing-footer-contact-item">
+              <span id="footer-contact-icon-phone"></span>
+              <span>(047) 237-XXXX</span>
+            </div>
+            <div class="landing-footer-contact-item">
+              <span id="footer-contact-icon-mail"></span>
+              <a href="mailto:sp.secretariat@bataan.gov.ph" class="landing-footer-contact-link">sp.secretariat@bataan.gov.ph</a>
+            </div>
+          </div>
         </div>
         <div class="landing-footer-links-group">
           <div class="landing-footer-col">
             <h4>Platform</h4>
             <a href="#features">Features</a>
             <a href="#workflow">Workflow</a>
+            <a href="#board-members">Board Members</a>
             <a href="#roles">User Roles</a>
             <a href="#team">Team</a>
           </div>

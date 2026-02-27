@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>New Personal Assistance — OMSP Document Tracking</title>
-  <link rel='icon' type='image/png' href='../assets/images/SP-logo-nobg.png' />
+  <link rel='icon' type='image/png' href='../assets/images/SP-favicon.png' />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/main.css" />
@@ -117,11 +117,31 @@
               <textarea id="pa-office-note" class="form-input form-textarea" rows="2" placeholder="Internal note..."></textarea>
             </div>
 
+            <!-- Cooldown Period -->
+            <div class="form-group">
+              <label class="form-label">Cooldown Period</label>
+              <p class="text-sm text-muted mb-xs">How long before this beneficiary can request again from this BM?</p>
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-secondary active" data-duration="3">3 Months</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-duration="6">6 Months</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-duration="12">12 Months</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-duration="custom">Custom</button>
+              </div>
+              <input type="number" id="pa-duration-custom-value" class="form-input mt-xs" style="display:none" placeholder="Months" min="1" max="24" />
+            </div>
+
+            <!-- Date Requested -->
+            <div class="form-group">
+              <label for="pa-date-requested" class="form-label">Date Requested</label>
+              <input type="date" id="pa-date-requested" class="form-input" />
+              <p class="text-sm text-muted mt-xs">When the beneficiary first requested assistance (if different from today)</p>
+            </div>
+
             <!-- Skip waiting -->
             <div class="form-group">
               <label class="form-check">
                 <input type="checkbox" id="pa-skip-waiting" />
-                <span>Skip waiting period for this record</span>
+                <span>Skip cooldown period for this record</span>
               </label>
             </div>
 
@@ -145,10 +165,10 @@
               <input type="date" id="pa-date" class="form-input" required />
             </div>
 
-            <!-- Notes -->
+            <!-- Remarks -->
             <div class="form-group">
-              <label for="pa-notes" class="form-label">Notes</label>
-              <textarea id="pa-notes" class="form-input form-textarea" rows="3" placeholder="Optional notes..."></textarea>
+              <label for="pa-remarks" class="form-label">Remarks / Notes</label>
+              <textarea id="pa-remarks" class="form-input form-textarea" rows="3" placeholder="Any additional remarks about this request..."></textarea>
             </div>
 
             <div class="form-actions">

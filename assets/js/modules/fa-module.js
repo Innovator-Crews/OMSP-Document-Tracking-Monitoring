@@ -193,7 +193,7 @@ const FAModule = {
       btn.addEventListener('click', () => {
         durationBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const customInput = document.getElementById('fa-duration-custom-value');
+        const customInput = document.getElementById('fa-duration-custom');
         if (customInput) {
           customInput.style.display = btn.dataset.duration === 'custom' ? 'block' : 'none';
         }
@@ -269,6 +269,9 @@ const FAModule = {
     // Check cooling period
     this.checkCoolingPeriod(beneficiaryId);
 
+    // Check cross-BM info
+    this.checkCrossBM(beneficiaryId);
+
     // Hide duplicate warning
     const dupeEl = document.getElementById('duplicate-warning');
     if (dupeEl) dupeEl.style.display = 'none';
@@ -312,6 +315,43 @@ const FAModule = {
       coolingEl.style.display = 'none';
       const skipSection = document.getElementById('skip-waiting-section');
       if (skipSection) skipSection.style.display = 'none';
+    }
+  },
+
+  /**
+   * Check cross-BM assistance info for a beneficiary
+   */
+  checkCrossBM(beneficiaryId) {
+    const bmId = document.getElementById('fa-bm')?.value;
+    if (!bmId || !beneficiaryId) return;
+
+    // Get or create the cross-BM alert container
+    let alertEl = document.getElementById('cross-bm-alert');
+    if (!alertEl) {
+      alertEl = document.createElement('div');
+      alertEl.id = 'cross-bm-alert';
+      alertEl.style.display = 'none';
+      const coolingEl = document.getElementById('cooling-period-check');
+      if (coolingEl) {
+        coolingEl.parentNode.insertBefore(alertEl, coolingEl.nextSibling);
+      }
+    }
+
+    const crossInfo = Storage.getCrossBMInfo(beneficiaryId, bmId);
+    if (crossInfo.bm_count > 0) {
+      alertEl.style.display = 'block';
+      alertEl.innerHTML = `
+        <div class="banner banner-warning mb-sm">
+          <div class="banner-content">
+            <strong>${Icons.get('alert-triangle', 14)} Cross-BM Alert:</strong> This beneficiary has received assistance from <strong>${crossInfo.bm_count} other Board Member${crossInfo.bm_count > 1 ? 's' : ''}</strong>.
+            <div class="mt-xs text-sm">
+              ${crossInfo.details.map(d => `<div>• <strong>${Utils.escapeHtml(d.name)}</strong> (${d.district}): ${d.fa_count} FA (${Utils.formatCurrency(d.fa_total)}), ${d.pa_count} PA (${Utils.formatCurrency(d.pa_total)})</div>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      alertEl.style.display = 'none';
     }
   },
 
@@ -405,12 +445,15 @@ const FAModule = {
       amount_requested: amount,
       amount_approved: amount,
       bm_id: formData.bm_id,
+      cooldown_months: waitMonths,
       wait_duration_months: waitMonths,
       wait_duration_custom: customDuration,
+      date_requested: form.querySelector('#fa-date-requested')?.value || null,
       next_available_date: skipWaiting ? null : Utils.addMonths(new Date(), waitMonths),
       skip_waiting_period: skipWaiting,
       skip_reason: skipReason,
       skip_bm_noted: skipBMNoted,
+      remarks: form.querySelector('#fa-remarks')?.value?.trim() || null,
       encoded_by: user.user_id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -566,7 +609,7 @@ const FAModule = {
     if (records.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="7" class="text-center p-xl">
+          <td colspan="10" class="text-center p-xl">
             <div class="empty-state">
               <div class="empty-state-icon">${Icons.render('file-text', 32)}</div>
               <h3 class="empty-state-title">No Financial Assistance Records</h3>
@@ -580,9 +623,7 @@ const FAModule = {
 
     const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
     const categories = Storage.getAll(KEYS.FA_CATEGORIES);
-
     const user = Auth.getCurrentUser();
-    const isSysadmin = user && user.role === 'sysadmin';
 
     tbody.innerHTML = records.map(r => {
       const bm = bms.find(b => b.bm_id === r.bm_id);
@@ -590,26 +631,36 @@ const FAModule = {
       const cat = categories.find(c => c.id === r.case_type_id);
       const categoryName = r.case_type_custom || (cat ? cat.name : 'Unknown');
 
+      // Frequency badge
+      const freq = r.beneficiary_id ? Storage.getFrequencyLevel(r.beneficiary_id) : { level: 'normal', total: 0 };
+      const freqBadge = `<span class="badge ${Utils.getFrequencyClass(freq.level)}" title="${freq.total} assists this month">${freq.level === 'normal' ? freq.total : freq.level.toUpperCase() + ' (' + freq.total + ')'}</span>`;
+
+      // Cross-BM flag
+      const crossInfo = r.beneficiary_id ? Storage.getCrossBMInfo(r.beneficiary_id, r.bm_id) : { bm_count: 0 };
+      const crossBMFlag = crossInfo.bm_count > 0
+        ? `<span class="badge badge-warning" title="Also assisted by: ${crossInfo.bm_names.join(', ')}">${Icons.get('alert-triangle', 12)} ${crossInfo.bm_count} other BM${crossInfo.bm_count > 1 ? 's' : ''}</span>`
+        : '';
+
       return `
-        <tr>
+        <tr${crossInfo.bm_count > 0 ? ' class="row-flagged"' : ''}>
+          <td>${Utils.formatDate(r.created_at)}</td>
           <td>
             <div class="d-flex align-center gap-xs">
               <strong>${Utils.escapeHtml(r.patient_name)}</strong>
+              ${crossBMFlag}
             </div>
           </td>
+          <td>${freqBadge}</td>
+          <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
           <td><span class="badge badge-category-${cat?.is_permanent ? 'permanent' : 'custom'}">${Utils.escapeHtml(categoryName)}</span></td>
           <td class="text-right">${Utils.formatCurrency(r.amount_approved)}</td>
-          <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
           <td><span class="badge badge-status-${Utils.getStatusClass(r.status)}">${r.status}</span></td>
-          <td>${Utils.formatDate(r.created_at)}</td>
+          <td>${r.date_requested ? Utils.formatDate(r.date_requested) : '—'}</td>
+          <td>${(() => { const cd = Utils.getCooldownStatus(r); return `<span class="badge ${cd.badgeClass}">${cd.label}</span>`; })()}</td>
           <td>
             <div class="d-flex gap-xs">
               <button class="btn btn-sm btn-ghost" onclick="FAModule.viewDetail('${r.fa_id}')" title="View">${Icons.render('eye', 16)}</button>
               <button class="btn btn-sm btn-ghost" onclick="FAModule.editStatus('${r.fa_id}')" title="Edit Status">${Icons.render('edit', 16)}</button>
-              ${isSysadmin ? `
-              <button class="btn btn-sm btn-ghost" onclick="FAModule.editRecord('${r.fa_id}')" title="Edit Record">${Icons.render('settings', 16)}</button>
-              <button class="btn btn-sm btn-ghost btn-danger-ghost" onclick="FAModule.deleteRecord('${r.fa_id}')" title="Delete">${Icons.render('trash', 16)}</button>
-              ` : ''}
             </div>
           </td>
         </tr>
@@ -628,7 +679,7 @@ const FAModule = {
     if (countEl) countEl.textContent = `${totalRecords} record${totalRecords !== 1 ? 's' : ''}`;
 
     if (totalPages <= 1) {
-      paginationEl.innerHTML = '';
+      paginationEl.innerHTML = '<button class="pagination-btn active" disabled>1</button>';
       return;
     }
 
@@ -666,68 +717,95 @@ const FAModule = {
     const cat = Storage.getById(KEYS.FA_CATEGORIES, record.case_type_id, 'id');
     const categoryName = record.case_type_custom || (cat ? cat.name : 'Unknown');
     const freq = record.beneficiary_id ? Storage.getFrequencyLevel(record.beneficiary_id) : null;
+    const cooldown = Utils.getCooldownStatus(record);
 
     const html = `
-      <div class="modal-overlay active" id="fa-detail-modal">
-        <div class="modal animate-fade-in">
+      <div class="modal-overlay active" id="fa-detail-modal" onclick="this.remove()">
+        <div class="modal modal-lg animate-fade-in" onclick="event.stopPropagation()">
           <div class="modal-header">
-            <h3 class="modal-title">Financial Assistance Record Detail</h3>
+            <div>
+              <h3 class="modal-title">Financial Assistance Detail</h3>
+              <span class="modal-record-id">${record.fa_id}</span>
+            </div>
             <button class="modal-close" onclick="document.getElementById('fa-detail-modal').remove()">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" style="padding:0">
             <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label">Record ID</span>
-                <span class="detail-value">${record.fa_id}</span>
-              </div>
+              <div class="detail-section">Beneficiary Information</div>
               <div class="detail-item">
                 <span class="detail-label">Patient Name</span>
                 <span class="detail-value">${Utils.escapeHtml(record.patient_name)}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Category</span>
-                <span class="detail-value"><span class="badge badge-category-${cat?.is_permanent ? 'permanent' : 'custom'}">${Utils.escapeHtml(categoryName)}</span></span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Amount Approved</span>
-                <span class="detail-value text-primary font-semibold">${Utils.formatCurrency(record.amount_approved)}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Board Member</span>
                 <span class="detail-value">${Utils.escapeHtml(bmUser ? bmUser.full_name : '—')}</span>
               </div>
               <div class="detail-item">
+                <span class="detail-label">Category</span>
+                <span class="detail-value"><span class="badge badge-category-${cat?.is_permanent ? 'permanent' : 'custom'}">${Utils.escapeHtml(categoryName)}</span></span>
+              </div>
+              <div class="detail-item">
                 <span class="detail-label">Status</span>
-                <span class="detail-value"><span class="badge badge-status-${Utils.getStatusClass(record.status)}">${record.status}</span></span>
+                <span class="detail-value detail-status"><span class="badge badge-status-${Utils.getStatusClass(record.status)}">${record.status}</span></span>
+              </div>
+
+              <div class="detail-section">Financial Details</div>
+              <div class="detail-item">
+                <span class="detail-label">Amount Approved</span>
+                <span class="detail-value detail-amount">${Utils.formatCurrency(record.amount_approved)}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">Encoded By</span>
-                <span class="detail-value">${Utils.escapeHtml(encoder ? encoder.full_name : '—')}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Created</span>
+                <span class="detail-label">Date Created</span>
                 <span class="detail-value">${Utils.formatDate(record.created_at, 'datetime')}</span>
               </div>
+              ${record.date_requested ? `
               <div class="detail-item">
-                <span class="detail-label">Wait Duration</span>
-                <span class="detail-value">${record.wait_duration_months} months</span>
+                <span class="detail-label">Date Requested</span>
+                <span class="detail-value">${Utils.formatDate(record.date_requested)}</span>
+              </div>
+              ` : ''}
+
+              <div class="detail-section">Cooldown Period</div>
+              <div class="detail-item">
+                <span class="detail-label">Cooldown Duration</span>
+                <span class="detail-value">${record.cooldown_months || record.wait_duration_months || 3} months</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Next Available Date</span>
                 <span class="detail-value">${record.next_available_date ? Utils.formatDate(record.next_available_date) : 'No restriction'}</span>
               </div>
+              <div class="detail-item">
+                <span class="detail-label">Cooldown Status</span>
+                <span class="detail-value"><span class="badge ${cooldown.badgeClass}">${cooldown.label}</span></span>
+              </div>
               ${record.skip_waiting_period ? `
-              <div class="detail-item" style="grid-column: 1 / -1">
+              <div class="detail-item-full">
                 <span class="detail-label">Skip Reason</span>
                 <span class="detail-value">${Utils.escapeHtml(record.skip_reason || '—')}</span>
               </div>
               ` : ''}
               ${freq ? `
-              <div class="detail-item">
+              <div class="detail-item-full">
                 <span class="detail-label">Monthly Frequency</span>
                 <span class="detail-value"><span class="badge ${Utils.getFrequencyClass(freq.level)}">${freq.level} (${freq.total}x this month)</span></span>
               </div>
               ` : ''}
+              ${record.remarks ? `
+              <div class="detail-item-full">
+                <span class="detail-label">Remarks</span>
+                <span class="detail-value">${Utils.escapeHtml(record.remarks)}</span>
+              </div>
+              ` : ''}
+
+              <div class="detail-section">Record Info</div>
+              <div class="detail-item">
+                <span class="detail-label">Encoded By</span>
+                <span class="detail-value">${Utils.escapeHtml(encoder ? encoder.full_name : '—')}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Last Updated</span>
+                <span class="detail-value">${Utils.formatDate(record.updated_at || record.created_at, 'datetime')}</span>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -748,8 +826,8 @@ const FAModule = {
     if (!record) return;
 
     const html = `
-      <div class="modal-overlay active" id="fa-status-modal">
-        <div class="modal modal-sm animate-fade-in">
+      <div class="modal-overlay active" id="fa-status-modal" onclick="this.remove()">
+        <div class="modal modal-sm animate-fade-in" onclick="event.stopPropagation()">
           <div class="modal-header">
             <h3 class="modal-title">Update Status</h3>
             <button class="modal-close" onclick="document.getElementById('fa-status-modal').remove()">&times;</button>
@@ -802,197 +880,6 @@ const FAModule = {
 
     document.getElementById('fa-status-modal')?.remove();
     Notifications.success(`Status updated to ${newStatus}`);
-    this.loadRecords();
-  },
-
-  /* --------------------------------------------------------
-   * SYSADMIN: EDIT RECORD / DELETE RECORD
-   * -------------------------------------------------------- */
-
-  /**
-   * Edit an FA record (sysadmin only) — full field edit
-   */
-  editRecord(faId) {
-    const user = Auth.getCurrentUser();
-    if (!user || user.role !== 'sysadmin') return;
-
-    const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
-    if (!record) return;
-
-    const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
-    const categories = Storage.getAll(KEYS.FA_CATEGORIES);
-    const cat = categories.find(c => c.id === record.case_type_id);
-
-    const html = `
-      <div class="modal-overlay active" id="fa-edit-modal">
-        <div class="modal animate-fade-in" style="max-width:560px;">
-          <div class="modal-header">
-            <h3 class="modal-title">${Icons.render('edit', 20)} Edit FA Record</h3>
-            <button class="modal-close" onclick="document.getElementById('fa-edit-modal').remove()">&times;</button>
-          </div>
-          <div class="modal-body">
-            <div id="fa-edit-error" class="banner banner-danger hidden mb-md"></div>
-
-            <div class="form-group mb-md">
-              <label class="form-label">Patient Name *</label>
-              <input type="text" class="form-input" id="edit-fa-patient" value="${Utils.escapeHtml(record.patient_name)}" required />
-            </div>
-
-            <div class="d-flex gap-md">
-              <div class="form-group mb-md" style="flex:1;">
-                <label class="form-label">Category</label>
-                <select class="form-select" id="edit-fa-category">
-                  ${categories.map(c => `<option value="${c.id}" ${c.id === record.case_type_id ? 'selected' : ''}>${Utils.escapeHtml(c.name)}</option>`).join('')}
-                  <option value="_custom" ${record.case_type_custom ? 'selected' : ''}>Custom</option>
-                </select>
-              </div>
-              <div class="form-group mb-md" style="flex:1;">
-                <label class="form-label">Custom Category</label>
-                <input type="text" class="form-input" id="edit-fa-category-custom" value="${Utils.escapeHtml(record.case_type_custom || '')}" placeholder="If custom" />
-              </div>
-            </div>
-
-            <div class="d-flex gap-md">
-              <div class="form-group mb-md" style="flex:1;">
-                <label class="form-label">Amount Approved (₱) *</label>
-                <input type="number" class="form-input" id="edit-fa-amount" value="${record.amount_approved}" min="1" step="100" required />
-              </div>
-              <div class="form-group mb-md" style="flex:1;">
-                <label class="form-label">Status</label>
-                <select class="form-select" id="edit-fa-status">
-                  <option value="Ongoing" ${record.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
-                  <option value="Successful" ${record.status === 'Successful' ? 'selected' : ''}>Successful</option>
-                  <option value="Denied" ${record.status === 'Denied' ? 'selected' : ''}>Denied</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group mb-md">
-              <label class="form-label">Board Member</label>
-              <select class="form-select" id="edit-fa-bm">
-                ${bms.map(bm => {
-                  const u = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
-                  return `<option value="${bm.bm_id}" ${bm.bm_id === record.bm_id ? 'selected' : ''}>${u ? Utils.escapeHtml(u.full_name) : bm.district_name}</option>`;
-                }).join('')}
-              </select>
-            </div>
-
-            <div class="d-flex gap-md">
-              <div class="form-group mb-md" style="flex:1;">
-                <label class="form-label">Wait Duration (months)</label>
-                <input type="number" class="form-input" id="edit-fa-wait" value="${record.wait_duration_months}" min="0" />
-              </div>
-              <div class="form-group mb-md" style="flex:1;">
-                <label class="form-label">Next Available Date</label>
-                <input type="date" class="form-input" id="edit-fa-next-date" value="${record.next_available_date ? record.next_available_date.substring(0, 10) : ''}" />
-              </div>
-            </div>
-
-            <div class="banner banner-info mb-sm">
-              <div class="banner-content">
-                <small>${Icons.render('info', 14)} Changing the amount will NOT automatically adjust the budget. Use this for corrections only.</small>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-ghost" onclick="document.getElementById('fa-edit-modal').remove()">Cancel</button>
-            <button class="btn btn-primary" onclick="FAModule.saveRecordEdit('${faId}')">
-              ${Icons.render('check', 16)} Save Changes
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', html);
-  },
-
-  saveRecordEdit(faId) {
-    const patientName = document.getElementById('edit-fa-patient').value.trim();
-    const categoryId = document.getElementById('edit-fa-category').value;
-    const categoryCustom = document.getElementById('edit-fa-category-custom').value.trim();
-    const amount = parseFloat(document.getElementById('edit-fa-amount').value);
-    const status = document.getElementById('edit-fa-status').value;
-    const bmId = document.getElementById('edit-fa-bm').value;
-    const waitDuration = parseInt(document.getElementById('edit-fa-wait').value) || 0;
-    const nextDate = document.getElementById('edit-fa-next-date').value || null;
-    const errorEl = document.getElementById('fa-edit-error');
-
-    if (!patientName || !amount) {
-      errorEl.textContent = 'Patient name and amount are required.';
-      errorEl.classList.remove('hidden');
-      return;
-    }
-
-    const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
-    const oldStatus = record.status;
-
-    const updates = {
-      patient_name: patientName,
-      case_type_id: categoryId === '_custom' ? null : categoryId,
-      case_type_custom: categoryId === '_custom' ? categoryCustom : null,
-      amount_approved: amount,
-      amount_requested: amount,
-      status: status,
-      bm_id: bmId,
-      wait_duration_months: waitDuration,
-      next_available_date: nextDate,
-      updated_at: new Date().toISOString()
-    };
-
-    Storage.update(KEYS.FA_RECORDS, faId, updates, 'fa_id');
-
-    // Handle budget refund if status changed to Denied
-    if (status === 'Denied' && oldStatus !== 'Denied') {
-      const yearMonth = record.created_at.substring(0, 7);
-      Storage.refundBudget(record.bm_id, record.amount_approved, yearMonth);
-    }
-
-    ActivityLogger.log(
-      `[Admin] Edited FA record: ${patientName}`,
-      'edit', 'fa', faId,
-      `Amount: ${Utils.formatCurrency(amount)}, Status: ${status}`
-    );
-
-    document.getElementById('fa-edit-modal')?.remove();
-    Notifications.success('FA record updated successfully.');
-    this.loadRecords();
-  },
-
-  /**
-   * Delete an FA record (sysadmin only)
-   */
-  async deleteRecord(faId) {
-    const user = Auth.getCurrentUser();
-    if (!user || user.role !== 'sysadmin') return;
-
-    const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
-    if (!record) return;
-
-    const confirmed = await Notifications.confirm({
-      title: 'Delete FA Record',
-      message: `Permanently delete the FA record for "${record.patient_name}"?\n\nAmount: ${Utils.formatCurrency(record.amount_approved)}\nStatus: ${record.status}\n\nThis action cannot be undone. The budget will be refunded if the record was not denied.`,
-      confirmText: 'Delete Permanently',
-      type: 'danger'
-    });
-
-    if (!confirmed) return;
-
-    // Refund budget if not already denied
-    if (record.status !== 'Denied') {
-      const yearMonth = record.created_at.substring(0, 7);
-      Storage.refundBudget(record.bm_id, record.amount_approved, yearMonth);
-    }
-
-    Storage.hardDelete(KEYS.FA_RECORDS, faId, 'fa_id');
-
-    ActivityLogger.log(
-      `[Admin] Deleted FA record: ${record.patient_name}`,
-      'delete', 'fa', faId,
-      `Amount: ${Utils.formatCurrency(record.amount_approved)}`
-    );
-
-    Notifications.success(`FA record for "${record.patient_name}" deleted.`);
     this.loadRecords();
   },
 

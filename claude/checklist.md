@@ -60,8 +60,8 @@
 - ✅ Sidebar logout CSS (danger hover state, icon alignment)
 - ✅ Logout confirmation modal (Notifications.confirm before Auth.logout)
 - ✅ Role-based theming via `data-role` attribute (blue/amber/teal)
-- ✅ Responsive verified on all authenticated pages
-- ✅ No console errors
+- ⬜ Responsive verified on all authenticated pages
+- ⬜ No console errors
 - ✅ README documentation complete
 - ✅ vercel.json deployment config
 
@@ -78,55 +78,112 @@
 - ✅ "My PA Budget" sidebar link for board_member role
 - ✅ `credit-card` icon added to icons.js
 
+## Phase 6: SysAdmin CRUD, BM Enhancements, Frequency & Incoming Letters ✅
+- ✅ `claude/roles.md` created — comprehensive role documentation
+- ✅ `claude/LIVING-CONTEXT.md` updated with session changes
+- ✅ `claude/checklist.md` updated with Phase 6 items
+
+### 6A: SysAdmin Full CRUD ✅
+- ✅ SysAdmin: Add Board Member (modal form, generates user + BM record + empty budgets)
+- ✅ SysAdmin: Edit Board Member (name, district, contact info)
+- ✅ SysAdmin: Deactivate Board Member (soft-delete, preserves records)
+- ✅ SysAdmin: Add Staff (modal form, generates user + staff record)
+- ✅ SysAdmin: Edit Staff (name, position, contact info)
+- ✅ SysAdmin: Deactivate Staff (soft-delete, preserves records)
+- ✅ SysAdmin: Assign/Reassign Secretary to Board Member
+- ✅ SysAdmin: Activity logging for all CRUD actions
+
+### 6B: Board Member Enhancements ✅
+- ✅ Term badges (1st Term / 2nd Term / 3rd Term) — computed from `board_members[].terms[]` length
+- ✅ Re-elected badge — shown when BM has >1 term
+- ✅ BM: View Secretary Activity Logs page (`boardmember/secretary-logs.html`)
+- ✅ BM: Archives page to view past-term FA/PA records (`boardmember/archives.html`)
+- ✅ BM sidebar: Add Secretary Logs + Archives links, remove Global Search
+
+### 6C: Frequency & Cross-BM Tracking ✅
+- ✅ FA list table: Add frequency column with badge per beneficiary
+- ✅ PA list table: Add frequency column with badge per beneficiary
+- ✅ Cross-BM alert: Banner in FA/PA new record forms when beneficiary got aid from other BMs
+- ✅ Cross-BM alert: Flagged row indicator in FA/PA list tables (`.row-flagged` CSS)
+- ✅ Cross-BM alert: Dashboard section showing flagged beneficiaries (secretary dashboard)
+- ✅ Cross-BM alert: Search results show cross-BM info (beneficiary result cards)
+
+### 6D: Incoming Letters Module (NEW) ✅
+- ✅ Data model: `INCOMING_LETTERS` localStorage key + CRUD methods in `storage.js`
+- ✅ Seed data: 3 sample incoming letters for demo
+- ✅ New page: `pages/incoming-list.html` — list with filters, stat cards, export
+- ✅ New page: `pages/incoming-new.html` — create form with all fields
+- ✅ New CSS: `assets/css/pages/incoming.css`
+- ✅ New module: `assets/js/modules/incoming-module.js` (list, detail modal, edit modal, new form)
+- ✅ Fields: date_received, sender_name, sender_address, event, purpose, action_taken, date_of_event, date_released, concerned_office, remarks
+- ✅ Categories: Cultural Activities, Solicitations, Invitation Letters
+- ✅ Router: Incoming Letters links for secretary & sysadmin sidebar
+- ✅ App.js: Route dispatch for incoming-new, incoming-list
+- ✅ Auth: Secretary creates, SysAdmin views, BM views (read-only)
+
+### 6E: Search Archives ✅
+- ✅ New page: Search Archives (`pages/search-archives.html`) — searches across archived FA, PA, and incoming letters
+- ✅ SearchModule.initArchives() — full search with type toggles (all/FA/PA/letters)
+- ✅ Secretary sidebar: Search Archives link added
+
 ---
 
-## Phase 5: Page-by-Page Quality Audit
+## Phase 7: Page-by-Page Quality Audit
 
 Each page must pass: **HTML structure** ✔ | **CSS styling** ✔ | **JS wiring** ✔ | **Responsive** ✔ | **Overflow-safe** ✔
 
 ### Public Pages (no auth)
 | # | Page | HTML | CSS | JS | Responsive | Status |
 |---|------|------|-----|-----|------------|--------|
-| 1 | `index.html` (Landing) | `index.html` | `landing.css` | inline script (nav scroll, mobile toggle) | 320–1440px | ✅ |
-| 2 | `pages/login.html` (Staff/BM Login) | `pages/login.html` | `login.css` | `app.js → initLoginPage()` | 320–1440px | ✅ |
-| 3 | `sysadmin/login.html` (Admin Login) | `sysadmin/login.html` | `login.css` + inline overrides | `app.js → initLoginPage()` | 320–1440px | ✅ |
+| 1 | `index.html` (Landing) | `index.html` | `landing.css` | inline script (nav scroll, mobile toggle) | 320–1440px | ⬜ |
+| 2 | `pages/login.html` (Staff/BM Login) | `pages/login.html` | `login.css` | `app.js → initLoginPage()` | 320–1440px | ⬜ |
+| 3 | `sysadmin/login.html` (Admin Login) | `sysadmin/login.html` | `login.css` + inline overrides | `app.js → initLoginPage()` | 320–1440px | ⬜ |
 
 ### Authenticated Pages — Staff/Secretary
 | # | Page | HTML | CSS | JS Module | Responsive | Status |
 |---|------|------|-----|-----------|------------|--------|
-| 4 | Dashboard | `pages/dashboard.html` | `dashboard.css` | `dashboard.js` | 320–1440px | ✅ |
-| 5 | FA Records List | `pages/fa-list.html` | `fa-list.css` | `fa-module.js` | 320–1440px | ✅ |
-| 6 | FA New Record | `pages/fa-new.html` | `forms.css` + `fa-new.css` | `fa-module.js` | 320–1440px | ✅ |
-| 7 | PA Records List | `pages/pa-list.html` | `pa-list.css` | `pa-module.js` | 320–1440px | ✅ |
-| 8 | PA New Record | `pages/pa-new.html` | `forms.css` + `pa-new.css` | `pa-module.js` | 320–1440px | ✅ |
-| 9 | Global Search | `pages/global-search.html` | `search.css` | `search-module.js` | 320–1440px | ✅ |
-| 10 | Categories | `pages/categories.html` | `admin.css` + `categories.css` | `category-manager.js` | 320–1440px | ✅ |
-| 11 | Term & Archive | `pages/term-management.html` | `admin.css` + `term-management.css` | `term-manager.js` | 320–1440px | ✅ |
-| 12 | Reports | `pages/reports.html` | `reports.css` | `reports.js` | 320–1440px | ✅ |
-| 13 | Activity Logs | `pages/activity-logs.html` | `activity-logs.css` | `activity-logger.js` (via `app.js`) | 320–1440px | ✅ |
-| 14 | Budget Overview | `pages/budget.html` | `budget.css` | `dashboard.js` (budget section) | 320–1440px | ✅ |
+| 4 | Dashboard | `pages/dashboard.html` | `dashboard.css` | `dashboard.js` | 320–1440px | ⬜ |
+| 5 | FA Records List | `pages/fa-list.html` | `fa-list.css` | `fa-module.js` | 320–1440px | ⬜ |
+| 6 | FA New Record | `pages/fa-new.html` | `forms.css` + `fa-new.css` | `fa-module.js` | 320–1440px | ⬜ |
+| 7 | PA Records List | `pages/pa-list.html` | `pa-list.css` | `pa-module.js` | 320–1440px | ⬜ |
+| 8 | PA New Record | `pages/pa-new.html` | `forms.css` + `pa-new.css` | `pa-module.js` | 320–1440px | ⬜ |
+| 9 | Global Search | `pages/global-search.html` | `search.css` | `search-module.js` | 320–1440px | ⬜ |
+| 10 | Categories | `pages/categories.html` | `admin.css` + `categories.css` | `category-manager.js` | 320–1440px | ⬜ |
+| 11 | Term & Archive | `pages/term-management.html` | `admin.css` + `term-management.css` | `term-manager.js` | 320–1440px | ⬜ |
+| 12 | Reports | `pages/reports.html` | `reports.css` | `reports.js` | 320–1440px | ⬜ |
+| 13 | Activity Logs | `pages/activity-logs.html` | `activity-logs.css` | `activity-logger.js` (via `app.js`) | 320–1440px | ⬜ |
+| 14 | Budget Overview | `pages/budget.html` | `budget.css` | `dashboard.js` (budget section) | 320–1440px | ⬜ |
 
 ### Authenticated Pages — SysAdmin
 | # | Page | HTML | CSS | JS Module | Responsive | Status |
 |---|------|------|-----|-----------|------------|--------|
-| 15 | BM Management | `sysadmin/bm-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ✅ |
-| 16 | Staff Management | `sysadmin/staff-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ✅ |
+| 15 | BM Management | `sysadmin/bm-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ⬜ |
+| 16 | Staff Management | `sysadmin/staff-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ⬜ |
 
 ### Authenticated Pages — Board Member
 | # | Page | HTML | CSS | JS Module | Responsive | Status |
 |---|------|------|-----|-----------|------------|--------|
-| 17 | My FA Budget | `boardmember/my-fa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ✅ |
-| 18 | My PA Budget | `boardmember/my-pa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ✅ |
+| 17 | My FA Budget | `boardmember/my-fa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+| 18 | My PA Budget | `boardmember/my-pa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+| 19 | Secretary Logs | `boardmember/secretary-logs.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+| 20 | Archives | `boardmember/archives.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+
+### Authenticated Pages — Secretary/Staff (New)
+| # | Page | HTML | CSS | JS Module | Responsive | Status |
+|---|------|------|-----|-----------|------------|--------|
+| 21 | Incoming Letters List | `pages/incoming-list.html` | `incoming.css` | `incoming-module.js` | 320–1440px | ⬜ |
+| 22 | Incoming Letters New | `pages/incoming-new.html` | `forms.css` + `incoming.css` | `incoming-module.js` | 320–1440px | ⬜ |
+| 23 | Search Archives | `pages/search-archives.html` | `search.css` | `search-module.js` | 320–1440px | ⬜ |
 
 ### Shared Infrastructure (verified across all pages)
 | # | Component | Files | Status |
 |---|-----------|-------|--------|
-| 19 | Sidebar navigation + collapse | `layout.css` + `router.js` + `app.js` | ✅ |
-| 20 | Icons system | `icons.js` (90+ icons incl. credit-card) + `main.css` | ✅ |
-| 21 | Modals & toasts | `components.css` + `notifications.js` | ✅ |
-| 22 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ✅ |
-| 23 | Sidebar profile + logout | `layout.css` (.sidebar-profile, .sidebar-logout) | ✅ |
-| 24 | Pagination + Empty states | `utils.js` (paginate, renderPagination, renderEmptyState) | ✅ |
+| 24 | Sidebar navigation + collapse | `layout.css` + `router.js` + `app.js` | ⬜ |
+| 25 | Icons system | `icons.js` (90+ icons incl. credit-card) + `main.css` | ⬜ |
+| 26 | Modals & toasts | `components.css` + `notifications.js` | ⬜ |
+| 27 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ⬜ |
+| 28 | Sidebar profile + logout | `layout.css` (.sidebar-profile, .sidebar-logout) | ⬜ |
+| 29 | Pagination + Empty states | `utils.js` (paginate, renderPagination, renderEmptyState) | ⬜ |
 
 ---
 

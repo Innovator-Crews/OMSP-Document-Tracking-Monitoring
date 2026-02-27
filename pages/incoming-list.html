@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Staff Management — OMSP Document Tracking</title>
+  <title>Incoming Letters — OMSP Document Tracking</title>
   <link rel='icon' type='image/png' href='../assets/images/SP-favicon.png' />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -11,8 +11,7 @@
   <link rel="stylesheet" href="../assets/css/components.css" />
   <link rel="stylesheet" href="../assets/css/layout.css" />
   <link rel="stylesheet" href="../assets/css/animations.css" />
-  <link rel="stylesheet" href="../assets/css/pages/admin.css" />
-  <link rel="stylesheet" href="css/sysadmin.css" />
+  <link rel="stylesheet" href="../assets/css/pages/incoming.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -41,16 +40,17 @@
       <header class="page-header">
         <button class="menu-toggle" id="menu-toggle">☰</button>
         <div>
-          <h1 class="page-title" id="page-title">Staff Management</h1>
+          <h1 class="page-title" id="page-title">Incoming Letters</h1>
         </div>
         <div class="header-actions">
+          <a href="incoming-new.html" class="btn btn-primary btn-sm" id="new-il-btn">➕ New Incoming Letter</a>
           <span class="text-sm text-muted" id="user-name-label"></span>
           <span class="badge badge-info" id="user-role-label"></span>
         </div>
       </header>
 
       <div class="page-body">
-        <div id="staff-management-content" class="fade-in">
+        <div id="incoming-list-content" class="fade-in">
           <div class="loading-spinner"></div>
         </div>
       </div>
@@ -68,7 +68,7 @@
   <script src="../assets/js/export.js"></script>
   <script src="../assets/js/icons.js"></script>
   <script src="../assets/js/router.js"></script>
-  <script src="js/sysadmin.js"></script>
+  <script src="../assets/js/modules/incoming-module.js"></script>
   <script src="../assets/js/app.js"></script>
 </body>
 </html>

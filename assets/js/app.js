@@ -60,17 +60,6 @@ const App = {
         return;
       }
 
-      // Admin login page: reject non-sysadmin users
-      const { section } = Router.getCurrentPage();
-      if (section === 'sysadmin' && result.user.role !== 'sysadmin') {
-        Auth.logout();
-        if (errorEl) {
-          errorEl.textContent = 'Access denied. This login is for system administrators only.';
-          errorEl.classList.remove('hidden');
-        }
-        return;
-      }
-
       // Redirect to dashboard
       Auth.goToDashboard();
     });
@@ -127,9 +116,21 @@ const App = {
     // Sidebar collapse toggle (desktop)
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
     if (collapseBtn && sidebar) {
-      // Restore collapse state
+      // Restore collapse state WITHOUT transition animation
       const isCollapsed = localStorage.getItem('omsp_sidebar_collapsed') === 'true';
-      if (isCollapsed) sidebar.classList.add('collapsed');
+      if (isCollapsed) {
+        // Add no-transition class to suppress ALL CSS transitions during restore
+        document.documentElement.classList.add('no-transition');
+        sidebar.classList.add('collapsed');
+        // Force reflow so the browser applies collapsed state immediately
+        sidebar.offsetHeight;
+        // Remove no-transition after the browser has fully painted
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            document.documentElement.classList.remove('no-transition');
+          });
+        });
+      }
 
       collapseBtn.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
@@ -362,6 +363,34 @@ const App = {
         Router.setPageInfo('My Personal Assistance Budget');
         break;
 
+      // BM oversight pages
+      case 'secretary-logs':
+        if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initSecretaryLogs();
+        Router.setPageInfo('Secretary Activity Logs');
+        break;
+
+      case 'archives':
+        if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initArchives();
+        Router.setPageInfo('Past Term Archives');
+        break;
+
+      // Incoming Letters pages
+      case 'incoming-new':
+        if (typeof IncomingModule !== 'undefined') IncomingModule.initNewForm();
+        Router.setPageInfo('New Incoming Letter');
+        break;
+
+      case 'incoming-list':
+        if (typeof IncomingModule !== 'undefined') IncomingModule.initList();
+        Router.setPageInfo('Incoming Letters');
+        break;
+
+      // Search Archives
+      case 'search-archives':
+        if (typeof SearchModule !== 'undefined') SearchModule.initArchives();
+        Router.setPageInfo('Search Archives');
+        break;
+
       default:
         console.log('No module for page:', page);
     }
@@ -375,237 +404,15 @@ const App = {
     if (!container) return;
 
     const user = Auth.getCurrentUser();
-    const isSysAdmin = user.role === 'sysadmin';
+    const filters = {};
 
-    // Get all logs to build filter dropdowns
-    const allLogs = Storage.getAll(KEYS.ACTIVITY_LOGS);
-    const uniqueUsers = [...new Map(allLogs.map(l => [l.user_id, { id: l.user_id, name: l.user_name }])).values()];
-    uniqueUsers.sort((a, b) => a.name.localeCompare(b.name));
-
-    const actionTypes = [
-      { value: 'create', label: 'Create' },
-      { value: 'update', label: 'Update' },
-      { value: 'edit', label: 'Edit' },
-      { value: 'delete', label: 'Delete' },
-      { value: 'archive', label: 'Archive' },
-      { value: 'restore', label: 'Restore' },
-      { value: 'login', label: 'Login' },
-      { value: 'logout', label: 'Logout' },
-      { value: 'export', label: 'Export' },
-      { value: 'status_change', label: 'Status Change' },
-      { value: 'approve', label: 'Approve' },
-      { value: 'deny', label: 'Deny' }
-    ];
-
-    const recordTypes = [
-      { value: 'fa', label: 'Financial Assistance' },
-      { value: 'pa', label: 'Personal Assistance' },
-      { value: 'beneficiary', label: 'Beneficiary' },
-      { value: 'category', label: 'Category' },
-      { value: 'user', label: 'User' },
-      { value: 'budget', label: 'Budget' },
-      { value: 'term', label: 'Term' },
-      { value: 'system', label: 'System' }
-    ];
-
-    container.innerHTML = `
-      <div class="card mb-md">
-        <div class="card-header">
-          <h3 class="card-title">${Icons.render('filter', 18)} Filters</h3>
-          <div class="d-flex gap-sm">
-            <button class="btn btn-ghost btn-sm" id="clear-log-filters">${Icons.render('x', 14)} Clear</button>
-            <button class="btn btn-outline btn-sm" id="export-logs-btn">${Icons.render('download', 14)} Export CSV</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="log-filters">
-            <div class="form-group" style="margin-bottom:0;flex:1;min-width:150px;">
-              <label class="form-label">Action Type</label>
-              <select id="filter-action-type" class="form-select">
-                <option value="">All Actions</option>
-                ${actionTypes.map(t => `<option value="${t.value}">${t.label}</option>`).join('')}
-              </select>
-            </div>
-            <div class="form-group" style="margin-bottom:0;flex:1;min-width:150px;">
-              <label class="form-label">Record Type</label>
-              <select id="filter-record-type" class="form-select">
-                <option value="">All Records</option>
-                ${recordTypes.map(t => `<option value="${t.value}">${t.label}</option>`).join('')}
-              </select>
-            </div>
-            ${isSysAdmin ? `
-            <div class="form-group" style="margin-bottom:0;flex:1;min-width:150px;">
-              <label class="form-label">User</label>
-              <select id="filter-user" class="form-select">
-                <option value="">All Users</option>
-                ${uniqueUsers.map(u => `<option value="${Utils.escapeHtml(u.id)}">${Utils.escapeHtml(u.name)}</option>`).join('')}
-              </select>
-            </div>
-            ` : ''}
-            <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px;">
-              <label class="form-label">Date From</label>
-              <input type="date" id="filter-date-from" class="form-input" />
-            </div>
-            <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px;">
-              <label class="form-label">Date To</label>
-              <input type="date" id="filter-date-to" class="form-input" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Activity Log</h3>
-          <span class="text-sm text-muted" id="log-count-label"></span>
-        </div>
-        <div class="card-body" id="log-list-container"></div>
-        <div id="log-pagination" class="card-footer"></div>
-      </div>
-    `;
-
-    // State
-    let currentPage = 1;
-    const pageSize = 25;
-
-    const applyFilters = () => {
-      const filters = { limit: 500 };
-      if (!isSysAdmin) filters.user_id = user.user_id;
-
-      const actionType = document.getElementById('filter-action-type').value;
-      const recordType = document.getElementById('filter-record-type').value;
-      const userFilter = isSysAdmin ? document.getElementById('filter-user')?.value : '';
-      const dateFrom = document.getElementById('filter-date-from').value;
-      const dateTo = document.getElementById('filter-date-to').value;
-
-      if (actionType) filters.action_type = actionType;
-      if (recordType) filters.record_type = recordType;
-      if (userFilter) filters.user_id = userFilter;
-      if (dateFrom) filters.date_from = dateFrom;
-      if (dateTo) filters.date_to = dateTo;
-
-      const logs = ActivityLogger.getRecent(filters);
-      const paged = Utils.paginate(logs, currentPage, pageSize);
-
-      document.getElementById('log-count-label').textContent = `${logs.length} entries`;
-
-      const listEl = document.getElementById('log-list-container');
-      if (paged.data.length === 0) {
-        listEl.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">${Icons.render('clipboard-list', 32)}</div>
-            <h3 class="empty-state-title">No Activity Found</h3>
-            <p class="empty-state-text">No logs match your current filters.</p>
-          </div>
-        `;
-      } else {
-        listEl.innerHTML = paged.data.map(log => {
-          const iconClass = log.action_type === 'update' || log.action_type === 'edit' ? 'log-icon-edit'
-            : log.action_type === 'create' ? 'log-icon-create'
-            : log.action_type === 'delete' ? 'log-icon-delete'
-            : log.action_type === 'login' || log.action_type === 'logout' ? 'log-icon-login'
-            : '';
-          return `
-            <div class="log-entry">
-              <div class="log-entry-icon ${iconClass}">
-                ${ActivityLogger.getActionIcon(log.action_type)}
-              </div>
-              <div class="log-entry-body">
-                <div class="log-entry-action">
-                  <strong>${Utils.escapeHtml(log.user_name)}</strong>
-                  ${Utils.escapeHtml(log.action)}
-                </div>
-                ${log.details ? `<div class="log-entry-details">${Utils.escapeHtml(log.details)}</div>` : ''}
-                <div class="log-entry-details">
-                  <span class="badge badge-neutral" style="font-size:0.7rem;">${log.action_type}</span>
-                  <span class="badge badge-info" style="font-size:0.7rem;">${log.record_type}</span>
-                </div>
-              </div>
-              <div class="log-entry-time">${Utils.formatDate(log.created_at, 'short')} ${new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      // Pagination
-      const pagEl = document.getElementById('log-pagination');
-      if (paged.totalPages > 1) {
-        let pagHtml = '';
-        pagHtml += `<div class="pagination"><span>Showing ${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, logs.length)} of ${logs.length}</span><div class="pagination-buttons">`;
-        pagHtml += `<button class="pagination-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="App._activityGoToPage(${currentPage - 1})">&laquo;</button>`;
-        const startPg = Math.max(1, currentPage - 2);
-        const endPg = Math.min(paged.totalPages, currentPage + 2);
-        if (startPg > 1) {
-          pagHtml += `<button class="pagination-btn" onclick="App._activityGoToPage(1)">1</button>`;
-          if (startPg > 2) pagHtml += `<span class="pagination-ellipsis">…</span>`;
-        }
-        for (let i = startPg; i <= endPg; i++) {
-          pagHtml += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="App._activityGoToPage(${i})">${i}</button>`;
-        }
-        if (endPg < paged.totalPages) {
-          if (endPg < paged.totalPages - 1) pagHtml += `<span class="pagination-ellipsis">…</span>`;
-          pagHtml += `<button class="pagination-btn" onclick="App._activityGoToPage(${paged.totalPages})">${paged.totalPages}</button>`;
-        }
-        pagHtml += `<button class="pagination-btn" ${currentPage >= paged.totalPages ? 'disabled' : ''} onclick="App._activityGoToPage(${currentPage + 1})">&raquo;</button>`;
-        pagHtml += '</div></div>';
-        pagEl.innerHTML = pagHtml;
-      } else {
-        pagEl.innerHTML = '';
-      }
-    };
-
-    // Attach filter change listeners
-    ['filter-action-type', 'filter-record-type', 'filter-date-from', 'filter-date-to'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('change', () => { currentPage = 1; applyFilters(); });
-    });
-    if (isSysAdmin) {
-      const userEl = document.getElementById('filter-user');
-      if (userEl) userEl.addEventListener('change', () => { currentPage = 1; applyFilters(); });
+    // Non-admin only sees own activity
+    if (user.role !== 'sysadmin') {
+      filters.user_id = user.user_id;
     }
 
-    // Clear filters
-    document.getElementById('clear-log-filters').addEventListener('click', () => {
-      document.getElementById('filter-action-type').value = '';
-      document.getElementById('filter-record-type').value = '';
-      document.getElementById('filter-date-from').value = '';
-      document.getElementById('filter-date-to').value = '';
-      if (isSysAdmin && document.getElementById('filter-user')) {
-        document.getElementById('filter-user').value = '';
-      }
-      currentPage = 1;
-      applyFilters();
-    });
-
-    // Export CSV
-    document.getElementById('export-logs-btn').addEventListener('click', () => {
-      const filters = { limit: 10000 };
-      if (!isSysAdmin) filters.user_id = user.user_id;
-      const actionType = document.getElementById('filter-action-type').value;
-      const recordType = document.getElementById('filter-record-type').value;
-      const userFilter = isSysAdmin ? document.getElementById('filter-user')?.value : '';
-      const dateFrom = document.getElementById('filter-date-from').value;
-      const dateTo = document.getElementById('filter-date-to').value;
-      if (actionType) filters.action_type = actionType;
-      if (recordType) filters.record_type = recordType;
-      if (userFilter) filters.user_id = userFilter;
-      if (dateFrom) filters.date_from = dateFrom;
-      if (dateTo) filters.date_to = dateTo;
-
-      const logs = ActivityLogger.getRecent(filters);
-      ExportUtils.toCSV(logs, 'activity-logs', {
-        columns: ['created_at', 'user_name', 'user_role', 'action', 'action_type', 'record_type', 'record_id', 'details'],
-        headers: ['Timestamp', 'User', 'Role', 'Action', 'Type', 'Record', 'Record ID', 'Details']
-      });
-    });
-
-    // Initial render
-    applyFilters();
-
-    // Expose pagination callback globally
-    this._activityGoToPage = (page) => {
-      currentPage = page;
-      applyFilters();
-    };
+    const logs = ActivityLogger.getRecent(filters, 100);
+    ActivityLogger.renderList(container, logs);
   },
 
   /**
@@ -864,4 +671,12 @@ const App = {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
+
+  // Global: close modals when clicking outside (on the overlay)
+  document.addEventListener('click', (e) => {
+    const overlay = e.target.closest('.modal-overlay');
+    if (overlay && e.target === overlay) {
+      overlay.remove();
+    }
+  });
 });

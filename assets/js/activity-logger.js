@@ -54,16 +54,6 @@ const ActivityLogger = {
     if (filters.user_role) {
       logs = logs.filter(l => l.user_role === filters.user_role);
     }
-    if (filters.date_from) {
-      const from = new Date(filters.date_from);
-      from.setHours(0, 0, 0, 0);
-      logs = logs.filter(l => new Date(l.created_at) >= from);
-    }
-    if (filters.date_to) {
-      const to = new Date(filters.date_to);
-      to.setHours(23, 59, 59, 999);
-      logs = logs.filter(l => new Date(l.created_at) <= to);
-    }
 
     // Sort newest first
     logs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));

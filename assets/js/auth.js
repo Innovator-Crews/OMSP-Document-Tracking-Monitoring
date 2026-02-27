@@ -191,13 +191,6 @@ const Auth = {
       }
     }
 
-    if (permission === 'view_pa' && role === 'board_member') {
-      // BM can only view their own PA
-      if (context.bmId) {
-        return user.bm_id === context.bmId;
-      }
-    }
-
     return true;
   },
 
@@ -223,12 +216,7 @@ const Auth = {
         export_data: true,
         // SysAdmin cannot create Financial Assistance/Personal Assistance records
         create_fa: false,
-        create_pa: false,
-        // SysAdmin CAN edit and delete existing records
-        edit_fa: true,
-        delete_fa: true,
-        edit_pa: true,
-        delete_pa: true
+        create_pa: false
       },
       board_member: {
         view_dashboard: true,
@@ -251,9 +239,9 @@ const Auth = {
       secretary: {
         view_dashboard: true,
         create_fa: true,     // For assigned BMs
-        create_pa: true,     // All PA is transparent
+        create_pa: true,     // For assigned BMs
         view_fa: true,       // Assigned BMs' FA only
-        view_pa: true,       // All PA (transparent)
+        view_pa: true,       // Assigned BMs' PA only
         view_budget: true,   // Assigned BMs' budget
         global_search: true,
         manage_categories: true, // Custom categories

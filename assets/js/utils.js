@@ -478,7 +478,7 @@ const Utils = {
           const steps = toDigit >= fromDigit ? (toDigit - fromDigit) : (10 - fromDigit + toDigit);
           const targetIndex = startIndex + steps;
 
-          track.style.transform = `translateY(-${startIndex * 1.1}em)`;
+          track.style.transform = `translateY(-${startIndex * 1}em)`;
           digitWrap.appendChild(track);
           el.appendChild(digitWrap);
 
@@ -486,7 +486,7 @@ const Utils = {
           requestAnimationFrame(() => {
             track.style.transitionDuration = `${540 + (thisIndex * 70)}ms`;
             track.style.transitionDelay = `${thisIndex * 55}ms`;
-            track.style.transform = `translateY(-${targetIndex * 1.1}em)`;
+            track.style.transform = `translateY(-${targetIndex * 1}em)`;
           });
 
           digitCursor += 1;
@@ -592,6 +592,25 @@ const Utils = {
       high: 'badge-freq-high'
     };
     return map[level] || 'badge-freq-normal';
+  },
+
+  /**
+   * Get cooldown status for a record
+   * @param {Object} record - FA/PA record with next_available_date
+   * @returns {{ status: string, daysLeft: number, label: string, badgeClass: string }}
+   */
+  getCooldownStatus(record) {
+    if (!record || !record.next_available_date) {
+      return { status: 'none', daysLeft: 0, label: 'No restriction', badgeClass: 'badge-neutral' };
+    }
+    if (record.skip_waiting_period) {
+      return { status: 'skipped', daysLeft: 0, label: 'Skipped', badgeClass: 'badge-warning' };
+    }
+    const daysLeft = this.daysUntil(record.next_available_date);
+    if (daysLeft <= 0) {
+      return { status: 'done', daysLeft: 0, label: 'Cooldown Complete', badgeClass: 'badge-success' };
+    }
+    return { status: 'active', daysLeft, label: `${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining`, badgeClass: 'badge-warning' };
   },
 
   /* --------------------------------------------------------

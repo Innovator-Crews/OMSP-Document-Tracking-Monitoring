@@ -44,31 +44,11 @@ const DashboardModule = {
       .filter(b => b.year_month === Utils.getCurrentYearMonth());
     const totalUsed = budgets.reduce((sum, b) => sum + b.used_amount, 0);
 
-    const basePath = Utils.getBasePath();
-
     container.innerHTML = `
-      <div class="mb-lg flex justify-between items-center">
-        <div>
-          <h2 class="mb-xs">Welcome back, <span id="welcome-name">${Utils.escapeHtml(user.full_name)}</span></h2>
-          <p class="text-muted">System Administrator Dashboard</p>
-        </div>
-        <div class="d-flex gap-sm">
-          <a href="${basePath}sysadmin/bm-management.html" class="btn btn-primary btn-sm">${Icons.render('user-plus', 16)} Add Board Member</a>
-          <a href="${basePath}sysadmin/staff-management.html" class="btn btn-outline btn-sm">${Icons.render('user-plus', 16)} Add Staff</a>
-        </div>
+      <div class="mb-lg">
+        <h2 class="mb-xs">Welcome back, <span id="welcome-name">${Utils.escapeHtml(user.full_name)}</span></h2>
+        <p class="text-muted">System Administrator Dashboard</p>
       </div>
-
-      ${pendingArchives.length > 0 ? `
-      <div class="banner banner-warning mb-lg">
-        <div class="banner-icon">${Icons.render('alert-triangle', 20)}</div>
-        <div class="banner-content">
-          <div class="banner-title">${pendingArchives.length} Board Member${pendingArchives.length > 1 ? 's' : ''} Pending Archive</div>
-          <div class="banner-message">These board members have terms that ended and are awaiting archive action.</div>
-        </div>
-        <div class="banner-action">
-          <a href="term-management.html" class="btn btn-sm btn-outline">Review Now →</a>
-        </div>
-      </div>` : ''}
 
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">
@@ -166,11 +146,21 @@ const DashboardModule = {
     const daysLeft = Utils.daysUntil(bm.term_end);
     const termText = daysLeft > 0 ? daysLeft + ' days remaining' : 'Term ended';
 
+    // Term badge info
+    const bmInfo = Storage.getBMWithTermInfo(bm.bm_id);
+    const termBadge = bmInfo ? bmInfo.term_badge : '1st Term';
+    const isReelected = bmInfo ? bmInfo.is_reelected : false;
+
     container.innerHTML = `
       <div class="mb-lg flex justify-between items-start">
         <div>
           <h2 class="mb-xs">Welcome back, ${Utils.escapeHtml(user.full_name)}</h2>
-          <p class="text-muted">${Utils.escapeHtml(bm.district_name)} · Term ${bm.current_term_number} · ${termText}</p>
+          <p class="text-muted">
+            ${Utils.escapeHtml(bm.district_name)} · 
+            <span class="badge badge-info">${termBadge}</span>
+            ${isReelected ? '<span class="badge badge-accent ml-xs">Re-elected</span>' : ''}
+            · ${termText}
+          </p>
         </div>
         <span class="badge badge-warning" style="flex-shrink:0;margin-top:4px;">Read Only</span>
       </div>
@@ -302,6 +292,13 @@ const DashboardModule = {
         <div id="assigned-bms-list" class="grid-2-col gap-md"></div>
       </div>
 
+      <div class="card mb-lg" id="flagged-beneficiaries-card" style="display:none">
+        <div class="card-header">
+          <h3 class="card-title">${Icons.get('alert-triangle', 16)} Cross-BM Flagged Beneficiaries</h3>
+        </div>
+        <div id="flagged-beneficiaries-list"></div>
+      </div>
+
       <div class="grid-2-col gap-md">
         <div class="card">
           <div class="card-header">
@@ -326,6 +323,70 @@ const DashboardModule = {
       .slice(0, 8);
     this.renderMyRecentRecords('#my-recent-records', allMyRecords);
     ActivityLogger.renderList('#recent-activity', { user_id: user.user_id, limit: 10 });
+
+    // Cross-BM flagged beneficiaries
+    this.renderFlaggedBeneficiaries(assignedBMs);
+  },
+
+  /**
+   * Render cross-BM flagged beneficiaries on secretary/admin dashboard
+   */
+  renderFlaggedBeneficiaries(assignedBMs) {
+    const card = document.getElementById('flagged-beneficiaries-card');
+    const list = document.getElementById('flagged-beneficiaries-list');
+    if (!card || !list) return;
+
+    const bmIds = assignedBMs.map(b => b.bm_id);
+    const beneficiaries = Storage.getAll(KEYS.BENEFICIARIES);
+    const flagged = [];
+
+    beneficiaries.forEach(ben => {
+      const faRecs = Storage.query(KEYS.FA_RECORDS, { beneficiary_id: ben.beneficiary_id });
+      const paRecs = Storage.query(KEYS.PA_RECORDS, { beneficiary_id: ben.beneficiary_id });
+      const allRecs = [...faRecs, ...paRecs];
+      const uniqueBMs = new Set(allRecs.map(r => r.bm_id).filter(Boolean));
+
+      // Only flag if beneficiary has records from multiple BMs AND at least one is ours
+      if (uniqueBMs.size >= 2) {
+        const hasOurBM = [...uniqueBMs].some(id => bmIds.includes(id));
+        if (hasOurBM) {
+          flagged.push({
+            beneficiary: ben,
+            bm_count: uniqueBMs.size,
+            total_records: allRecs.length,
+            cross_info: Storage.getCrossBMInfo(ben.beneficiary_id)
+          });
+        }
+      }
+    });
+
+    if (flagged.length === 0) return;
+
+    card.style.display = 'block';
+    list.innerHTML = `
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Beneficiary</th>
+              <th>BMs Involved</th>
+              <th>Total Records</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${flagged.map(f => `
+              <tr class="row-flagged">
+                <td><strong>${Utils.escapeHtml(f.beneficiary.full_name)}</strong></td>
+                <td><span class="badge badge-warning">${f.bm_count} BMs</span></td>
+                <td>${f.total_records}</td>
+                <td class="text-sm">${f.cross_info.details.map(d => `${Utils.escapeHtml(d.name)}: ${d.fa_count}FA/${d.pa_count}PA`).join(', ')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
   },
 
   /* --------------------------------------------------------
