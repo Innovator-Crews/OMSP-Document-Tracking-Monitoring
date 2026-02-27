@@ -386,7 +386,7 @@ const PAModule = {
     if (records.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="6" class="text-center p-xl">
+          <td colspan="7" class="text-center p-xl">
             <div class="empty-state">
               <div class="empty-state-icon">${Icons.render('clipboard-list', 32)}</div>
               <h3 class="empty-state-title">No Personal Assistance Records</h3>
@@ -416,6 +416,7 @@ const PAModule = {
           <td>${Utils.escapeHtml(categoryName)}</td>
           <td class="text-right">${Utils.formatCurrency(r.amount_provided)}</td>
           <td>${bmUser ? Utils.escapeHtml(bmUser.full_name) : '—'}</td>
+          <td>${Utils.escapeHtml(r.event_purpose || '—')}</td>
           <td>${Utils.formatDate(r.created_at)}</td>
           <td>
             <div class="d-flex gap-xs">

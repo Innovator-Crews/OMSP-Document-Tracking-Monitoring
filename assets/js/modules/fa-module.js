@@ -193,7 +193,7 @@ const FAModule = {
       btn.addEventListener('click', () => {
         durationBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const customInput = document.getElementById('fa-duration-custom');
+        const customInput = document.getElementById('fa-duration-custom-value');
         if (customInput) {
           customInput.style.display = btn.dataset.duration === 'custom' ? 'block' : 'none';
         }

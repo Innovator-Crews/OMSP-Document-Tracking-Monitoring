@@ -1285,7 +1285,7 @@ const SysAdminModule = {
         is_active: bm.is_active ? 'Yes' : 'No',
         is_archived: bm.is_archived ? 'Yes' : 'No',
         archive_status: bm.archive_status || 'none',
-        monthly_budget: bm.monthly_budget || 0
+        monthly_budget: bm.fa_monthly_budget || 0
       };
     });
     ExportUtils.toCSV(data, 'board-members', {
@@ -1309,7 +1309,7 @@ const SysAdminModule = {
         full_name: u.full_name,
         email: u.email,
         is_active: u.is_active ? 'Yes' : 'No',
-        is_temp: u.is_temp_password ? 'Yes' : 'No',
+        is_temp: u.is_temp_account ? 'Yes' : 'No',
         assigned_bms: bmNames.join('; ') || 'None',
         created_at: u.created_at || ''
       };
