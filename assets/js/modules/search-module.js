@@ -156,7 +156,7 @@ const SearchModule = {
           <div class="d-flex align-center gap-sm">
             <div class="avatar">${Utils.getInitials(ben.full_name)}</div>
             <div>
-              <h4 class="result-title">${Utils.escapeHtml(ben.full_name)}</h4>
+              <h4 class="result-name">${Utils.escapeHtml(ben.full_name)}</h4>
               <span class="text-muted text-sm">${Utils.escapeHtml(ben.municipality || ben.address || '—')}</span>
             </div>
           </div>
@@ -183,7 +183,7 @@ const SearchModule = {
       <div class="result-card" onclick="FAModule.viewDetail('${record.fa_id}')">
         <div class="result-header">
           <div>
-            <h4 class="result-title">${Utils.escapeHtml(record.patient_name)}</h4>
+            <h4 class="result-name">${Utils.escapeHtml(record.patient_name)}</h4>
             <span class="text-muted text-sm">FA: ${record.fa_id}</span>
           </div>
           <span class="badge badge-status-${Utils.getStatusClass(record.status)}">${record.status}</span>
@@ -206,7 +206,7 @@ const SearchModule = {
       <div class="result-card" onclick="PAModule.viewDetail('${record.pa_id}')">
         <div class="result-header">
           <div>
-            <h4 class="result-title">${Utils.escapeHtml(record.client_name)}</h4>
+            <h4 class="result-name">${Utils.escapeHtml(record.client_name)}</h4>
             <span class="text-muted text-sm">PA: ${record.pa_id}</span>
           </div>
           <span class="badge badge-teal">PA</span>
@@ -481,7 +481,7 @@ const SearchModule = {
       <div class="result-card">
         <div class="result-header">
           <div>
-            <h4 class="result-title">${Utils.escapeHtml(record.patient_name)}</h4>
+            <h4 class="result-name">${Utils.escapeHtml(record.patient_name)}</h4>
             <span class="text-muted text-sm">FA: ${record.fa_id} • Archived</span>
           </div>
           <span class="badge badge-secondary">Archived FA</span>
@@ -503,7 +503,7 @@ const SearchModule = {
       <div class="result-card">
         <div class="result-header">
           <div>
-            <h4 class="result-title">${Utils.escapeHtml(record.client_name)}</h4>
+            <h4 class="result-name">${Utils.escapeHtml(record.client_name)}</h4>
             <span class="text-muted text-sm">PA: ${record.pa_id} • Archived</span>
           </div>
           <span class="badge badge-secondary">Archived PA</span>
@@ -530,7 +530,7 @@ const SearchModule = {
       <div class="result-card">
         <div class="result-header">
           <div>
-            <h4 class="result-title">${Utils.escapeHtml(letter.sender_name)}</h4>
+            <h4 class="result-name">${Utils.escapeHtml(letter.sender_name)}</h4>
             <span class="text-muted text-sm">${Utils.escapeHtml(letter.event || letter.purpose || '—')} • Archived</span>
           </div>
           <span class="badge ${catMap[letter.category] || 'badge-secondary'}">${Utils.escapeHtml(letter.category)}</span>

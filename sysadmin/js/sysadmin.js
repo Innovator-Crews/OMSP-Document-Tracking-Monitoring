@@ -250,17 +250,7 @@ const SysAdminModule = {
     });
 
     // Log activity
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: `Added board member: ${fullName}`,
-      action_type: 'create',
-      record_type: 'board_member',
-      record_id: result.boardMember.bm_id,
-      details: `District: ${district}, Email: ${email}`
-    });
+    ActivityLogger.log(`Added board member: ${fullName}`, 'create', 'board_member', result.boardMember.bm_id, `District: ${district}, Email: ${email}`);
 
     Notifications.toast(`Board member "${fullName}" added successfully!`, 'success');
     this.closeBMModal();
@@ -381,17 +371,7 @@ const SysAdminModule = {
     }
 
     // Log activity
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: `Edited board member: ${name}`,
-      action_type: 'update',
-      record_type: 'board_member',
-      record_id: bmId,
-      details: `District: ${district}`
-    });
+    ActivityLogger.log(`Edited board member: ${name}`, 'update', 'board_member', bmId, `District: ${district}`);
 
     Notifications.toast('Board member updated successfully!', 'success');
     this.closeBMModal();
@@ -410,17 +390,7 @@ const SysAdminModule = {
     Storage.assignSecretary(secretaryUserId, bmId);
 
     const secUser = Storage.getById(KEYS.USERS, secretaryUserId, 'user_id');
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: `Assigned secretary ${secUser ? secUser.full_name : secretaryUserId} to BM`,
-      action_type: 'update',
-      record_type: 'assignment',
-      record_id: bmId,
-      details: `Secretary: ${secUser ? secUser.full_name : secretaryUserId}`
-    });
+    ActivityLogger.log(`Assigned secretary ${secUser ? secUser.full_name : secretaryUserId} to BM`, 'update', 'assignment', bmId, `Secretary: ${secUser ? secUser.full_name : secretaryUserId}`);
 
     Notifications.toast('Secretary assigned!', 'success');
     // Re-open the edit modal to show updated assignments
@@ -435,18 +405,7 @@ const SysAdminModule = {
       confirmText: 'Remove',
       onConfirm: () => {
         Storage.removeAssignment(assignmentId);
-
-        const currentUser = Auth.getCurrentUser();
-        ActivityLogger.log({
-          user_id: currentUser.user_id,
-          user_name: currentUser.full_name,
-          user_role: currentUser.role,
-          action: 'Removed secretary assignment',
-          action_type: 'delete',
-          record_type: 'assignment',
-          record_id: assignmentId,
-          details: `BM: ${bmId}`
-        });
+        ActivityLogger.log('Removed secretary assignment', 'delete', 'assignment', assignmentId, `BM: ${bmId}`);
 
         Notifications.toast('Assignment removed.', 'success');
         this.showEditBMModal(bmId);
@@ -462,24 +421,13 @@ const SysAdminModule = {
 
     Notifications.confirm({
       title: 'Deactivate Board Member',
-      message: `Deactivate <strong>${Utils.escapeHtml(name)}</strong>? Their account will be disabled but records preserved.`,
+      message: `Deactivate "${Utils.escapeHtml(name)}"? Their account will be disabled but records preserved.`,
       type: 'danger',
       confirmText: 'Deactivate',
       onConfirm: () => {
         Storage.update(KEYS.BOARD_MEMBERS, bmId, { is_active: false }, 'bm_id');
         Storage.update(KEYS.USERS, bm.user_id, { is_active: false }, 'user_id');
-
-        const currentUser = Auth.getCurrentUser();
-        ActivityLogger.log({
-          user_id: currentUser.user_id,
-          user_name: currentUser.full_name,
-          user_role: currentUser.role,
-          action: `Deactivated board member: ${name}`,
-          action_type: 'update',
-          record_type: 'board_member',
-          record_id: bmId,
-          details: 'Account deactivated'
-        });
+        ActivityLogger.log(`Deactivated board member: ${name}`, 'update', 'board_member', bmId, 'Account deactivated');
 
         Notifications.toast(`${name} has been deactivated.`, 'success');
         this.initBMManagement();
@@ -495,17 +443,7 @@ const SysAdminModule = {
     Storage.update(KEYS.USERS, bm.user_id, { is_active: true }, 'user_id');
 
     const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: `Reactivated board member: ${user ? user.full_name : 'Unknown'}`,
-      action_type: 'update',
-      record_type: 'board_member',
-      record_id: bmId,
-      details: 'Account reactivated'
-    });
+    ActivityLogger.log(`Reactivated board member: ${user ? user.full_name : 'Unknown'}`, 'update', 'board_member', bmId, 'Account reactivated');
 
     Notifications.toast('Board member reactivated.', 'success');
     this.initBMManagement();
@@ -713,17 +651,7 @@ const SysAdminModule = {
       Storage.assignSecretary(result.user.user_id, assignBm);
     }
 
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: `Added staff: ${fullName}`,
-      action_type: 'create',
-      record_type: 'staff',
-      record_id: result.user.user_id,
-      details: `Email: ${email}, Position: ${position}${assignBm ? ', Assigned to BM' : ''}`
-    });
+    ActivityLogger.log(`Added staff: ${fullName}`, 'create', 'staff', result.user.user_id, `Email: ${email}, Position: ${position}${assignBm ? ', Assigned to BM' : ''}`);
 
     Notifications.toast(`Staff "${fullName}" added successfully!`, 'success');
     this.closeStaffModal();
@@ -818,17 +746,7 @@ const SysAdminModule = {
       position: position || 'Secretary'
     }, 'user_id');
 
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: `Edited staff: ${name}`,
-      action_type: 'update',
-      record_type: 'staff',
-      record_id: userId,
-      details: `Email: ${email}, Position: ${position}`
-    });
+    ActivityLogger.log(`Edited staff: ${name}`, 'update', 'staff', userId, `Email: ${email}, Position: ${position}`);
 
     Notifications.toast('Staff updated successfully!', 'success');
     this.closeStaffModal();
@@ -845,17 +763,7 @@ const SysAdminModule = {
 
     Storage.assignSecretary(userId, bmId);
 
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: 'Created secretary assignment',
-      action_type: 'create',
-      record_type: 'assignment',
-      record_id: bmId,
-      details: `Secretary: ${userId}`
-    });
+    ActivityLogger.log('Created secretary assignment', 'create', 'assignment', bmId, `Secretary: ${userId}`);
 
     Notifications.toast('Board member assigned!', 'success');
     this.showEditStaffModal(userId);
@@ -869,18 +777,7 @@ const SysAdminModule = {
       confirmText: 'Remove',
       onConfirm: () => {
         Storage.removeAssignment(assignmentId);
-
-        const currentUser = Auth.getCurrentUser();
-        ActivityLogger.log({
-          user_id: currentUser.user_id,
-          user_name: currentUser.full_name,
-          user_role: currentUser.role,
-          action: 'Removed secretary assignment',
-          action_type: 'delete',
-          record_type: 'assignment',
-          record_id: assignmentId,
-          details: `Staff: ${userId}`
-        });
+        ActivityLogger.log('Removed secretary assignment', 'delete', 'assignment', assignmentId, `Staff: ${userId}`);
 
         Notifications.toast('Assignment removed.', 'success');
         this.showEditStaffModal(userId);
@@ -895,23 +792,12 @@ const SysAdminModule = {
 
     Notifications.confirm({
       title: 'Deactivate Staff',
-      message: `Deactivate <strong>${Utils.escapeHtml(name)}</strong>? Their account will be disabled.`,
+      message: `Deactivate "${Utils.escapeHtml(name)}"? Their account will be disabled.`,
       type: 'danger',
       confirmText: 'Deactivate',
       onConfirm: () => {
         Storage.update(KEYS.USERS, userId, { is_active: false }, 'user_id');
-
-        const currentUser = Auth.getCurrentUser();
-        ActivityLogger.log({
-          user_id: currentUser.user_id,
-          user_name: currentUser.full_name,
-          user_role: currentUser.role,
-          action: `Deactivated staff: ${name}`,
-          action_type: 'update',
-          record_type: 'staff',
-          record_id: userId,
-          details: 'Account deactivated'
-        });
+        ActivityLogger.log(`Deactivated staff: ${name}`, 'update', 'staff', userId, 'Account deactivated');
 
         Notifications.toast(`${name} has been deactivated.`, 'success');
         this.initStaffManagement();
@@ -923,17 +809,7 @@ const SysAdminModule = {
     Storage.update(KEYS.USERS, userId, { is_active: true }, 'user_id');
 
     const user = Storage.getById(KEYS.USERS, userId, 'user_id');
-    const currentUser = Auth.getCurrentUser();
-    ActivityLogger.log({
-      user_id: currentUser.user_id,
-      user_name: currentUser.full_name,
-      user_role: currentUser.role,
-      action: `Reactivated staff: ${user ? user.full_name : 'Unknown'}`,
-      action_type: 'update',
-      record_type: 'staff',
-      record_id: userId,
-      details: 'Account reactivated'
-    });
+    ActivityLogger.log(`Reactivated staff: ${user ? user.full_name : 'Unknown'}`, 'update', 'staff', userId, 'Account reactivated');
 
     Notifications.toast('Staff reactivated.', 'success');
     this.initStaffManagement();

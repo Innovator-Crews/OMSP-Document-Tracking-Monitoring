@@ -128,6 +128,47 @@
 
 ---
 
+## Phase 8: Post-Merge Quality Audit (Feb 27, 2026) ✅
+
+Merged upstream (Innovator-Crews/OMSP-Document-Tracking-Monitoring) into private repo (Aki1104/omsptracking). Re-applied 12 improvements, then ran comprehensive audit finding 20 issues — all fixed.
+
+### CRITICAL Bugs Fixed ✅
+- ✅ `Icons.get()` → `Icons.render()` — 13 calls across 5 files (dashboard.js, fa-module.js, pa-module.js, search-module.js, incoming-module.js)
+- ✅ `ExportUtils.downloadCSV()` → `ExportUtils.toCSV()` in incoming-module.js
+- ✅ `Utils.formatDateTime()` → `Utils.formatDate(x, 'datetime')` in boardmember.js
+- ✅ `Utils.formatNumber()` → `toLocaleString()` in term-manager.js
+- ✅ Role string `'admin'` → `'sysadmin'` in incoming-module.js
+
+### HIGH Bugs Fixed ✅
+- ✅ `ActivityLogger.log()` — converted 12 object-format calls to positional args in sysadmin.js
+- ✅ `ActivityLogger.log()` — fixed wrong arg order in 2 calls in incoming-module.js
+- ✅ `StaffModule` — fixed `created_by` → `encoded_by` and `is_deleted` → `is_archived` (4 locations in staff.js)
+
+### MEDIUM Bugs Fixed ✅
+- ✅ `h.rollover` → `h.rollover_amount` in app.js budget history table
+- ✅ `updatePABalanceDisplay()` — now uses `Storage.getPABudgetSummary()` instead of stale `bm.pa_balance`
+- ✅ `Utils.renderPagination()` API fix in incoming-module.js — uses `Utils.paginate()` object + `_goToPage` callback
+- ✅ Added `.loading-spinner` CSS definition to components.css (used in 14 HTML pages)
+- ✅ Added `.fade-in` alias to animations.css (used in 16 HTML pages, was only in landing.css)
+- ✅ Fixed `.result-title` → `.result-name` in search-module.js (6 locations, matching search.css)
+
+### LOW Bugs Fixed ✅
+- ✅ Added CSS: `.badge-accent`, `.stat-card-primary`, `.timeline-item/.dot/.content`, `.dot-primary/.dot-teal`, `.form-input-sm` (standalone)
+- ✅ Removed `<strong>` HTML tags from `Notifications.confirm()` messages in sysadmin.js (tags were being escaped)
+- ✅ Added `new-il-btn` handling to `injectShellIcons()` + role-based hiding in app.js
+
+### AUTH/SECURITY Fixes ✅
+- ✅ Added `Auth.requireRole()` guards to restricted pages: sysadmin-only (bm-management, staff-management), board-member-only (my-fa-budget, my-pa-budget, secretary-logs, archives), secretary-only (fa-new, pa-new, incoming-new)
+- ✅ Added incoming letter permissions to auth.js permission matrix: `view_incoming`, `create_incoming`, `edit_incoming` for secretary; `view_incoming` for board_member; sysadmin gets all via catch-all
+
+### Remaining TODO (Phase 7 — Page-by-Page QA)
+- ⬜ Responsive verification on all authenticated pages (320–1440px)
+- ⬜ No console errors verified per page
+- ⬜ Script load order normalization (deferred — works today, fragile for future)
+- ⬜ CSS duplicate resolution: stat-card/stat-value/stat-label/stats-grid overlap between components.css and incoming.css
+
+---
+
 ## Phase 7: Page-by-Page Quality Audit
 
 Each page must pass: **HTML structure** ✔ | **CSS styling** ✔ | **JS wiring** ✔ | **Responsive** ✔ | **Overflow-safe** ✔

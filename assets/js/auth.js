@@ -240,6 +240,7 @@ const Auth = {
         request_archive: true,
         manage_staff: true,  // View their assigned staff
         view_own_logs: true,
+        view_incoming: true,
         global_search: false,
         export_data: true,
         manage_users: false,
@@ -259,6 +260,9 @@ const Auth = {
         manage_categories: true, // Custom categories
         export_data: true,
         view_own_logs: true,
+        create_incoming: true,
+        edit_incoming: true,
+        view_incoming: true,
         manage_users: false,
         manage_bms: false,
         approve_archives: false,

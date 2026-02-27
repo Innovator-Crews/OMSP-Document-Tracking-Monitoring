@@ -32,6 +32,13 @@ const IncomingModule = {
     this.renderList(container, user);
   },
 
+  _goToPage(page) {
+    this._currentPage = page;
+    const user = Auth.getCurrentUser();
+    const container = document.getElementById('incoming-list-content');
+    if (container && user) this.renderList(container, user);
+  },
+
   renderList(container, user) {
     const filters = this._currentFilters;
     let letters = Storage.getIncomingLetters({
@@ -148,13 +155,8 @@ const IncomingModule = {
     if (totalPages > 1) {
       const pagEl = document.getElementById('il-pagination');
       if (pagEl) {
-        pagEl.innerHTML = Utils.renderPagination(this._currentPage, totalPages);
-        pagEl.querySelectorAll('[data-page]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            this._currentPage = parseInt(btn.dataset.page);
-            this.renderList(container, user);
-          });
-        });
+        const paginationResult = Utils.paginate(letters, this._currentPage, this._perPage);
+        pagEl.innerHTML = Utils.renderPagination(paginationResult, 'IncomingModule._goToPage');
       }
     }
 

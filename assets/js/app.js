@@ -173,12 +173,14 @@ const App = {
       nameLabel.textContent = user.full_name;
     }
 
-    // Hide "New Financial Assistance/Personal Assistance" buttons for non-secretary roles
+    // Hide "New" buttons for non-secretary roles
     if (user.role !== 'secretary') {
       const newFABtn = document.getElementById('new-fa-btn');
       const newPABtn = document.getElementById('new-pa-btn');
+      const newILBtn = document.getElementById('new-il-btn');
       if (newFABtn) newFABtn.style.display = 'none';
       if (newPABtn) newPABtn.style.display = 'none';
+      if (newILBtn) newILBtn.style.display = 'none';
     }
   },
 
@@ -216,6 +218,10 @@ const App = {
     // "New Personal Assistance" button
     const newPABtn = document.getElementById('new-pa-btn');
     if (newPABtn) newPABtn.innerHTML = Icons.render('plus-circle', 16) + ' New Personal Assistance';
+
+    // "New Incoming Letter" button
+    const newILBtn = document.getElementById('new-il-btn');
+    if (newILBtn) newILBtn.innerHTML = Icons.render('mail', 16) + ' New Incoming Letter';
 
     // Export CSV button
     const exportBtn = document.getElementById('export-csv-btn');
@@ -289,6 +295,7 @@ const App = {
         break;
 
       case 'fa-new':
+        if (!Auth.requireRole('secretary')) return;
         if (typeof FAModule !== 'undefined') FAModule.initNewForm();
         Router.setPageInfo('New Financial Assistance');
         break;
@@ -299,6 +306,7 @@ const App = {
         break;
 
       case 'pa-new':
+        if (!Auth.requireRole('secretary')) return;
         if (typeof PAModule !== 'undefined') PAModule.initNewForm();
         Router.setPageInfo('New Personal Assistance');
         break;
@@ -340,12 +348,14 @@ const App = {
 
       // SysAdmin pages
       case 'bm-management':
+        if (!Auth.requireRole('sysadmin')) return;
         if (typeof SysAdminModule !== 'undefined') SysAdminModule.initBMManagement();
         else this.initBMManagement(); // fallback
         Router.setPageInfo('Board Member Management');
         break;
 
       case 'staff-management':
+        if (!Auth.requireRole('sysadmin')) return;
         if (typeof SysAdminModule !== 'undefined') SysAdminModule.initStaffManagement();
         else this.initStaffManagement(); // fallback
         Router.setPageInfo('Staff Management');
@@ -353,29 +363,34 @@ const App = {
 
       // BM pages
       case 'my-fa-budget':
+        if (!Auth.requireRole('board_member')) return;
         if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initMyBudget();
         else this.initMyBudget(); // fallback
         Router.setPageInfo('My Financial Assistance Budget');
         break;
 
       case 'my-pa-budget':
+        if (!Auth.requireRole('board_member')) return;
         if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initPABudget();
         Router.setPageInfo('My Personal Assistance Budget');
         break;
 
       // BM oversight pages
       case 'secretary-logs':
+        if (!Auth.requireRole('board_member')) return;
         if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initSecretaryLogs();
         Router.setPageInfo('Secretary Activity Logs');
         break;
 
       case 'archives':
+        if (!Auth.requireRole('board_member')) return;
         if (typeof BoardMemberModule !== 'undefined') BoardMemberModule.initArchives();
         Router.setPageInfo('Past Term Archives');
         break;
 
       // Incoming Letters pages
       case 'incoming-new':
+        if (!Auth.requireRole('secretary')) return;
         if (typeof IncomingModule !== 'undefined') IncomingModule.initNewForm();
         Router.setPageInfo('New Incoming Letter');
         break;
@@ -873,7 +888,7 @@ const App = {
                 <tr>
                   <td>${Utils.formatMonth(h.year_month)}</td>
                   <td class="text-right">${Utils.formatCurrency(h.base_budget)}</td>
-                  <td class="text-right">${Utils.formatCurrency(h.rollover || 0)}</td>
+                  <td class="text-right">${Utils.formatCurrency(h.rollover_amount || 0)}</td>
                   <td class="text-right">${Utils.formatCurrency(h.total_budget)}</td>
                   <td class="text-right">${Utils.formatCurrency(h.used_amount)}</td>
                 </tr>

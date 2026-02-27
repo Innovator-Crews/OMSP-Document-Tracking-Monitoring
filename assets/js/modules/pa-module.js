@@ -114,12 +114,15 @@ const PAModule = {
     const bm = Storage.getById(KEYS.BOARD_MEMBERS, bmId, 'bm_id');
     if (!bm) return;
 
+    const summary = Storage.getPABudgetSummary(bmId);
+    const balance = summary ? (summary.remaining || 0) : (bm.pa_balance || 0);
+
     balanceEl.style.display = 'block';
     balanceEl.innerHTML = `
       <div class="banner banner-info">
         <div class="banner-content">
           <strong>PA Balance (BM's Own Money)</strong>
-          <div class="mt-xs">Current balance: <strong>${Utils.formatCurrency(bm.pa_balance)}</strong></div>
+          <div class="mt-xs">Current balance: <strong>${Utils.formatCurrency(balance)}</strong></div>
           <div class="text-sm text-muted">Note: PA has no monthly limit — this reflects the BM's personal allocation</div>
         </div>
       </div>

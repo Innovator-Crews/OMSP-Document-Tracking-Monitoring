@@ -130,6 +130,7 @@
 /* ============================================================
    ANIMATION UTILITY CLASSES
    ============================================================ */
+.fade-in,
 .animate-fade-in {
   animation: fadeIn var(--transition-base) ease-out;
 }

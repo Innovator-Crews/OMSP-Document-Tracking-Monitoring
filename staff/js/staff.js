@@ -37,11 +37,11 @@ const StaffModule = {
     if (!user) return [];
 
     const faRecords = Storage.getAll(KEYS.FA_RECORDS)
-      .filter(r => r.created_by === user.user_id && !r.is_deleted)
+      .filter(r => r.encoded_by === user.user_id && !r.is_archived)
       .map(r => ({ ...r, _type: 'FA' }));
 
     const paRecords = Storage.getAll(KEYS.PA_RECORDS)
-      .filter(r => r.created_by === user.user_id && !r.is_deleted)
+      .filter(r => r.encoded_by === user.user_id && !r.is_archived)
       .map(r => ({ ...r, _type: 'PA' }));
 
     return [...faRecords, ...paRecords]
@@ -60,10 +60,10 @@ const StaffModule = {
     const today = new Date().toISOString().split('T')[0];
 
     const faRecords = Storage.getAll(KEYS.FA_RECORDS)
-      .filter(r => r.created_by === user.user_id && !r.is_deleted);
+      .filter(r => r.encoded_by === user.user_id && !r.is_archived);
 
     const paRecords = Storage.getAll(KEYS.PA_RECORDS)
-      .filter(r => r.created_by === user.user_id && !r.is_deleted);
+      .filter(r => r.encoded_by === user.user_id && !r.is_archived);
 
     return {
       totalFA: faRecords.length,
