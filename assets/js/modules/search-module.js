@@ -88,10 +88,13 @@ const SearchModule = {
         faRecords = faRecords.filter(r => assignedIds.includes(r.bm_id));
       }
 
-      const faMatches = faRecords.filter(r =>
-        r.patient_name?.toLowerCase().includes(q) ||
-        r.fa_id?.toLowerCase().includes(q)
-      );
+      const faCategories = Storage.getAll(KEYS.FA_CATEGORIES);
+      const faMatches = faRecords.filter(r => {
+        const catName = r.case_type_custom || (faCategories.find(c => c.id === r.case_type_id)?.name || '');
+        return r.patient_name?.toLowerCase().includes(q) ||
+          r.fa_id?.toLowerCase().includes(q) ||
+          catName.toLowerCase().includes(q);
+      });
       faMatches.forEach(r => results.push({ type: 'fa', data: r }));
     }
 

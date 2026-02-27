@@ -1386,7 +1386,8 @@ const Storage = {
         is_deleted: false,
         created_at: now,
         updated_at: now
-      }
+      },
+      { pa_budget_id: 'pab_003', bm_id: 'bm_003', amount: 40000, description: 'Initial PA budget allocation', added_by: 'usr_admin01', is_deleted: false, created_at: now, updated_at: now }
     ];
     this.set(KEYS.PA_BUDGETS, paBudgets);
 
@@ -1399,5 +1400,23 @@ const Storage = {
   resetAll() {
     Object.values(KEYS).forEach(key => this.remove(key));
     this.seedDefaultData();
+    // Re-seed settings (seedDefaultData only seeds on init, not on reset)
+    const defaultSettings = {
+      frequency_thresholds: {
+        monitor: { min: 3, label: 'Monitor' },
+        high:    { min: 5, label: 'High Risk' }
+      },
+      term_warning_days: 30,
+      allow_overlap_terms: false,
+      auto_archive_on_term_end: false,
+      require_bm_noted: true,
+      skip_bm_noted_roles: [],
+      default_fa_budget: 100000,
+      default_pa_budget: 50000
+    };
+    // Only set settings if seedDefaultData didn't produce them
+    if (!this.get(KEYS.SETTINGS)) {
+      this.set(KEYS.SETTINGS, defaultSettings);
+    }
   }
 };

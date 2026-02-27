@@ -692,16 +692,33 @@ const SysAdminModule = {
 
             <hr class="my-md" />
             <h4 class="mb-sm">Board Member Assignments</h4>
-            <div class="mb-sm">
+            <div class="mb-sm" id="staff-assignments-list">
               ${assignments.length > 0 ? assignments.map(a => {
                 const bm = Storage.getById(KEYS.BOARD_MEMBERS, a.bm_id, 'bm_id');
                 const bmUser = bm ? allUsers.find(u => u.user_id === bm.user_id) : null;
                 return `
-                  <div class="d-flex align-center gap-sm mb-xs" style="padding: 6px 0;">
-                    <span class="badge badge-info">${bmUser ? Utils.escapeHtml(bmUser.full_name) : 'Unknown'} — ${bm ? Utils.escapeHtml(bm.district_name) : ''}</span>
-                    <button class="btn btn-ghost btn-sm text-danger" onclick="SysAdminModule.removeStaffAssignment('${a.assignment_id}', '${userId}')" title="Remove">
-                      ${Icons.render('x', 14)}
-                    </button>
+                  <div class="card mb-xs" style="padding:10px 12px;">
+                    <div class="d-flex justify-between align-center mb-xs">
+                      <span class="badge badge-info">${bmUser ? Utils.escapeHtml(bmUser.full_name) : 'Unknown'} — ${bm ? Utils.escapeHtml(bm.district_name) : ''}</span>
+                      <button class="btn btn-ghost btn-sm text-danger" onclick="SysAdminModule.removeStaffAssignment('${a.assignment_id}', '${userId}')" title="Remove">
+                        ${Icons.render('x', 14)}
+                      </button>
+                    </div>
+                    <div class="d-flex gap-md mb-xs">
+                      <label class="d-flex align-center gap-xs text-sm" style="cursor:pointer;">
+                        <input type="checkbox" id="perm-allowance-${a.assignment_id}" ${a.can_add_allowance ? 'checked' : ''} />
+                        Can Add Allowance
+                      </label>
+                      <label class="d-flex align-center gap-xs text-sm" style="cursor:pointer;">
+                        <input type="checkbox" id="perm-permcat-${a.assignment_id}" ${a.can_make_permanent_category ? 'checked' : ''} />
+                        Can Make Permanent Categories
+                      </label>
+                    </div>
+                    <div class="text-right">
+                      <button class="btn btn-sm btn-outline" onclick="SysAdminModule.saveAssignmentPermissions('${a.assignment_id}', '${userId}')">
+                        ${Icons.render('check', 14)} Save Permissions
+                      </button>
+                    </div>
                   </div>
                 `;
               }).join('') : '<p class="text-muted text-sm">No board member assignments</p>'}
@@ -767,6 +784,21 @@ const SysAdminModule = {
 
     Notifications.toast('Board member assigned!', 'success');
     this.showEditStaffModal(userId);
+  },
+
+  saveAssignmentPermissions(assignmentId, userId) {
+    const canAllowance  = !!(document.getElementById(`perm-allowance-${assignmentId}`)?.checked);
+    const canPermCat    = !!(document.getElementById(`perm-permcat-${assignmentId}`)?.checked);
+
+    Storage.update(KEYS.SECRETARY_ASSIGNMENTS, assignmentId, {
+      can_add_allowance:          canAllowance,
+      can_make_permanent_category: canPermCat,
+      updated_at: new Date().toISOString()
+    }, 'assignment_id');
+
+    ActivityLogger.log('Updated secretary assignment permissions', 'update', 'assignment', assignmentId,
+      `can_add_allowance:${canAllowance}, can_make_permanent_category:${canPermCat}`);
+    Notifications.toast('Permissions saved.', 'success');
   },
 
   removeStaffAssignment(assignmentId, userId) {

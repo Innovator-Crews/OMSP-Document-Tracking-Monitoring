@@ -174,6 +174,11 @@ const ReportsModule = {
           </div>
         </div>
       </div>
+
+      <div class="mt-md d-flex gap-sm">
+        <button class="btn btn-secondary" onclick="ReportsModule.exportFAReport()">${Icons.render('download', 16)} Export CSV</button>
+        <button class="btn btn-secondary" onclick="ReportsModule.printFAReport()">${Icons.render('print', 16)} Print</button>
+      </div>
     `;
   },
 
@@ -220,6 +225,11 @@ const ReportsModule = {
           `).join('')}
         </div>
       </div>
+
+      <div class="mt-md d-flex gap-sm">
+        <button class="btn btn-secondary" onclick="ReportsModule.exportPAReport()">${Icons.render('download', 16)} Export CSV</button>
+        <button class="btn btn-secondary" onclick="ReportsModule.printPAReport()">${Icons.render('print', 16)} Print</button>
+      </div>
     `;
   },
 
@@ -231,12 +241,17 @@ const ReportsModule = {
     const freqs = Storage.getAll(KEYS.MONTHLY_FREQUENCY).filter(f => f.year_month === yearMonth);
     const bens = Storage.getAll(KEYS.BENEFICIARIES);
 
+    const settings = Storage.get(KEYS.SETTINGS) || {};
+    const thresholds = settings.frequency_thresholds || {};
+    const monitorMin = thresholds.monitor?.min ?? 3;
+    const highMin   = thresholds.high?.min   ?? 5;
+
     const enriched = freqs.map(f => {
       const ben = bens.find(b => b.beneficiary_id === f.beneficiary_id);
       const total = f.fa_count + f.pa_count;
       let level = 'normal';
-      if (total >= 5) level = 'high';
-      else if (total >= 3) level = 'monitor';
+      if (total >= highMin)   level = 'high';
+      else if (total >= monitorMin) level = 'monitor';
       return { ...f, name: ben ? ben.full_name : 'Unknown', total, level };
     }).sort((a, b) => b.total - a.total);
 
@@ -286,6 +301,11 @@ const ReportsModule = {
           </table>
         </div>
       `}
+
+      <div class="mt-md d-flex gap-sm">
+        <button class="btn btn-secondary" onclick="ReportsModule.exportFrequencyReport()">${Icons.render('download', 16)} Export CSV</button>
+        <button class="btn btn-secondary" onclick="ReportsModule.printFrequencyReport()">${Icons.render('print', 16)} Print</button>
+      </div>
     `;
   },
 
@@ -350,6 +370,11 @@ const ReportsModule = {
           </tbody>
         </table>
       </div>
+
+      <div class="mt-md d-flex gap-sm">
+        <button class="btn btn-secondary" onclick="ReportsModule.exportBMPerformanceReport()">${Icons.render('download', 16)} Export CSV</button>
+        <button class="btn btn-secondary" onclick="ReportsModule.printBMPerformanceReport()">${Icons.render('print', 16)} Print</button>
+      </div>
     `;
   },
 
@@ -380,6 +405,173 @@ const ReportsModule = {
     });
     ExportUtils.toCSV(data, 'budget-report', {
       headers: ['Board Member', 'District', 'Total Budget', 'Used', 'Remaining']
+    });
+  },
+
+  exportFAReport() {
+    const records = Storage.getAll(KEYS.FA_RECORDS).filter(r => !r.is_archived);
+    const categories = Storage.getAll(KEYS.FA_CATEGORIES);
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
+    ExportUtils.toCSV(records, 'fa-summary', {
+      columns: ['fa_id', 'patient_name', 'case_type_id', 'amount_approved', 'status', 'bm_id', 'created_at'],
+      headers: ['Record ID', 'Patient Name', 'Category', 'Amount', 'Status', 'Board Member', 'Date'],
+      transform: {
+        case_type_id: (val, item) => item.case_type_custom || (categories.find(c => c.id === val)?.name || 'Unknown'),
+        amount_approved: (val) => val ? `₱${val.toLocaleString()}` : '₱0',
+        bm_id: (val) => { const bm = bms.find(b => b.bm_id === val); const u = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null; return u ? u.full_name : val; },
+        created_at: (val) => Utils.formatDate(val)
+      }
+    });
+  },
+
+  printFAReport() {
+    const records = Storage.getAll(KEYS.FA_RECORDS).filter(r => !r.is_archived);
+    const categories = Storage.getAll(KEYS.FA_CATEGORIES);
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
+    const data = records.map(r => ({
+      id: r.fa_id,
+      patient: r.patient_name,
+      category: r.case_type_custom || (categories.find(c => c.id === r.case_type_id)?.name || 'Unknown'),
+      amount: Utils.formatCurrency(r.amount_approved),
+      status: r.status,
+      bm: (() => { const bm = bms.find(b => b.bm_id === r.bm_id); const u = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null; return u ? u.full_name : '—'; })(),
+      date: Utils.formatDate(r.created_at)
+    }));
+    ExportUtils.printReport({
+      title: 'Financial Assistance Summary',
+      data,
+      columns: ['id', 'patient', 'category', 'amount', 'status', 'bm', 'date'],
+      headers: ['Record ID', 'Patient Name', 'Category', 'Amount', 'Status', 'Board Member', 'Date']
+    });
+  },
+
+  exportPAReport() {
+    const records = Storage.getAll(KEYS.PA_RECORDS).filter(r => !r.is_archived);
+    const categories = Storage.getAll(KEYS.PA_CATEGORIES);
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
+    ExportUtils.toCSV(records, 'pa-summary', {
+      columns: ['pa_id', 'client_name', 'category_id', 'amount_provided', 'bm_id', 'created_at'],
+      headers: ['Record ID', 'Client Name', 'Category', 'Amount', 'Board Member', 'Date'],
+      transform: {
+        category_id: (val, item) => item.category_custom || (categories.find(c => c.id === val)?.name || 'Unknown'),
+        amount_provided: (val) => val ? `₱${val.toLocaleString()}` : '₱0',
+        bm_id: (val) => { const bm = bms.find(b => b.bm_id === val); const u = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null; return u ? u.full_name : val; },
+        created_at: (val) => Utils.formatDate(val)
+      }
+    });
+  },
+
+  printPAReport() {
+    const records = Storage.getAll(KEYS.PA_RECORDS).filter(r => !r.is_archived);
+    const categories = Storage.getAll(KEYS.PA_CATEGORIES);
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
+    const data = records.map(r => ({
+      id: r.pa_id,
+      client: r.client_name,
+      category: r.category_custom || (categories.find(c => c.id === r.category_id)?.name || 'Unknown'),
+      amount: Utils.formatCurrency(r.amount_provided),
+      bm: (() => { const bm = bms.find(b => b.bm_id === r.bm_id); const u = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null; return u ? u.full_name : '—'; })(),
+      date: Utils.formatDate(r.created_at)
+    }));
+    ExportUtils.printReport({
+      title: 'Personal Assistance Summary',
+      data,
+      columns: ['id', 'client', 'category', 'amount', 'bm', 'date'],
+      headers: ['Record ID', 'Client Name', 'Category', 'Amount', 'Board Member', 'Date']
+    });
+  },
+
+  exportFrequencyReport() {
+    const yearMonth = Utils.getCurrentYearMonth();
+    const freqs = Storage.getAll(KEYS.MONTHLY_FREQUENCY).filter(f => f.year_month === yearMonth);
+    const bens = Storage.getAll(KEYS.BENEFICIARIES);
+    const settings = Storage.get(KEYS.SETTINGS) || {};
+    const thresholds = settings.frequency_thresholds || {};
+    const monitorMin = thresholds.monitor?.min ?? 3;
+    const highMin   = thresholds.high?.min   ?? 5;
+    const data = freqs.map(f => {
+      const ben = bens.find(b => b.beneficiary_id === f.beneficiary_id);
+      const total = f.fa_count + f.pa_count;
+      let level = 'normal';
+      if (total >= highMin) level = 'high';
+      else if (total >= monitorMin) level = 'monitor';
+      return { name: ben ? ben.full_name : 'Unknown', fa: f.fa_count, pa: f.pa_count, total, amount: f.total_amount, level };
+    });
+    ExportUtils.toCSV(data, `frequency-report-${yearMonth}`, {
+      columns: ['name', 'fa', 'pa', 'total', 'amount', 'level'],
+      headers: ['Beneficiary', 'FA Count', 'PA Count', 'Total', 'Amount', 'Level']
+    });
+  },
+
+  printFrequencyReport() {
+    const yearMonth = Utils.getCurrentYearMonth();
+    const freqs = Storage.getAll(KEYS.MONTHLY_FREQUENCY).filter(f => f.year_month === yearMonth);
+    const bens = Storage.getAll(KEYS.BENEFICIARIES);
+    const settings = Storage.get(KEYS.SETTINGS) || {};
+    const thresholds = settings.frequency_thresholds || {};
+    const monitorMin = thresholds.monitor?.min ?? 3;
+    const highMin   = thresholds.high?.min   ?? 5;
+    const data = freqs.map(f => {
+      const ben = bens.find(b => b.beneficiary_id === f.beneficiary_id);
+      const total = f.fa_count + f.pa_count;
+      let level = 'normal';
+      if (total >= highMin) level = 'high';
+      else if (total >= monitorMin) level = 'monitor';
+      return { name: ben ? ben.full_name : 'Unknown', fa: String(f.fa_count), pa: String(f.pa_count), total: String(total), amount: Utils.formatCurrency(f.total_amount), level };
+    });
+    ExportUtils.printReport({
+      title: `Frequency Report — ${Utils.formatMonth(yearMonth)}`,
+      data,
+      columns: ['name', 'fa', 'pa', 'total', 'amount', 'level'],
+      headers: ['Beneficiary', 'FA Count', 'PA Count', 'Total', 'Amount', 'Level']
+    });
+  },
+
+  exportBMPerformanceReport() {
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
+    const data = bms.map(bm => {
+      const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+      const fa = Storage.query(KEYS.FA_RECORDS, { bm_id: bm.bm_id });
+      const pa = Storage.query(KEYS.PA_RECORDS, { bm_id: bm.bm_id });
+      const budget = Storage.getCurrentBudget(bm.bm_id);
+      return {
+        name: user ? user.full_name : 'Unknown',
+        district: bm.district_name,
+        fa_count: fa.length,
+        pa_count: pa.length,
+        fa_total: fa.reduce((s, r) => s + (r.amount_approved || 0), 0),
+        pa_total: pa.reduce((s, r) => s + (r.amount_provided || 0), 0),
+        budget_pct: Utils.percentage(budget.used_amount, budget.total_budget)
+      };
+    });
+    ExportUtils.toCSV(data, 'bm-performance', {
+      columns: ['name', 'district', 'fa_count', 'pa_count', 'fa_total', 'pa_total', 'budget_pct'],
+      headers: ['Board Member', 'District', 'FA Records', 'PA Records', 'FA Total', 'PA Total', 'Budget %']
+    });
+  },
+
+  printBMPerformanceReport() {
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
+    const data = bms.map(bm => {
+      const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+      const fa = Storage.query(KEYS.FA_RECORDS, { bm_id: bm.bm_id });
+      const pa = Storage.query(KEYS.PA_RECORDS, { bm_id: bm.bm_id });
+      const budget = Storage.getCurrentBudget(bm.bm_id);
+      return {
+        name: user ? user.full_name : 'Unknown',
+        district: bm.district_name,
+        fa_count: String(fa.length),
+        pa_count: String(pa.length),
+        fa_total: Utils.formatCurrency(fa.reduce((s, r) => s + (r.amount_approved || 0), 0)),
+        pa_total: Utils.formatCurrency(pa.reduce((s, r) => s + (r.amount_provided || 0), 0)),
+        budget_pct: `${Utils.percentage(budget.used_amount, budget.total_budget)}%`
+      };
+    });
+    ExportUtils.printReport({
+      title: 'Board Member Performance',
+      data,
+      columns: ['name', 'district', 'fa_count', 'pa_count', 'fa_total', 'pa_total', 'budget_pct'],
+      headers: ['Board Member', 'District', 'FA Records', 'PA Records', 'FA Total', 'PA Total', 'Budget %']
     });
   },
 

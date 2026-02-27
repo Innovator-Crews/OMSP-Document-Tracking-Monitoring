@@ -138,6 +138,21 @@ const CategoryManager = {
 
   showAddModal() {
     const typeLabel = this.currentTab === 'fa' ? 'FA' : 'PA';
+    const user = Auth.getCurrentUser();
+    // Allow marking as permanent if sysadmin, or secretary with the permission flag
+    let canMarkPermanent = user.role === 'sysadmin';
+    if (!canMarkPermanent && user.role === 'secretary') {
+      const assignments = Storage.getAll(KEYS.SECRETARY_ASSIGNMENTS).filter(a => a.secretary_user_id === user.user_id);
+      canMarkPermanent = assignments.some(a => a.can_make_permanent_category);
+    }
+    const permanentCheckboxHtml = canMarkPermanent ? `
+            <div class="form-group mt-sm">
+              <label class="d-flex align-center gap-xs" style="cursor:pointer;">
+                <input type="checkbox" id="new-cat-permanent" />
+                <span>Mark as Permanent category</span>
+              </label>
+              <span class="form-hint">Permanent categories cannot be archived by staff.</span>
+            </div>` : '';
     const html = `
       <div class="modal-overlay active" id="add-cat-modal">
         <div class="modal modal-sm animate-fade-in">
@@ -150,6 +165,7 @@ const CategoryManager = {
               <label class="form-label">Category Name</label>
               <input type="text" class="form-input" id="new-cat-name" placeholder="Enter category name" maxlength="50" required>
             </div>
+            ${permanentCheckboxHtml}
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" onclick="document.getElementById('add-cat-modal').remove()">Cancel</button>
@@ -177,11 +193,12 @@ const CategoryManager = {
     }
 
     const user = Auth.getCurrentUser();
+    const isPermanentChecked = !!(document.getElementById('new-cat-permanent')?.checked);
     const newCat = {
       id: Storage.generateId(this.currentTab === 'fa' ? 'facat' : 'pacat'),
       name: name,
       is_default: false,
-      is_permanent: false,
+      is_permanent: isPermanentChecked,
       created_by: user.user_id,
       created_at: new Date().toISOString(),
       is_archived: false,

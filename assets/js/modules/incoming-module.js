@@ -452,10 +452,17 @@ const IncomingModule = {
 
     document.getElementById('il-edit-save').addEventListener('click', () => {
       const form = document.getElementById('il-edit-form');
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
+      const editData = {
+        category: document.getElementById('il-edit-category').value,
+        date_received: document.getElementById('il-edit-date-received').value,
+        sender_name: document.getElementById('il-edit-sender-name').value.trim()
+      };
+      const editRules = [
+        { field: 'category', label: 'Category', required: true },
+        { field: 'date_received', label: 'Date Received', required: true },
+        { field: 'sender_name', label: 'Sender Name', required: true }
+      ];
+      if (!Validators.validateAndDisplay(editData, editRules, form)) return;
 
       const updates = {
         category: document.getElementById('il-edit-category').value,
@@ -473,7 +480,7 @@ const IncomingModule = {
       };
 
       Storage.updateIncomingLetter(letterId, updates);
-      ActivityLogger.log(`Updated incoming letter from ${updates.sender_name}`, 'update', 'incoming_letter', letterId);
+      ActivityLogger.log(`Updated incoming letter from ${updates.sender_name}`, 'update', 'incoming_letter', letterId, `Category: ${updates.category}`);
       Notifications.success('Letter updated successfully.');
       closeModal();
 
@@ -609,10 +616,15 @@ const IncomingModule = {
     const dateReceived = document.getElementById('il-date-received').value;
     const senderName = document.getElementById('il-sender-name').value.trim();
 
-    if (!bmId || !category || !dateReceived || !senderName) {
-      Notifications.error('Please fill in all required fields.');
-      return;
-    }
+    const formData = { bm_id: bmId, category, date_received: dateReceived, sender_name: senderName };
+    const rules = [
+      { field: 'bm_id',        label: 'Board Member',  required: true },
+      { field: 'category',     label: 'Category',      required: true },
+      { field: 'date_received',label: 'Date Received', required: true },
+      { field: 'sender_name',  label: 'Sender Name',   required: true }
+    ];
+    const form = document.getElementById('il-form');
+    if (!Validators.validateAndDisplay(formData, rules, form)) return;
 
     const data = {
       bm_id: bmId,
@@ -631,7 +643,7 @@ const IncomingModule = {
     };
 
     const letter = Storage.createIncomingLetter(data);
-    ActivityLogger.log(`Created incoming letter (${category}) from ${senderName}`, 'create', 'incoming_letter', letter.letter_id);
+    ActivityLogger.log(`Created incoming letter (${category}) from ${senderName}`, 'create', 'incoming_letter', letter.letter_id, `Category: ${category} — Sender: ${senderName}`);
     Notifications.success('Incoming letter recorded successfully!');
 
     // Navigate to list

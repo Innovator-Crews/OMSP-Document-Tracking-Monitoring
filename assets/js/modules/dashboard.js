@@ -169,6 +169,13 @@ const DashboardModule = {
           <div id="budget-overview"></div>
         </div>
       </div>
+
+      <div class="card mt-lg" id="flagged-beneficiaries-card" style="display:none">
+        <div class="card-header">
+          <h3 class="card-title">Flagged Beneficiaries (Cross-BM)</h3>
+        </div>
+        <div id="flagged-beneficiaries-list"></div>
+      </div>
     `;
 
     // Populate dynamic sections
@@ -176,6 +183,7 @@ const DashboardModule = {
     this.renderPendingArchives('#pending-archives-list', pendingArchives);
     this.renderRecentRecords('#recent-fa-list', faRecords.slice(-5).reverse(), 'fa');
     this.renderBudgetOverview('#budget-overview');
+    this.renderFlaggedBeneficiaries(bms);
   },
 
   /* --------------------------------------------------------
