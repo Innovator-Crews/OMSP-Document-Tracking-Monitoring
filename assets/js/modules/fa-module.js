@@ -581,6 +581,9 @@ const FAModule = {
     const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
     const categories = Storage.getAll(KEYS.FA_CATEGORIES);
 
+    const user = Auth.getCurrentUser();
+    const isSysadmin = user && user.role === 'sysadmin';
+
     tbody.innerHTML = records.map(r => {
       const bm = bms.find(b => b.bm_id === r.bm_id);
       const bmUser = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null;
@@ -603,6 +606,10 @@ const FAModule = {
             <div class="d-flex gap-xs">
               <button class="btn btn-sm btn-ghost" onclick="FAModule.viewDetail('${r.fa_id}')" title="View">${Icons.render('eye', 16)}</button>
               <button class="btn btn-sm btn-ghost" onclick="FAModule.editStatus('${r.fa_id}')" title="Edit Status">${Icons.render('edit', 16)}</button>
+              ${isSysadmin ? `
+              <button class="btn btn-sm btn-ghost" onclick="FAModule.editRecord('${r.fa_id}')" title="Edit Record">${Icons.render('settings', 16)}</button>
+              <button class="btn btn-sm btn-ghost btn-danger-ghost" onclick="FAModule.deleteRecord('${r.fa_id}')" title="Delete">${Icons.render('trash', 16)}</button>
+              ` : ''}
             </div>
           </td>
         </tr>
@@ -795,6 +802,197 @@ const FAModule = {
 
     document.getElementById('fa-status-modal')?.remove();
     Notifications.success(`Status updated to ${newStatus}`);
+    this.loadRecords();
+  },
+
+  /* --------------------------------------------------------
+   * SYSADMIN: EDIT RECORD / DELETE RECORD
+   * -------------------------------------------------------- */
+
+  /**
+   * Edit an FA record (sysadmin only) — full field edit
+   */
+  editRecord(faId) {
+    const user = Auth.getCurrentUser();
+    if (!user || user.role !== 'sysadmin') return;
+
+    const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
+    if (!record) return;
+
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
+    const categories = Storage.getAll(KEYS.FA_CATEGORIES);
+    const cat = categories.find(c => c.id === record.case_type_id);
+
+    const html = `
+      <div class="modal-overlay active" id="fa-edit-modal">
+        <div class="modal animate-fade-in" style="max-width:560px;">
+          <div class="modal-header">
+            <h3 class="modal-title">${Icons.render('edit', 20)} Edit FA Record</h3>
+            <button class="modal-close" onclick="document.getElementById('fa-edit-modal').remove()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="fa-edit-error" class="banner banner-danger hidden mb-md"></div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Patient Name *</label>
+              <input type="text" class="form-input" id="edit-fa-patient" value="${Utils.escapeHtml(record.patient_name)}" required />
+            </div>
+
+            <div class="d-flex gap-md">
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Category</label>
+                <select class="form-select" id="edit-fa-category">
+                  ${categories.map(c => `<option value="${c.id}" ${c.id === record.case_type_id ? 'selected' : ''}>${Utils.escapeHtml(c.name)}</option>`).join('')}
+                  <option value="_custom" ${record.case_type_custom ? 'selected' : ''}>Custom</option>
+                </select>
+              </div>
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Custom Category</label>
+                <input type="text" class="form-input" id="edit-fa-category-custom" value="${Utils.escapeHtml(record.case_type_custom || '')}" placeholder="If custom" />
+              </div>
+            </div>
+
+            <div class="d-flex gap-md">
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Amount Approved (₱) *</label>
+                <input type="number" class="form-input" id="edit-fa-amount" value="${record.amount_approved}" min="1" step="100" required />
+              </div>
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Status</label>
+                <select class="form-select" id="edit-fa-status">
+                  <option value="Ongoing" ${record.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                  <option value="Successful" ${record.status === 'Successful' ? 'selected' : ''}>Successful</option>
+                  <option value="Denied" ${record.status === 'Denied' ? 'selected' : ''}>Denied</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Board Member</label>
+              <select class="form-select" id="edit-fa-bm">
+                ${bms.map(bm => {
+                  const u = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+                  return `<option value="${bm.bm_id}" ${bm.bm_id === record.bm_id ? 'selected' : ''}>${u ? Utils.escapeHtml(u.full_name) : bm.district_name}</option>`;
+                }).join('')}
+              </select>
+            </div>
+
+            <div class="d-flex gap-md">
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Wait Duration (months)</label>
+                <input type="number" class="form-input" id="edit-fa-wait" value="${record.wait_duration_months}" min="0" />
+              </div>
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Next Available Date</label>
+                <input type="date" class="form-input" id="edit-fa-next-date" value="${record.next_available_date ? record.next_available_date.substring(0, 10) : ''}" />
+              </div>
+            </div>
+
+            <div class="banner banner-info mb-sm">
+              <div class="banner-content">
+                <small>${Icons.render('info', 14)} Changing the amount will NOT automatically adjust the budget. Use this for corrections only.</small>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="document.getElementById('fa-edit-modal').remove()">Cancel</button>
+            <button class="btn btn-primary" onclick="FAModule.saveRecordEdit('${faId}')">
+              ${Icons.render('check', 16)} Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+  },
+
+  saveRecordEdit(faId) {
+    const patientName = document.getElementById('edit-fa-patient').value.trim();
+    const categoryId = document.getElementById('edit-fa-category').value;
+    const categoryCustom = document.getElementById('edit-fa-category-custom').value.trim();
+    const amount = parseFloat(document.getElementById('edit-fa-amount').value);
+    const status = document.getElementById('edit-fa-status').value;
+    const bmId = document.getElementById('edit-fa-bm').value;
+    const waitDuration = parseInt(document.getElementById('edit-fa-wait').value) || 0;
+    const nextDate = document.getElementById('edit-fa-next-date').value || null;
+    const errorEl = document.getElementById('fa-edit-error');
+
+    if (!patientName || !amount) {
+      errorEl.textContent = 'Patient name and amount are required.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
+    const oldStatus = record.status;
+
+    const updates = {
+      patient_name: patientName,
+      case_type_id: categoryId === '_custom' ? null : categoryId,
+      case_type_custom: categoryId === '_custom' ? categoryCustom : null,
+      amount_approved: amount,
+      amount_requested: amount,
+      status: status,
+      bm_id: bmId,
+      wait_duration_months: waitDuration,
+      next_available_date: nextDate,
+      updated_at: new Date().toISOString()
+    };
+
+    Storage.update(KEYS.FA_RECORDS, faId, updates, 'fa_id');
+
+    // Handle budget refund if status changed to Denied
+    if (status === 'Denied' && oldStatus !== 'Denied') {
+      const yearMonth = record.created_at.substring(0, 7);
+      Storage.refundBudget(record.bm_id, record.amount_approved, yearMonth);
+    }
+
+    ActivityLogger.log(
+      `[Admin] Edited FA record: ${patientName}`,
+      'edit', 'fa', faId,
+      `Amount: ${Utils.formatCurrency(amount)}, Status: ${status}`
+    );
+
+    document.getElementById('fa-edit-modal')?.remove();
+    Notifications.success('FA record updated successfully.');
+    this.loadRecords();
+  },
+
+  /**
+   * Delete an FA record (sysadmin only)
+   */
+  async deleteRecord(faId) {
+    const user = Auth.getCurrentUser();
+    if (!user || user.role !== 'sysadmin') return;
+
+    const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
+    if (!record) return;
+
+    const confirmed = await Notifications.confirm({
+      title: 'Delete FA Record',
+      message: `Permanently delete the FA record for "${record.patient_name}"?\n\nAmount: ${Utils.formatCurrency(record.amount_approved)}\nStatus: ${record.status}\n\nThis action cannot be undone. The budget will be refunded if the record was not denied.`,
+      confirmText: 'Delete Permanently',
+      type: 'danger'
+    });
+
+    if (!confirmed) return;
+
+    // Refund budget if not already denied
+    if (record.status !== 'Denied') {
+      const yearMonth = record.created_at.substring(0, 7);
+      Storage.refundBudget(record.bm_id, record.amount_approved, yearMonth);
+    }
+
+    Storage.hardDelete(KEYS.FA_RECORDS, faId, 'fa_id');
+
+    ActivityLogger.log(
+      `[Admin] Deleted FA record: ${record.patient_name}`,
+      'delete', 'fa', faId,
+      `Amount: ${Utils.formatCurrency(record.amount_approved)}`
+    );
+
+    Notifications.success(`FA record for "${record.patient_name}" deleted.`);
     this.loadRecords();
   },
 
