@@ -44,11 +44,31 @@ const DashboardModule = {
       .filter(b => b.year_month === Utils.getCurrentYearMonth());
     const totalUsed = budgets.reduce((sum, b) => sum + b.used_amount, 0);
 
+    const basePath = Utils.getBasePath();
+
     container.innerHTML = `
-      <div class="mb-lg">
-        <h2 class="mb-xs">Welcome back, <span id="welcome-name">${Utils.escapeHtml(user.full_name)}</span></h2>
-        <p class="text-muted">System Administrator Dashboard</p>
+      <div class="mb-lg flex justify-between items-center">
+        <div>
+          <h2 class="mb-xs">Welcome back, <span id="welcome-name">${Utils.escapeHtml(user.full_name)}</span></h2>
+          <p class="text-muted">System Administrator Dashboard</p>
+        </div>
+        <div class="d-flex gap-sm">
+          <a href="${basePath}sysadmin/bm-management.html" class="btn btn-primary btn-sm">${Icons.render('user-plus', 16)} Add Board Member</a>
+          <a href="${basePath}sysadmin/staff-management.html" class="btn btn-outline btn-sm">${Icons.render('user-plus', 16)} Add Staff</a>
+        </div>
       </div>
+
+      ${pendingArchives.length > 0 ? `
+      <div class="banner banner-warning mb-lg">
+        <div class="banner-icon">${Icons.render('alert-triangle', 20)}</div>
+        <div class="banner-content">
+          <div class="banner-title">${pendingArchives.length} Board Member${pendingArchives.length > 1 ? 's' : ''} Pending Archive</div>
+          <div class="banner-message">These board members have terms that ended and are awaiting archive action.</div>
+        </div>
+        <div class="banner-action">
+          <a href="term-management.html" class="btn btn-sm btn-outline">Review Now →</a>
+        </div>
+      </div>` : ''}
 
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">

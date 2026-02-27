@@ -108,6 +108,15 @@
   height: 16px;
 }
 
+.btn-danger-ghost {
+  background: transparent;
+  color: var(--danger-600);
+}
+.btn-danger-ghost:hover {
+  background: var(--danger-50);
+  color: var(--danger-700);
+}
+
 /* Icon button */
 .btn-icon {
   width: 40px;
