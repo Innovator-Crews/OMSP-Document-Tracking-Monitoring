@@ -384,7 +384,13 @@ const Storage = {
   getPABudgetSummary(bmId) {
     const entries = this.getPABudgets(bmId);
     const totalPool = entries.reduce((s, e) => s + e.amount, 0);
-    const paRecords = this.query(KEYS.PA_RECORDS, { bm_id: bmId });
+    // Only count PA records from the BM’s current term (on or after term_start)
+    const bm = this.getById(KEYS.BOARD_MEMBERS, bmId, 'bm_id');
+    const termStart = bm?.term_start || null;
+    let paRecords = this.query(KEYS.PA_RECORDS, { bm_id: bmId });
+    if (termStart) {
+      paRecords = paRecords.filter(r => r.created_at >= termStart);
+    }
     const totalUsed = paRecords.reduce((s, r) => s + (r.amount_provided || 0), 0);
     return {
       total_pool: totalPool,

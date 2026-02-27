@@ -60,6 +60,15 @@ const BoardMemberModule = {
             <span>${pct}% used</span>
             <span>Rollover from previous month: ${Utils.formatCurrency(budget.rollover_amount || 0)}</span>
           </div>
+          <div class="mt-md">
+            <label class="d-flex align-center gap-sm cursor-pointer" style="width:fit-content;">
+              <input type="checkbox" id="rollover-toggle" ${budget.rollover_selected ? 'checked' : ''}
+                onchange="BoardMemberModule.toggleRollover(this.checked)"
+                style="width:16px;height:16px;" />
+              <span>Roll over unused budget to next month</span>
+            </label>
+            <p class="text-sm text-muted mt-xs">When enabled, any unused balance at month-end carries over to the following month's total.</p>
+          </div>
         </div>
       </div>
 
@@ -93,6 +102,18 @@ const BoardMemberModule = {
     `;
 
     container.innerHTML = html;
+  },
+
+  // ─── Toggle Rollover Preference ─────────────────────────────────────────────────────────────
+  toggleRollover(selected) {
+    const bmData = Auth.getCurrentBMData();
+    if (!bmData) return;
+    Storage.setRollover(bmData.bm_id, selected);
+    ActivityLogger.log(
+      `Set Financial Assistance budget rollover to ${selected ? 'enabled' : 'disabled'}`,
+      'update', 'budget', bmData.bm_id
+    );
+    Notifications.success(`Budget rollover ${selected ? 'enabled — unused balance will carry over' : 'disabled'}.`);
   },
 
   // ─── Edit Financial Assistance Base Budget Modal ───────────────────────────

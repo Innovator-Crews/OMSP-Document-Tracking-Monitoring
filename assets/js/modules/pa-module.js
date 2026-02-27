@@ -167,6 +167,13 @@ const PAModule = {
       e.preventDefault();
       this.submitNewPA(form);
     });
+
+    // Real-time per-field inline validation
+    Validators.attachRealTimeValidation('#pa-form', {
+      'pa-bm':          [{ type: 'required', message: 'Please select a Board Member.' }],
+      'pa-client-name': [{ type: 'required', message: 'Client name is required.' }],
+      'pa-amount':      [{ type: 'required' }, { type: 'amount', options: { min: 1 } }]
+    });
   },
 
   checkExistingBeneficiary(name) {
@@ -325,6 +332,13 @@ const PAModule = {
     if (!Validators.validateAndDisplay(formData, rules, form)) return;
 
     const amount = parseFloat(formData.amount);
+
+    // C1: Gate on PA budget — prevent over-spending
+    const paResult = Storage.deductFromPABudget(formData.bm_id, amount);
+    if (!paResult.success) {
+      Notifications.error(paResult.error);
+      return;
+    }
 
     // Create or find beneficiary
     let beneficiaryId = formData.beneficiary_id;

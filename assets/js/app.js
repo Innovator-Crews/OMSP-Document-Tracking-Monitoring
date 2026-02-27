@@ -332,6 +332,7 @@ const App = {
         break;
 
       case 'reports':
+        if (!Auth.requireRole('sysadmin')) return;
         if (typeof ReportsModule !== 'undefined') ReportsModule.init();
         Router.setPageInfo('Reports');
         break;
@@ -342,6 +343,7 @@ const App = {
         break;
 
       case 'budget':
+        if (!Auth.requireRole('sysadmin')) return;
         this.initBudgetPage();
         Router.setPageInfo('Budget Overview');
         break;

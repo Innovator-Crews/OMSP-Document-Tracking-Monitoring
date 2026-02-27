@@ -46,6 +46,15 @@ const DashboardModule = {
 
     const basePath = Utils.getBasePath();
 
+    // Term-expiry notices based on settings.term_warning_days
+    const settings = Storage.get(KEYS.SETTINGS) || {};
+    const warningDays = settings.term_warning_days || [90, 30, 7];
+    const maxWarning = Math.max(...warningDays);
+    const termExpiring = bms
+      .map(b => ({ bm: b, bmUser: Storage.getById(KEYS.USERS, b.user_id, 'user_id'), days: Utils.daysUntil(b.term_end) }))
+      .filter(({ days }) => days >= 0 && days <= maxWarning)
+      .sort((a, b) => a.days - b.days);
+
     container.innerHTML = `
       <div class="mb-lg">
         <h2 class="mb-xs">Welcome back, <span id="welcome-name">${Utils.escapeHtml(user.full_name)}</span></h2>
@@ -59,6 +68,21 @@ const DashboardModule = {
           <div>
             <strong>${pendingArchives.length} Board Member${pendingArchives.length > 1 ? 's' : ''} pending archive review.</strong>
             <a href="${basePath}pages/term-management.html" class="ml-sm">Review Now →</a>
+          </div>
+        </div>
+      </div>
+      ` : ''}
+
+      ${termExpiring.length > 0 ? `
+      <div class="banner banner-info mb-lg">
+        <div class="banner-content">
+          ${Icons.render('clock', 18)}
+          <div>
+            <strong>Term Expiry Notices (${termExpiring.length} Board Member${termExpiring.length > 1 ? 's' : ''})</strong>
+            ${termExpiring.map(({ bm, bmUser, days }) => `
+              <div class="mt-xs text-sm">• <strong>${Utils.escapeHtml(bmUser ? bmUser.full_name : bm.district_name)}</strong> &mdash; <strong>${days} day${days === 1 ? '' : 's'}</strong> remaining (ends ${Utils.formatDate(bm.term_end)})</div>
+            `).join('')}
+            <a href="${basePath}pages/term-management.html" class="ml-sm mt-xs d-inline-block">Manage Terms →</a>
           </div>
         </div>
       </div>
@@ -178,6 +202,9 @@ const DashboardModule = {
     const termBadge = bmInfo ? bmInfo.term_badge : '1st Term';
     const isReelected = bmInfo ? bmInfo.is_reelected : false;
 
+    // H4: FA records with waiting period skipped but BM acknowledgment not yet recorded
+    const unapprovedSkips = faRecords.filter(r => r.skip_waiting_period && !r.skip_bm_noted);
+
     container.innerHTML = `
       <div class="mb-lg flex justify-between items-start">
         <div>
@@ -191,6 +218,19 @@ const DashboardModule = {
         </div>
         <span class="badge badge-warning" style="flex-shrink:0;margin-top:4px;">Read Only</span>
       </div>
+
+      ${unapprovedSkips.length > 0 ? `
+      <div class="banner banner-warning mb-lg">
+        <div class="banner-content">
+          ${Icons.render('alert-triangle', 18)}
+          <div>
+            <strong>${unapprovedSkips.length} Financial Assistance record${unapprovedSkips.length > 1 ? 's' : ''} bypassed the waiting period without your noted approval.</strong>
+            <div class="text-sm mt-xs">Please review these records and confirm acknowledgment.</div>
+            <a href="fa-list.html?bm=${bm.bm_id}" class="ml-sm">Review →</a>
+          </div>
+        </div>
+      </div>
+      ` : ''}
 
       <div class="grid-3-col gap-md mb-lg">
         <div class="stat-card stat-card-blue">

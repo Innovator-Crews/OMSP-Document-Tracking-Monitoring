@@ -496,6 +496,12 @@ const TermManager = {
     // Create new monthly budget for the first month of new term
     Storage.getCurrentBudget(bmId);
 
+    // Archive all previous-term PA budget entries so the new term starts with a clean pool
+    const oldPABudgets = Storage.getAll(KEYS.PA_BUDGETS).filter(e => e.bm_id === bmId && !e.is_deleted);
+    oldPABudgets.forEach(e => {
+      Storage.update(KEYS.PA_BUDGETS, e.pa_budget_id, { is_deleted: true }, 'pa_budget_id');
+    });
+
     // Clear PA budgets for the new term (old ones stay archived)
     // We'll just reset pa_balance on the BM record
     Storage.update(KEYS.BOARD_MEMBERS, bmId, { pa_balance: 0 }, 'bm_id');

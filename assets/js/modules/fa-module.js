@@ -214,6 +214,13 @@ const FAModule = {
       e.preventDefault();
       this.submitNewFA(form);
     });
+
+    // Real-time per-field inline validation
+    Validators.attachRealTimeValidation('#fa-form', {
+      'fa-bm':           [{ type: 'required', message: 'Please select a Board Member.' }],
+      'fa-patient-name': [{ type: 'required', message: 'Patient name is required.' }],
+      'fa-amount':       [{ type: 'required' }, { type: 'amount', options: { min: 1 } }]
+    });
   },
 
   /**
@@ -965,12 +972,6 @@ const FAModule = {
                 <input type="date" class="form-input" id="edit-fa-next-date" value="${record.next_available_date ? record.next_available_date.substring(0, 10) : ''}" />
               </div>
             </div>
-
-            <div class="banner banner-info mb-sm">
-              <div class="banner-content">
-                <small>${Icons.render('info', 14)} Changing the amount will NOT automatically adjust the budget. Use this for corrections only.</small>
-              </div>
-            </div>
           </div>
           <div class="modal-footer">
             <button class="btn btn-ghost" onclick="document.getElementById('fa-edit-modal').remove()">Cancel</button>
@@ -1004,6 +1005,9 @@ const FAModule = {
 
     const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
     const oldStatus = record.status;
+    const oldAmount = record.amount_approved;
+    const oldBmId   = record.bm_id;
+    const yearMonth = record.created_at.substring(0, 7);
 
     const updates = {
       patient_name: patientName,
@@ -1021,8 +1025,22 @@ const FAModule = {
     Storage.update(KEYS.FA_RECORDS, faId, updates, 'fa_id');
 
     if (status === 'Denied' && oldStatus !== 'Denied') {
-      const yearMonth = record.created_at.substring(0, 7);
-      Storage.refundBudget(record.bm_id, record.amount_approved, yearMonth);
+      // Record denied — refund the original approved amount
+      Storage.refundBudget(oldBmId, oldAmount, yearMonth);
+    } else if (status !== 'Denied' && oldStatus === 'Denied') {
+      // Un-denied — re-deduct the new amount
+      Storage.deductFromBudget(bmId, amount);
+    } else if (status !== 'Denied') {
+      if (bmId !== oldBmId) {
+        // Board member changed — refund old BM, deduct from new BM
+        Storage.refundBudget(oldBmId, oldAmount, yearMonth);
+        Storage.deductFromBudget(bmId, amount);
+      } else {
+        // Same BM: adjust by amount delta only
+        const delta = amount - oldAmount;
+        if (delta > 0)      Storage.deductFromBudget(bmId, delta);
+        else if (delta < 0) Storage.refundBudget(bmId, -delta, yearMonth);
+      }
     }
 
     ActivityLogger.log(
