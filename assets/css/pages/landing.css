@@ -559,6 +559,59 @@
   color: var(--accent-700);
 }
 
+/* ── Hero Full OMSP Name ─────────────────────────────────── */
+.landing-hero-omsp-full {
+  display: block;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: var(--font-semibold);
+  color: var(--neutral-400);
+  letter-spacing: 0.02em;
+  line-height: var(--leading-snug);
+  margin-bottom: var(--space-2);
+}
+
+/* ── About OMSP Section ──────────────────────────────────── */
+.landing-about-section {
+  background: var(--neutral-50);
+}
+
+.landing-about-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.landing-about-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-10);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-about-card p {
+  font-size: var(--text-lg);
+  color: var(--neutral-600);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-5);
+}
+
+.landing-about-card p:last-child {
+  margin-bottom: 0;
+}
+
+.landing-about-card strong {
+  color: var(--neutral-800);
+  font-weight: var(--font-semibold);
+}
+
+@media (max-width: 768px) {
+  .landing-about-card {
+    padding: var(--space-5) var(--space-6);
+  }
+}
+
 /* ── Features Section ────────────────────────────────────── */
 .landing-section {
   padding: 80px var(--space-6);

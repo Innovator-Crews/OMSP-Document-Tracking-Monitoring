@@ -58,32 +58,11 @@
   border-radius: var(--radius-sm);
 }
 
-/* Stat cards grid for letter overview */
+/* Stat cards grid for letter overview — uses shared .stat-card from components.css */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: var(--space-sm);
-}
-
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--primary);
-  line-height: 1.2;
-}
-
-.stat-label {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  margin-top: var(--space-xxs);
+  gap: var(--space-3);
 }
 
 /* Filter bar */

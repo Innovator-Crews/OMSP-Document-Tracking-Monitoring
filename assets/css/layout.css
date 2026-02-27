@@ -33,20 +33,28 @@
 
 /* Active nav item uses role accent */
 [data-role="board_member"] .nav-link.active {
-  background: var(--accent-700);
-  color: #fff;
+  background: var(--accent-100);
+  color: var(--accent-700);
 }
 [data-role="board_member"] .nav-link.active:hover {
-  background: var(--accent-600);
-  color: #fff;
+  background: var(--accent-50);
+  color: var(--accent-700);
+}
+[data-role="board_member"] .nav-link:not(.active):hover {
+  background: var(--accent-50);
+  color: var(--accent-600);
 }
 [data-role="secretary"] .nav-link.active {
-  background: var(--secondary-700);
-  color: #fff;
+  background: var(--secondary-100);
+  color: var(--secondary-700);
 }
 [data-role="secretary"] .nav-link.active:hover {
-  background: var(--secondary-600);
-  color: #fff;
+  background: var(--secondary-50);
+  color: var(--secondary-700);
+}
+[data-role="secretary"] .nav-link:not(.active):hover {
+  background: var(--secondary-50);
+  color: var(--secondary-600);
 }
 
 
@@ -131,17 +139,16 @@
 .sidebar.collapsed .sidebar-collapse-btn svg {
   transform: rotate(180deg);
 }
+.sidebar.collapsed .sidebar-logo {
+  display: none;
+}
 .sidebar.collapsed .sidebar-collapse-btn {
-  position: fixed;
-  left: 59px;
-  top: 23px;
-  width: 28px;
-  height: 28px;
-  background: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--neutral-50);
   border: 1px solid var(--neutral-200);
-  box-shadow: var(--shadow-sm);
-  z-index: calc(var(--z-sidebar) + 1);
-  border-radius: var(--radius-full);
+  color: var(--neutral-500);
 }
 .sidebar.collapsed .nav-text {
   display: none;
@@ -339,11 +346,12 @@
   color: var(--neutral-800);
 }
 .nav-link.active {
-  background: var(--primary-700);
-  color: #fff;
+  background: var(--primary-100);
+  color: var(--primary-700);
 }
 .nav-link.active:hover {
-  background: var(--primary-600);
+  background: var(--primary-50);
+  color: var(--primary-700);
 }
 
 .nav-icon {

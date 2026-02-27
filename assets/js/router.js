@@ -74,6 +74,9 @@ const Router = {
         { label: 'Reports', icon: 'bar-chart', href: `${root}pages/reports.html`, id: 'nav-reports' },
         { label: 'Activity Logs', icon: 'activity', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
         { label: 'Budget Overview', icon: 'wallet', href: `${root}pages/budget.html`, id: 'nav-budget' },
+        { type: 'divider', label: 'Archives' },
+        { label: 'Archives', icon: 'folder', href: `${root}boardmember/archives.html`, id: 'nav-archives' },
+        { label: 'Search Archives', icon: 'archive', href: `${root}pages/search-archives.html`, id: 'nav-search-archives' },
       ],
       board_member: [
         { label: 'Dashboard', icon: 'dashboard', href: `${root}pages/dashboard.html`, id: 'nav-dashboard' },
@@ -87,6 +90,7 @@ const Router = {
         { type: 'divider', label: 'Oversight' },
         { label: 'Secretary Activity Logs', icon: 'eye', href: `${root}boardmember/secretary-logs.html`, id: 'nav-sec-logs' },
         { label: 'Archives', icon: 'folder', href: `${root}boardmember/archives.html`, id: 'nav-archives' },
+        { label: 'Search Archives', icon: 'archive', href: `${root}pages/search-archives.html`, id: 'nav-search-archives' },
         { type: 'divider', label: 'Reports' },
         { label: 'Activity Logs', icon: 'activity', href: `${root}pages/activity-logs.html`, id: 'nav-activity' },
       ],
