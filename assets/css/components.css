@@ -55,12 +55,14 @@
 }
 
 /* Secondary / Outline */
-.btn-secondary {
+.btn-secondary,
+.btn-outline {
   background: #fff;
   color: var(--primary-700);
   border-color: var(--primary-300);
 }
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-outline:hover {
   background: var(--primary-50);
   border-color: var(--primary-500);
 }
@@ -349,6 +351,14 @@
 .badge-archived { background: var(--neutral-100); color: var(--neutral-600); }
 .badge-pending { background: var(--accent-100); color: var(--accent-700); }
 
+/* Status badge aliases (badge-status-* pattern used in JS) */
+.badge-status-ongoing { background: var(--primary-100); color: var(--primary-700); }
+.badge-status-successful { background: var(--success-100); color: var(--success-700); }
+.badge-status-denied { background: var(--danger-100); color: var(--danger-700); }
+.badge-status-archived { background: var(--neutral-100); color: var(--neutral-600); }
+.badge-status-pending { background: var(--accent-100); color: var(--accent-700); }
+.badge-status-neutral { background: var(--neutral-100); color: var(--neutral-600); }
+
 /* Role badges */
 .badge-sysadmin { background: #F3E8FF; color: #6B21A8; }
 .badge-bm { background: var(--primary-100); color: var(--primary-800); }
@@ -391,6 +401,14 @@
 .progress-fill-yellow { background: var(--accent-500); }
 .progress-fill-red { background: var(--danger-500); }
 .progress-fill-blue { background: var(--primary-500); }
+
+/* Progress fill aliases (progress-* pattern used in JS) */
+.progress-primary { background: var(--primary-500); }
+.progress-warning { background: var(--accent-500); }
+.progress-danger { background: var(--danger-500); }
+
+/* Progress bar size modifier */
+.progress-sm { height: 4px; }
 
 
 /* ============================================================

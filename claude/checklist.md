@@ -60,8 +60,8 @@
 - ✅ Sidebar logout CSS (danger hover state, icon alignment)
 - ✅ Logout confirmation modal (Notifications.confirm before Auth.logout)
 - ✅ Role-based theming via `data-role` attribute (blue/amber/teal)
-- ⬜ Responsive verified on all authenticated pages
-- ⬜ No console errors
+- ✅ Responsive verified on all authenticated pages
+- ✅ No console errors
 - ✅ README documentation complete
 - ✅ vercel.json deployment config
 
@@ -87,46 +87,46 @@ Each page must pass: **HTML structure** ✔ | **CSS styling** ✔ | **JS wiring*
 ### Public Pages (no auth)
 | # | Page | HTML | CSS | JS | Responsive | Status |
 |---|------|------|-----|-----|------------|--------|
-| 1 | `index.html` (Landing) | `index.html` | `landing.css` | inline script (nav scroll, mobile toggle) | 320–1440px | ⬜ |
-| 2 | `pages/login.html` (Staff/BM Login) | `pages/login.html` | `login.css` | `app.js → initLoginPage()` | 320–1440px | ⬜ |
-| 3 | `sysadmin/login.html` (Admin Login) | `sysadmin/login.html` | `login.css` + inline overrides | `app.js → initLoginPage()` | 320–1440px | ⬜ |
+| 1 | `index.html` (Landing) | `index.html` | `landing.css` | inline script (nav scroll, mobile toggle) | 320–1440px | ✅ |
+| 2 | `pages/login.html` (Staff/BM Login) | `pages/login.html` | `login.css` | `app.js → initLoginPage()` | 320–1440px | ✅ |
+| 3 | `sysadmin/login.html` (Admin Login) | `sysadmin/login.html` | `login.css` + inline overrides | `app.js → initLoginPage()` | 320–1440px | ✅ |
 
 ### Authenticated Pages — Staff/Secretary
 | # | Page | HTML | CSS | JS Module | Responsive | Status |
 |---|------|------|-----|-----------|------------|--------|
-| 4 | Dashboard | `pages/dashboard.html` | `dashboard.css` | `dashboard.js` | 320–1440px | ⬜ |
-| 5 | FA Records List | `pages/fa-list.html` | `fa-list.css` | `fa-module.js` | 320–1440px | ⬜ |
-| 6 | FA New Record | `pages/fa-new.html` | `forms.css` + `fa-new.css` | `fa-module.js` | 320–1440px | ⬜ |
-| 7 | PA Records List | `pages/pa-list.html` | `pa-list.css` | `pa-module.js` | 320–1440px | ⬜ |
-| 8 | PA New Record | `pages/pa-new.html` | `forms.css` + `pa-new.css` | `pa-module.js` | 320–1440px | ⬜ |
-| 9 | Global Search | `pages/global-search.html` | `search.css` | `search-module.js` | 320–1440px | ⬜ |
-| 10 | Categories | `pages/categories.html` | `admin.css` + `categories.css` | `category-manager.js` | 320–1440px | ⬜ |
-| 11 | Term & Archive | `pages/term-management.html` | `admin.css` + `term-management.css` | `term-manager.js` | 320–1440px | ⬜ |
-| 12 | Reports | `pages/reports.html` | `reports.css` | `reports.js` | 320–1440px | ⬜ |
-| 13 | Activity Logs | `pages/activity-logs.html` | `activity-logs.css` | `activity-logger.js` (via `app.js`) | 320–1440px | ⬜ |
-| 14 | Budget Overview | `pages/budget.html` | `budget.css` | `dashboard.js` (budget section) | 320–1440px | ⬜ |
+| 4 | Dashboard | `pages/dashboard.html` | `dashboard.css` | `dashboard.js` | 320–1440px | ✅ |
+| 5 | FA Records List | `pages/fa-list.html` | `fa-list.css` | `fa-module.js` | 320–1440px | ✅ |
+| 6 | FA New Record | `pages/fa-new.html` | `forms.css` + `fa-new.css` | `fa-module.js` | 320–1440px | ✅ |
+| 7 | PA Records List | `pages/pa-list.html` | `pa-list.css` | `pa-module.js` | 320–1440px | ✅ |
+| 8 | PA New Record | `pages/pa-new.html` | `forms.css` + `pa-new.css` | `pa-module.js` | 320–1440px | ✅ |
+| 9 | Global Search | `pages/global-search.html` | `search.css` | `search-module.js` | 320–1440px | ✅ |
+| 10 | Categories | `pages/categories.html` | `admin.css` + `categories.css` | `category-manager.js` | 320–1440px | ✅ |
+| 11 | Term & Archive | `pages/term-management.html` | `admin.css` + `term-management.css` | `term-manager.js` | 320–1440px | ✅ |
+| 12 | Reports | `pages/reports.html` | `reports.css` | `reports.js` | 320–1440px | ✅ |
+| 13 | Activity Logs | `pages/activity-logs.html` | `activity-logs.css` | `activity-logger.js` (via `app.js`) | 320–1440px | ✅ |
+| 14 | Budget Overview | `pages/budget.html` | `budget.css` | `dashboard.js` (budget section) | 320–1440px | ✅ |
 
 ### Authenticated Pages — SysAdmin
 | # | Page | HTML | CSS | JS Module | Responsive | Status |
 |---|------|------|-----|-----------|------------|--------|
-| 15 | BM Management | `sysadmin/bm-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ⬜ |
-| 16 | Staff Management | `sysadmin/staff-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ⬜ |
+| 15 | BM Management | `sysadmin/bm-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ✅ |
+| 16 | Staff Management | `sysadmin/staff-management.html` | `sysadmin.css` | `sysadmin.js` | 320–1440px | ✅ |
 
 ### Authenticated Pages — Board Member
 | # | Page | HTML | CSS | JS Module | Responsive | Status |
 |---|------|------|-----|-----------|------------|--------|
-| 17 | My FA Budget | `boardmember/my-fa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
-| 18 | My PA Budget | `boardmember/my-pa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ⬜ |
+| 17 | My FA Budget | `boardmember/my-fa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ✅ |
+| 18 | My PA Budget | `boardmember/my-pa-budget.html` | `boardmember.css` | `boardmember.js` | 320–1440px | ✅ |
 
 ### Shared Infrastructure (verified across all pages)
 | # | Component | Files | Status |
 |---|-----------|-------|--------|
-| 19 | Sidebar navigation + collapse | `layout.css` + `router.js` + `app.js` | ⬜ |
-| 20 | Icons system | `icons.js` (90+ icons incl. credit-card) + `main.css` | ⬜ |
-| 21 | Modals & toasts | `components.css` + `notifications.js` | ⬜ |
-| 22 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ⬜ |
-| 23 | Sidebar profile + logout | `layout.css` (.sidebar-profile, .sidebar-logout) | ⬜ |
-| 24 | Pagination + Empty states | `utils.js` (paginate, renderPagination, renderEmptyState) | ⬜ |
+| 19 | Sidebar navigation + collapse | `layout.css` + `router.js` + `app.js` | ✅ |
+| 20 | Icons system | `icons.js` (90+ icons incl. credit-card) + `main.css` | ✅ |
+| 21 | Modals & toasts | `components.css` + `notifications.js` | ✅ |
+| 22 | Auth guards & routing | `auth.js` + `app.js` + `router.js` | ✅ |
+| 23 | Sidebar profile + logout | `layout.css` (.sidebar-profile, .sidebar-logout) | ✅ |
+| 24 | Pagination + Empty states | `utils.js` (paginate, renderPagination, renderEmptyState) | ✅ |
 
 ---
 
