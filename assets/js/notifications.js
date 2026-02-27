@@ -44,6 +44,25 @@ const Notifications = {
       info: `<svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16z" fill="#3B82F6"/><path d="M10 9v4M10 7h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>`
     };
 
+    // Deduplicate: skip if an identical message+type toast is already visible
+    if (this.container) {
+      const existing = this.container.querySelector(`.toast-${type}`);
+      if (existing && existing.querySelector('.toast-message')?.textContent === message) {
+        // Extend the existing toast's timeout instead of stacking
+        if (existing._timeout) clearTimeout(existing._timeout);
+        if (!persistent) {
+          existing._timeout = setTimeout(() => this.dismissToast(existing), duration);
+        }
+        return existing;
+      }
+    }
+
+    // Max queue: dismiss oldest if we already have 5 toasts
+    if (this.container) {
+      const active = this.container.querySelectorAll('.toast:not(.removing)');
+      if (active.length >= 5) this.dismissToast(active[0]);
+    }
+
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.setAttribute('role', 'alert');
@@ -102,11 +121,14 @@ const Notifications = {
    */
   dismissToast(toast) {
     if (!toast || !toast.parentNode) return;
+    if (toast._dismissed) return; // guard against double-call
+    toast._dismissed = true;
     if (toast._timeout) clearTimeout(toast._timeout);
-    toast.classList.add('toast-exit');
-    toast.addEventListener('animationend', () => {
-      if (toast.parentNode) toast.parentNode.removeChild(toast);
-    });
+    toast.classList.add('removing');
+    // Fallback removal in case animationend never fires
+    const remove = () => { if (toast.parentNode) toast.parentNode.removeChild(toast); };
+    toast.addEventListener('animationend', remove, { once: true });
+    setTimeout(remove, 400);
   },
 
   /**

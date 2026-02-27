@@ -116,9 +116,11 @@ const App = {
     // Sidebar collapse toggle (desktop)
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
     if (collapseBtn && sidebar) {
-      // Restore collapse state WITHOUT transition animation
+      const isDesktop = () => window.innerWidth > 768;
+
+      // Restore collapse state WITHOUT transition animation (desktop only)
       const isCollapsed = localStorage.getItem('omsp_sidebar_collapsed') === 'true';
-      if (isCollapsed) {
+      if (isCollapsed && isDesktop()) {
         // Add no-transition class to suppress ALL CSS transitions during restore
         document.documentElement.classList.add('no-transition');
         sidebar.classList.add('collapsed');
@@ -133,9 +135,21 @@ const App = {
       }
 
       collapseBtn.addEventListener('click', () => {
+        if (!isDesktop()) return; // collapse button hidden on mobile anyway
         sidebar.classList.toggle('collapsed');
         localStorage.setItem('omsp_sidebar_collapsed', sidebar.classList.contains('collapsed'));
       });
+
+      // On resize: remove collapsed class on mobile, restore saved pref on desktop
+      window.addEventListener('resize', Utils.debounce(() => {
+        if (!isDesktop()) {
+          sidebar.classList.remove('collapsed');
+        } else {
+          const saved = localStorage.getItem('omsp_sidebar_collapsed') === 'true';
+          if (saved) sidebar.classList.add('collapsed');
+          else sidebar.classList.remove('collapsed');
+        }
+      }, 150));
     }
 
     // Logout button
