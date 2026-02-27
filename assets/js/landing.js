@@ -23,6 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('mock-nav-search').innerHTML = Icons.render('search', 14) + ' Global Search';
   document.getElementById('mock-nav-reports').innerHTML = Icons.render('bar-chart', 14) + ' Reports';
 
+  // About OMSP icon
+  const aboutIcon = document.getElementById('about-label-icon');
+  if (aboutIcon) aboutIcon.innerHTML = Icons.render('info', 16);
+
   // Features icons
   document.getElementById('feat-label-icon').innerHTML = Icons.render('zap', 16);
   document.getElementById('feat-icon-fa').innerHTML = Icons.render('file-text', 24);
