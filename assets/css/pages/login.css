@@ -28,7 +28,7 @@
   justify-content: center;
   padding: var(--space-12) var(--space-10);
   background:
-    linear-gradient(135deg, rgba(30, 58, 138, 0.92) 0%, rgba(29, 78, 216, 0.88) 50%, rgba(3, 105, 161, 0.90) 100%),
+    linear-gradient(135deg, rgba(10, 18, 50, 0.91) 0%, rgba(15, 30, 80, 0.87) 50%, rgba(8, 40, 70, 0.92) 100%),
     url('../../images/TheBunker-bg.jpg') center / cover no-repeat;
   color: #fff;
   position: relative;
