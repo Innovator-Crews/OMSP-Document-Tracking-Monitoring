@@ -505,7 +505,7 @@ const TermManager = {
     ActivityLogger.log(
       `Started ${Utils.ordinal(nextTerm)} term for ${bmUser ? bmUser.full_name : bmId}`,
       'create', 'term', bmId,
-      `Term ${nextTerm}: ${termStart} — ${termEnd}, Financial Assistance Budget: ₱${Utils.formatNumber(faBudget)}/mo`
+      `Term ${nextTerm}: ${termStart} — ${termEnd}, Financial Assistance Budget: ₱${faBudget.toLocaleString()}/mo`
     );
 
       this.closeNewTermModal();

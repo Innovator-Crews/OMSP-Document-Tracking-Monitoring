@@ -471,7 +471,7 @@ const IncomingModule = {
       };
 
       Storage.updateIncomingLetter(letterId, updates);
-      ActivityLogger.log('update', 'incoming_letter', `Updated incoming letter from ${updates.sender_name}`);
+      ActivityLogger.log(`Updated incoming letter from ${updates.sender_name}`, 'update', 'incoming_letter', letterId);
       Notifications.success('Letter updated successfully.');
       closeModal();
 
@@ -629,7 +629,7 @@ const IncomingModule = {
     };
 
     const letter = Storage.createIncomingLetter(data);
-    ActivityLogger.log('create', 'incoming_letter', `Created incoming letter (${category}) from ${senderName}`);
+    ActivityLogger.log(`Created incoming letter (${category}) from ${senderName}`, 'create', 'incoming_letter', letter.letter_id);
     Notifications.success('Incoming letter recorded successfully!');
 
     // Navigate to list

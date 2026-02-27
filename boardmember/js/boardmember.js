@@ -430,7 +430,7 @@ const BoardMemberModule = {
               <tbody>
                 ${secLogs.slice(0, 100).map(log => `
                   <tr>
-                    <td class="text-sm">${Utils.formatDateTime(log.created_at)}</td>
+                    <td class="text-sm">${Utils.formatDate(log.created_at, 'datetime')}</td>
                     <td><strong>${Utils.escapeHtml(log.user_name || 'Unknown')}</strong></td>
                     <td>${Utils.escapeHtml(log.action)}</td>
                     <td><span class="badge badge-${log.action_type === 'create' ? 'success' : log.action_type === 'delete' ? 'danger' : 'info'}">${log.action_type || 'action'}</span></td>
