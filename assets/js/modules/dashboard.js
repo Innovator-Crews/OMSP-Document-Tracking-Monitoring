@@ -44,10 +44,37 @@ const DashboardModule = {
       .filter(b => b.year_month === Utils.getCurrentYearMonth());
     const totalUsed = budgets.reduce((sum, b) => sum + b.used_amount, 0);
 
+    const basePath = Utils.getBasePath();
+
     container.innerHTML = `
       <div class="mb-lg">
         <h2 class="mb-xs">Welcome back, <span id="welcome-name">${Utils.escapeHtml(user.full_name)}</span></h2>
         <p class="text-muted">System Administrator Dashboard</p>
+      </div>
+
+      ${pendingArchives.length > 0 ? `
+      <div class="banner banner-warning mb-lg">
+        <div class="banner-content">
+          ${Icons.render('alert-triangle', 18)}
+          <div>
+            <strong>${pendingArchives.length} Board Member${pendingArchives.length > 1 ? 's' : ''} pending archive review.</strong>
+            <a href="${basePath}pages/term-management.html" class="ml-sm">Review Now →</a>
+          </div>
+        </div>
+      </div>
+      ` : ''}
+
+      <div class="grid-2-col gap-md mb-lg">
+        <a href="${basePath}sysadmin/bm-management.html" class="stat-card stat-card-blue" style="text-decoration:none;cursor:pointer;">
+          <div class="stat-icon stat-icon-blue">${Icons.render('user-plus', 22)}</div>
+          <div class="stat-label">Quick Action</div>
+          <div class="stat-value" style="font-size:1rem;">Manage Board Members</div>
+        </a>
+        <a href="${basePath}sysadmin/staff-management.html" class="stat-card stat-card-teal" style="text-decoration:none;cursor:pointer;">
+          <div class="stat-icon stat-icon-teal">${Icons.render('user-plus', 22)}</div>
+          <div class="stat-label">Quick Action</div>
+          <div class="stat-value" style="font-size:1rem;">Manage Staff</div>
+        </a>
       </div>
 
       <div class="grid-3-col gap-md mb-lg">

@@ -310,7 +310,7 @@ const Storage = {
       return {
         success: false,
         budget,
-        error: `Insufficient budget. Remaining: ₱${Utils.formatCurrency(budget.remaining_amount)}, Requested: ₱${Utils.formatCurrency(amount)}`
+        error: `Insufficient budget. Remaining: ${Utils.formatCurrency(budget.remaining_amount)}, Requested: ${Utils.formatCurrency(amount)}`
       };
     }
 

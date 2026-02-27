@@ -419,6 +419,9 @@ code {
 .shadow-md { box-shadow: var(--shadow-md); }
 .shadow-lg { box-shadow: var(--shadow-lg); }
 
+/* Extra padding */
+.p-xl { padding: var(--space-8); }
+
 /* --- Overflow --- */
 .overflow-hidden { overflow: hidden; }
 .overflow-auto { overflow: auto; }

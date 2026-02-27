@@ -27,6 +27,9 @@ const SysAdminModule = {
           <div class="mgmt-header-title">Board Member Management</div>
           <div class="mgmt-header-subtitle">Manage board member accounts, terms, and secretary assignments</div>
         </div>
+        <button class="btn btn-outline btn-sm" onclick="SysAdminModule.exportBMsToCSV()">
+          ${typeof Icons !== 'undefined' ? Icons.render('download', 16) : ''} Export CSV
+        </button>
         <button class="btn btn-primary" onclick="SysAdminModule.showAddBMModal()">
           ${typeof Icons !== 'undefined' ? Icons.render('plus-circle', 16) : '+'} Add Board Member
         </button>
@@ -524,6 +527,9 @@ const SysAdminModule = {
           <div class="mgmt-header-title">Staff Management</div>
           <div class="mgmt-header-subtitle">Manage secretary accounts and board member assignments</div>
         </div>
+        <button class="btn btn-outline btn-sm" onclick="SysAdminModule.exportStaffToCSV()">
+          ${typeof Icons !== 'undefined' ? Icons.render('download', 16) : ''} Export CSV
+        </button>
         <button class="btn btn-primary" onclick="SysAdminModule.showAddStaffModal()">
           ${typeof Icons !== 'undefined' ? Icons.render('plus-circle', 16) : '+'} Add Staff
         </button>
@@ -931,5 +937,58 @@ const SysAdminModule = {
 
     Notifications.toast('Staff reactivated.', 'success');
     this.initStaffManagement();
+  },
+
+  /* --------------------------------------------------------
+   * CSV EXPORT
+   * -------------------------------------------------------- */
+  exportBMsToCSV() {
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS);
+    const data = bms.map(bm => {
+      const user = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+      return {
+        bm_id: bm.bm_id,
+        full_name: user ? user.full_name : 'Unknown',
+        email: user ? user.email : '',
+        district_name: bm.district_name,
+        current_term_number: bm.current_term_number,
+        term_start: bm.term_start,
+        term_end: bm.term_end,
+        is_active: bm.is_active ? 'Yes' : 'No',
+        is_archived: bm.is_archived ? 'Yes' : 'No',
+        archive_status: bm.archive_status || 'none',
+        monthly_budget: bm.fa_monthly_budget || 0
+      };
+    });
+    ExportUtils.toCSV(data, 'board-members', {
+      columns: ['bm_id', 'full_name', 'email', 'district_name', 'current_term_number', 'term_start', 'term_end', 'is_active', 'is_archived', 'archive_status', 'monthly_budget'],
+      headers: ['BM ID', 'Full Name', 'Email', 'District', 'Term #', 'Term Start', 'Term End', 'Active', 'Archived', 'Archive Status', 'Monthly Budget']
+    });
+  },
+
+  exportStaffToCSV() {
+    const allUsers = Storage.getAll(KEYS.USERS).filter(u => u.role === 'secretary');
+    const assignments = Storage.getAll(KEYS.SECRETARY_ASSIGNMENTS);
+    const data = allUsers.map(u => {
+      const userAssignments = assignments.filter(a => a.secretary_user_id === u.user_id);
+      const bmNames = userAssignments.map(a => {
+        const bm = Storage.getById(KEYS.BOARD_MEMBERS, a.bm_id, 'bm_id');
+        const bmUser = bm ? Storage.getById(KEYS.USERS, bm.user_id, 'user_id') : null;
+        return bmUser ? bmUser.full_name : 'Unknown';
+      });
+      return {
+        user_id: u.user_id,
+        full_name: u.full_name,
+        email: u.email,
+        is_active: u.is_active ? 'Yes' : 'No',
+        is_temp: u.is_temp_account ? 'Yes' : 'No',
+        assigned_bms: bmNames.join('; ') || 'None',
+        created_at: u.created_at || ''
+      };
+    });
+    ExportUtils.toCSV(data, 'staff-accounts', {
+      columns: ['user_id', 'full_name', 'email', 'is_active', 'is_temp', 'assigned_bms', 'created_at'],
+      headers: ['User ID', 'Full Name', 'Email', 'Active', 'Temp Password', 'Assigned Board Members', 'Created At']
+    });
   }
 };

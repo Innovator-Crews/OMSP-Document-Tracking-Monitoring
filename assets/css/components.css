@@ -55,12 +55,14 @@
 }
 
 /* Secondary / Outline */
-.btn-secondary {
+.btn-secondary,
+.btn-outline {
   background: #fff;
   color: var(--primary-700);
   border-color: var(--primary-300);
 }
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-outline:hover {
   background: var(--primary-50);
   border-color: var(--primary-500);
 }
@@ -106,6 +108,16 @@
 .btn-ghost svg {
   width: 16px;
   height: 16px;
+}
+
+/* Danger Ghost (for delete buttons) */
+.btn-danger-ghost {
+  background: transparent;
+  color: var(--danger-600);
+}
+.btn-danger-ghost:hover {
+  background: var(--danger-50);
+  color: var(--danger-700);
 }
 
 /* Icon button */
@@ -354,6 +366,14 @@
 .badge-archived { background: var(--neutral-100); color: var(--neutral-600); }
 .badge-pending { background: var(--accent-100); color: var(--accent-700); }
 
+/* Status badge aliases (for JS badge-status-* pattern) */
+.badge-status-ongoing { background: var(--primary-100); color: var(--primary-700); }
+.badge-status-successful { background: var(--success-100); color: var(--success-700); }
+.badge-status-denied { background: var(--danger-100); color: var(--danger-700); }
+.badge-status-archived { background: var(--neutral-100); color: var(--neutral-600); }
+.badge-status-pending { background: var(--accent-100); color: var(--accent-700); }
+.badge-status-neutral { background: var(--neutral-100); color: var(--neutral-600); }
+
 /* Role badges */
 .badge-sysadmin { background: #F3E8FF; color: #6B21A8; }
 .badge-bm { background: var(--primary-100); color: var(--primary-800); }
@@ -396,6 +416,14 @@
 .progress-fill-yellow { background: var(--accent-500); }
 .progress-fill-red { background: var(--danger-500); }
 .progress-fill-blue { background: var(--primary-500); }
+
+/* Progress color aliases */
+.progress-primary { background: var(--primary-500); }
+.progress-warning { background: var(--accent-500); }
+.progress-danger { background: var(--danger-500); }
+
+/* Progress size modifier */
+.progress-sm { height: 4px; }
 
 
 /* ============================================================

@@ -550,6 +550,10 @@ const PAModule = {
           <td>${(() => { const cd = Utils.getCooldownStatus(r); return `<span class="badge ${cd.badgeClass}">${cd.label}</span>`; })()}</td>
           <td>
             <button class="btn btn-sm btn-ghost" onclick="PAModule.viewDetail('${r.pa_id}')" title="View">${Icons.render('eye', 16)}</button>
+            ${Auth.getCurrentUser()?.role === 'sysadmin' ? `
+            <button class="btn btn-sm btn-ghost" onclick="PAModule.editRecord('${r.pa_id}')" title="Edit Record">${Icons.render('settings', 16)}</button>
+            <button class="btn btn-sm btn-ghost btn-danger-ghost" onclick="PAModule.deleteRecord('${r.pa_id}')" title="Delete">${Icons.render('trash', 16)}</button>
+            ` : ''}
           </td>
         </tr>
       `;
@@ -698,6 +702,170 @@ const PAModule = {
       </div>
     `;
     document.body.insertAdjacentHTML('beforeend', html);
+  },
+
+  /* --------------------------------------------------------
+   * SYSADMIN EDIT / DELETE
+   * -------------------------------------------------------- */
+
+  editRecord(paId) {
+    const user = Auth.getCurrentUser();
+    if (!user || user.role !== 'sysadmin') return;
+
+    const record = Storage.getById(KEYS.PA_RECORDS, paId, 'pa_id');
+    if (!record) return;
+
+    const bms = Storage.getAll(KEYS.BOARD_MEMBERS).filter(b => !b.is_archived);
+    const categories = Storage.getAll(KEYS.PA_CATEGORIES);
+
+    const html = `
+      <div class="modal-overlay active" id="pa-edit-modal">
+        <div class="modal animate-fade-in" style="max-width:560px;">
+          <div class="modal-header">
+            <h3 class="modal-title">${Icons.render('edit', 20)} Edit PA Record</h3>
+            <button class="modal-close" onclick="document.getElementById('pa-edit-modal').remove()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="pa-edit-error" class="banner banner-danger hidden mb-md"></div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Client Name *</label>
+              <input type="text" class="form-input" id="edit-pa-client" value="${Utils.escapeHtml(record.client_name)}" required />
+            </div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-input" id="edit-pa-address" value="${Utils.escapeHtml(record.address || '')}" />
+            </div>
+
+            <div class="d-flex gap-md">
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Category</label>
+                <select class="form-select" id="edit-pa-category">
+                  ${categories.map(c => `<option value="${c.id}" ${c.id === record.category_id ? 'selected' : ''}>${Utils.escapeHtml(c.name)}</option>`).join('')}
+                  <option value="_custom" ${record.category_custom ? 'selected' : ''}>Custom</option>
+                </select>
+              </div>
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Custom Category</label>
+                <input type="text" class="form-input" id="edit-pa-category-custom" value="${Utils.escapeHtml(record.category_custom || '')}" placeholder="If custom" />
+              </div>
+            </div>
+
+            <div class="d-flex gap-md">
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Amount Provided (₱) *</label>
+                <input type="number" class="form-input" id="edit-pa-amount" value="${record.amount_provided}" min="1" step="100" required />
+              </div>
+              <div class="form-group mb-md" style="flex:1;">
+                <label class="form-label">Board Member</label>
+                <select class="form-select" id="edit-pa-bm">
+                  ${bms.map(bm => {
+                    const u = Storage.getById(KEYS.USERS, bm.user_id, 'user_id');
+                    return `<option value="${bm.bm_id}" ${bm.bm_id === record.bm_id ? 'selected' : ''}>${u ? Utils.escapeHtml(u.full_name) : bm.district_name}</option>`;
+                  }).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Event / Purpose</label>
+              <input type="text" class="form-input" id="edit-pa-purpose" value="${Utils.escapeHtml(record.event_purpose || '')}" />
+            </div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Action Taken</label>
+              <input type="text" class="form-input" id="edit-pa-action" value="${Utils.escapeHtml(record.action_taken || '')}" />
+            </div>
+
+            <div class="form-group mb-md">
+              <label class="form-label">Office Note</label>
+              <textarea class="form-input" id="edit-pa-note" rows="2">${Utils.escapeHtml(record.office_note || '')}</textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="document.getElementById('pa-edit-modal').remove()">Cancel</button>
+            <button class="btn btn-primary" onclick="PAModule.saveRecordEdit('${paId}')">
+              ${Icons.render('check', 16)} Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+  },
+
+  saveRecordEdit(paId) {
+    const clientName = document.getElementById('edit-pa-client').value.trim();
+    const address = document.getElementById('edit-pa-address').value.trim();
+    const categoryId = document.getElementById('edit-pa-category').value;
+    const categoryCustom = document.getElementById('edit-pa-category-custom').value.trim();
+    const amount = parseFloat(document.getElementById('edit-pa-amount').value);
+    const bmId = document.getElementById('edit-pa-bm').value;
+    const purpose = document.getElementById('edit-pa-purpose').value.trim();
+    const action = document.getElementById('edit-pa-action').value.trim();
+    const note = document.getElementById('edit-pa-note').value.trim();
+    const errorEl = document.getElementById('pa-edit-error');
+
+    if (!clientName || !amount) {
+      errorEl.textContent = 'Client name and amount are required.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    const updates = {
+      client_name: clientName,
+      address: address,
+      category_id: categoryId === '_custom' ? null : categoryId,
+      category_custom: categoryId === '_custom' ? categoryCustom : null,
+      amount_provided: amount,
+      bm_id: bmId,
+      event_purpose: purpose,
+      action_taken: action,
+      office_note: note || null,
+      updated_at: new Date().toISOString()
+    };
+
+    Storage.update(KEYS.PA_RECORDS, paId, updates, 'pa_id');
+
+    ActivityLogger.log(
+      `[Admin] Edited PA record: ${clientName}`,
+      'edit', 'pa', paId,
+      `Amount: ${Utils.formatCurrency(amount)}`
+    );
+
+    document.getElementById('pa-edit-modal')?.remove();
+    Notifications.success('PA record updated successfully.');
+    this.loadRecords();
+  },
+
+  async deleteRecord(paId) {
+    const user = Auth.getCurrentUser();
+    if (!user || user.role !== 'sysadmin') return;
+
+    const record = Storage.getById(KEYS.PA_RECORDS, paId, 'pa_id');
+    if (!record) return;
+
+    const confirmed = await Notifications.confirm({
+      title: 'Delete PA Record',
+      message: `Permanently delete the PA record for "${record.client_name}"?\n\nAmount: ${Utils.formatCurrency(record.amount_provided)}\n\nThis action cannot be undone.`,
+      confirmText: 'Delete Permanently',
+      type: 'danger'
+    });
+
+    if (!confirmed) return;
+
+    Storage.hardDelete(KEYS.PA_RECORDS, paId, 'pa_id');
+
+    ActivityLogger.log(
+      `[Admin] Deleted PA record: ${record.client_name}`,
+      'delete', 'pa', paId,
+      `Amount: ${Utils.formatCurrency(record.amount_provided)}`
+    );
+
+    Notifications.success(`PA record for "${record.client_name}" deleted.`);
+    this.loadRecords();
   },
 
   exportToCSV() {
