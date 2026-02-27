@@ -600,7 +600,20 @@ const Utils = {
    * @returns {{ status: string, daysLeft: number, label: string, badgeClass: string }}
    */
   getCooldownStatus(record) {
-    if (!record || !record.next_available_date) {
+    if (!record) return { status: 'none', daysLeft: 0, label: 'No restriction', badgeClass: 'badge-neutral' };
+    const status = record.status;
+    // Cooldown only applies to Successful records.
+    // Ongoing = not resolved yet (cooldown pending).
+    // Denied  = no cooldown ever.
+    // Undefined status = legacy record created before status field added → treat as Successful.
+    if (status === 'Ongoing') {
+      return { status: 'pending', daysLeft: 0, label: 'Pending', badgeClass: 'badge-secondary' };
+    }
+    if (status === 'Denied') {
+      return { status: 'na', daysLeft: 0, label: 'N/A', badgeClass: 'badge-neutral' };
+    }
+    // Successful (or legacy undefined)
+    if (!record.next_available_date) {
       return { status: 'none', daysLeft: 0, label: 'No restriction', badgeClass: 'badge-neutral' };
     }
     if (record.skip_waiting_period) {

@@ -456,7 +456,7 @@ const FAModule = {
       wait_duration_months: waitMonths,
       wait_duration_custom: customDuration,
       date_requested: form.querySelector('#fa-date-requested')?.value || null,
-      next_available_date: skipWaiting ? null : Utils.addMonths(new Date(), waitMonths),
+      next_available_date: null, // activated when status → Successful
       skip_waiting_period: skipWaiting,
       skip_reason: skipReason,
       skip_bm_noted: skipBMNoted,
@@ -469,9 +469,7 @@ const FAModule = {
     };
 
     Storage.add(KEYS.FA_RECORDS, faRecord);
-
-    // Update frequency
-    Storage.updateFrequency(beneficiaryId, 'fa', amount, formData.bm_id);
+    // Frequency and cooldown are set when status → Successful (not at creation)
 
     // Log activity
     const categoryName = caseTypeCustom || (Storage.getById(KEYS.FA_CATEGORIES, caseTypeId, 'id')?.name || 'Unknown');
@@ -866,7 +864,7 @@ const FAModule = {
   },
 
   /**
-   * Save updated status
+   * Save updated status — handles all transitions with budget, frequency, and cooldown
    */
   saveStatus(faId) {
     const newStatus = document.getElementById('new-fa-status')?.value;
@@ -874,14 +872,40 @@ const FAModule = {
 
     const record = Storage.getById(KEYS.FA_RECORDS, faId, 'fa_id');
     const oldStatus = record.status;
-
-    Storage.update(KEYS.FA_RECORDS, faId, { status: newStatus }, 'fa_id');
-
-    // If denied, refund budget
-    if (newStatus === 'Denied' && oldStatus !== 'Denied') {
-      const yearMonth = record.created_at.substring(0, 7);
-      Storage.refundBudget(record.bm_id, record.amount_approved, yearMonth);
+    if (newStatus === oldStatus) {
+      document.getElementById('fa-status-modal')?.remove();
+      return;
     }
+
+    const ym = record.created_at.substring(0, 7);
+    const updates = { status: newStatus, updated_at: new Date().toISOString() };
+
+    // ── Budget transitions ────────────────────────────────
+    if (newStatus === 'Denied' && oldStatus !== 'Denied') {
+      // Newly denied → refund budget, clear cooldown
+      Storage.refundBudget(record.bm_id, record.amount_approved, ym);
+      updates.next_available_date = null;
+    } else if (oldStatus === 'Denied' && newStatus !== 'Denied') {
+      // Un-denying → re-deduct budget
+      Storage.deductFromBudget(record.bm_id, record.amount_approved);
+    }
+
+    // ── Frequency + cooldown transitions ──────────────────────
+    if (newStatus === 'Successful' && oldStatus !== 'Successful') {
+      // Newly successful → +1 frequency, activate cooldown
+      Storage.updateFrequency(record.beneficiary_id, 'fa', record.amount_approved, record.bm_id, ym);
+      if (!record.skip_waiting_period) {
+        updates.next_available_date = Utils.addMonths(
+          new Date(), record.cooldown_months || record.wait_duration_months || 3
+        );
+      }
+    } else if (oldStatus === 'Successful' && newStatus !== 'Successful') {
+      // Reverting from Successful → -1 frequency, clear cooldown
+      Storage.decrementFrequency(record.beneficiary_id, 'fa', record.amount_approved, record.bm_id, ym);
+      updates.next_available_date = null;
+    }
+
+    Storage.update(KEYS.FA_RECORDS, faId, updates, 'fa_id');
 
     ActivityLogger.log(
       `Updated FA status for ${record.patient_name}: ${oldStatus} → ${newStatus}`,
@@ -1040,6 +1064,24 @@ const FAModule = {
         const delta = amount - oldAmount;
         if (delta > 0)      Storage.deductFromBudget(bmId, delta);
         else if (delta < 0) Storage.refundBudget(bmId, -delta, yearMonth);
+      }
+    }
+
+    // ── Frequency + cooldown on status transition ────────────────
+    if (status !== oldStatus) {
+      const ym = record.created_at.substring(0, 7);
+      if (status === 'Successful') {
+        Storage.updateFrequency(record.beneficiary_id, 'fa', amount, bmId, ym);
+        if (!record.skip_waiting_period) {
+          Storage.update(KEYS.FA_RECORDS, faId, {
+            next_available_date: Utils.addMonths(new Date(), waitDuration || record.cooldown_months || 3)
+          }, 'fa_id');
+        }
+      } else if (oldStatus === 'Successful') {
+        Storage.decrementFrequency(record.beneficiary_id, 'fa', oldAmount, oldBmId, ym);
+        Storage.update(KEYS.FA_RECORDS, faId, { next_available_date: null }, 'fa_id');
+      } else if (status === 'Denied') {
+        Storage.update(KEYS.FA_RECORDS, faId, { next_available_date: null }, 'fa_id');
       }
     }
 

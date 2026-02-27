@@ -391,7 +391,10 @@ const Storage = {
     if (termStart) {
       paRecords = paRecords.filter(r => r.created_at >= termStart);
     }
-    const totalUsed = paRecords.reduce((s, r) => s + (r.amount_provided || 0), 0);
+    // Denied records don't consume budget — only Ongoing and Successful records count
+    const totalUsed = paRecords
+      .filter(r => r.status !== 'Denied')
+      .reduce((s, r) => s + (r.amount_provided || 0), 0);
     return {
       total_pool: totalPool,
       total_used: totalUsed,
@@ -492,10 +495,10 @@ const Storage = {
    * @param {number} amount - Amount of assistance
    * @param {string} bmId - Board Member who provided
    */
-  updateFrequency(beneficiaryId, type, amount, bmId) {
-    const yearMonth = Utils.getCurrentYearMonth();
+  updateFrequency(beneficiaryId, type, amount, bmId, yearMonth) {
+    const ym = yearMonth || Utils.getCurrentYearMonth();
     const freqs = this.getAll(KEYS.MONTHLY_FREQUENCY);
-    let freq = freqs.find(f => f.beneficiary_id === beneficiaryId && f.year_month === yearMonth);
+    let freq = freqs.find(f => f.beneficiary_id === beneficiaryId && f.year_month === ym);
 
     if (freq) {
       const updates = {
@@ -511,13 +514,32 @@ const Storage = {
       this.add(KEYS.MONTHLY_FREQUENCY, {
         freq_id: this.generateId('freq'),
         beneficiary_id: beneficiaryId,
-        year_month: yearMonth,
+        year_month: ym,
         fa_count: type === 'fa' ? 1 : 0,
         pa_count: type === 'pa' ? 1 : 0,
         total_amount: amount,
         bm_ids: bmId ? [bmId] : []
       });
     }
+  },
+
+  /**
+   * Decrement frequency counter — call when a Successful record is reverted or denied.
+   * @param {string} beneficiaryId
+   * @param {string} type - 'fa' or 'pa'
+   * @param {number} amount
+   * @param {string} bmId
+   * @param {string} [yearMonth] - YYYY-MM, defaults to current month
+   */
+  decrementFrequency(beneficiaryId, type, amount, bmId, yearMonth) {
+    const ym = yearMonth || Utils.getCurrentYearMonth();
+    const freqs = this.getAll(KEYS.MONTHLY_FREQUENCY);
+    const freq = freqs.find(f => f.beneficiary_id === beneficiaryId && f.year_month === ym);
+    if (!freq) return;
+    const updates = { total_amount: Math.max(0, freq.total_amount - (amount || 0)) };
+    if (type === 'fa') updates.fa_count = Math.max(0, (freq.fa_count || 0) - 1);
+    if (type === 'pa') updates.pa_count = Math.max(0, (freq.pa_count || 0) - 1);
+    this.update(KEYS.MONTHLY_FREQUENCY, freq.freq_id, updates, 'freq_id');
   },
 
   /**

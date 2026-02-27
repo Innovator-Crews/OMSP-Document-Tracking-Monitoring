@@ -392,11 +392,12 @@ const PAModule = {
       action_taken: formData.action_taken || '',
       amount_provided: amount,
       bm_id: formData.bm_id,
+      status: 'Ongoing',
       cooldown_months: cooldownMonths,
       wait_duration_months: cooldownMonths,
       wait_duration_custom: customDuration,
       date_requested: form.querySelector('#pa-date-requested')?.value || null,
-      next_available_date: skipWaiting ? null : Utils.addMonths(new Date(), cooldownMonths),
+      next_available_date: null, // activated when status → Successful
       skip_waiting_period: skipWaiting,
       skip_reason: skipReason,
       skip_bm_noted: skipBMNoted,
@@ -410,9 +411,7 @@ const PAModule = {
     };
 
     Storage.add(KEYS.PA_RECORDS, paRecord);
-
-    // Update frequency
-    Storage.updateFrequency(beneficiaryId, 'pa', amount, formData.bm_id);
+    // Frequency and cooldown are set when status → Successful (not at creation)
 
     const categoryName = categoryCustom || (Storage.getById(KEYS.PA_CATEGORIES, categoryId, 'id')?.name || 'Unknown');
     ActivityLogger.log(
@@ -439,6 +438,7 @@ const PAModule = {
     this.pageSize = 10;
     this.currentBM = Utils.getUrlParam('bm') || '';
     this.currentSearch = '';
+    this.currentStatus = '';
 
     this.setupFilters();
     this.loadRecords();
@@ -482,6 +482,15 @@ const PAModule = {
         this.loadRecords();
       }, 300));
     }
+
+    const statusFilter = document.getElementById('filter-status');
+    if (statusFilter) {
+      statusFilter.addEventListener('change', () => {
+        this.currentStatus = statusFilter.value;
+        this.currentPage = 1;
+        this.loadRecords();
+      });
+    }
   },
 
   loadRecords() {
@@ -505,6 +514,10 @@ const PAModule = {
         r.pa_id?.toLowerCase().includes(q) ||
         r.event_purpose?.toLowerCase().includes(q)
       );
+    }
+
+    if (this.currentStatus) {
+      records = records.filter(r => (r.status || 'Ongoing') === this.currentStatus);
     }
 
     records.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -564,13 +577,17 @@ const PAModule = {
           <td class="text-right">${Utils.formatCurrency(r.amount_provided)}</td>
           <td>${Utils.escapeHtml(r.event_purpose || '—')}</td>
           <td>${r.date_requested ? Utils.formatDate(r.date_requested) : '—'}</td>
+          <td><span class="badge badge-status-${Utils.getStatusClass(r.status || 'Ongoing')}">${r.status || 'Ongoing'}</span></td>
           <td>${(() => { const cd = Utils.getCooldownStatus(r); return `<span class="badge ${cd.badgeClass}">${cd.label}</span>`; })()}</td>
           <td>
-            <button class="btn btn-sm btn-ghost" onclick="PAModule.viewDetail('${r.pa_id}')" title="View">${Icons.render('eye', 16)}</button>
-            ${Auth.getCurrentUser()?.role === 'sysadmin' ? `
-            <button class="btn btn-sm btn-ghost" onclick="PAModule.editRecord('${r.pa_id}')" title="Edit Record">${Icons.render('settings', 16)}</button>
-            <button class="btn btn-sm btn-ghost btn-danger-ghost" onclick="PAModule.deleteRecord('${r.pa_id}')" title="Delete">${Icons.render('trash', 16)}</button>
-            ` : ''}
+            <div class="d-flex gap-xs">
+              <button class="btn btn-sm btn-ghost" onclick="PAModule.viewDetail('${r.pa_id}')" title="View">${Icons.render('eye', 16)}</button>
+              ${(Auth.getCurrentUser()?.role === 'secretary' || Auth.getCurrentUser()?.role === 'sysadmin') ? `<button class="btn btn-sm btn-ghost" onclick="PAModule.editStatus('${r.pa_id}')" title="Edit Status">${Icons.render('edit', 16)}</button>` : ''}
+              ${Auth.getCurrentUser()?.role === 'sysadmin' ? `
+              <button class="btn btn-sm btn-ghost" onclick="PAModule.editRecord('${r.pa_id}')" title="Edit Record">${Icons.render('settings', 16)}</button>
+              <button class="btn btn-sm btn-ghost btn-danger-ghost" onclick="PAModule.deleteRecord('${r.pa_id}')" title="Delete">${Icons.render('trash', 16)}</button>
+              ` : ''}
+            </div>
           </td>
         </tr>
       `;
@@ -603,6 +620,89 @@ const PAModule = {
     this.loadRecords();
   },
 
+  /* --------------------------------------------------------
+   * STATUS UPDATE
+   * -------------------------------------------------------- */
+
+  editStatus(paId) {
+    const record = Storage.getById(KEYS.PA_RECORDS, paId, 'pa_id');
+    if (!record) return;
+
+    const currentStatus = record.status || 'Ongoing';
+    const html = `
+      <div class="modal-overlay active" id="pa-status-modal" onclick="this.remove()">
+        <div class="modal modal-sm animate-fade-in" onclick="event.stopPropagation()">
+          <div class="modal-header">
+            <h3 class="modal-title">Update Status</h3>
+            <button class="modal-close" onclick="document.getElementById('pa-status-modal').remove()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-md">Record: <strong>${Utils.escapeHtml(record.client_name)}</strong></p>
+            <div class="form-group">
+              <label class="form-label">New Status</label>
+              <select class="form-select" id="new-pa-status">
+                <option value="Ongoing"   ${currentStatus === 'Ongoing'    ? 'selected' : ''}>Ongoing</option>
+                <option value="Successful" ${currentStatus === 'Successful' ? 'selected' : ''}>Successful</option>
+                <option value="Denied"    ${currentStatus === 'Denied'     ? 'selected' : ''}>Denied</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="document.getElementById('pa-status-modal').remove()">Cancel</button>
+            <button class="btn btn-primary" onclick="PAModule.saveStatus('${paId}')">Save</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', html);
+  },
+
+  saveStatus(paId) {
+    const newStatus = document.getElementById('new-pa-status')?.value;
+    if (!newStatus) return;
+
+    const record = Storage.getById(KEYS.PA_RECORDS, paId, 'pa_id');
+    const oldStatus = record.status || 'Ongoing';
+    if (newStatus === oldStatus) {
+      document.getElementById('pa-status-modal')?.remove();
+      return;
+    }
+
+    const ym = record.created_at.substring(0, 7);
+    const updates = { status: newStatus, updated_at: new Date().toISOString() };
+
+    // ── Frequency + cooldown transitions ──────────────────────
+    if (newStatus === 'Successful' && oldStatus !== 'Successful') {
+      // Newly successful → +1 frequency, activate cooldown
+      Storage.updateFrequency(record.beneficiary_id, 'pa', record.amount_provided, record.bm_id, ym);
+      if (!record.skip_waiting_period) {
+        updates.next_available_date = Utils.addMonths(
+          new Date(), record.cooldown_months || record.wait_duration_months || 3
+        );
+      }
+    } else if (oldStatus === 'Successful' && newStatus !== 'Successful') {
+      // Reverting from Successful → -1 frequency, clear cooldown
+      Storage.decrementFrequency(record.beneficiary_id, 'pa', record.amount_provided, record.bm_id, ym);
+      updates.next_available_date = null;
+    }
+
+    if (newStatus === 'Denied') {
+      updates.next_available_date = null;
+    }
+
+    Storage.update(KEYS.PA_RECORDS, paId, updates, 'pa_id');
+
+    ActivityLogger.log(
+      `Updated PA status for ${record.client_name}: ${oldStatus} → ${newStatus}`,
+      'status_change', 'pa', paId,
+      `${Utils.formatCurrency(record.amount_provided)}`
+    );
+
+    document.getElementById('pa-status-modal')?.remove();
+    Notifications.success(`Status updated to ${newStatus}`);
+    this.loadRecords();
+  },
+
   viewDetail(paId) {
     const record = Storage.getById(KEYS.PA_RECORDS, paId, 'pa_id');
     if (!record) return;
@@ -626,6 +726,10 @@ const PAModule = {
           <div class="modal-body" style="padding:0">
             <div class="detail-grid">
               <div class="detail-section">Client Information</div>
+              <div class="detail-item">
+                <span class="detail-label">Status</span>
+                <span class="detail-value"><span class="badge badge-status-${Utils.getStatusClass(record.status || 'Ongoing')}">${record.status || 'Ongoing'}</span></span>
+              </div>
               <div class="detail-item">
                 <span class="detail-label">Client Name</span>
                 <span class="detail-value">${Utils.escapeHtml(record.client_name)}</span>
@@ -796,6 +900,15 @@ const PAModule = {
             </div>
 
             <div class="form-group mb-md">
+              <label class="form-label">Status</label>
+              <select class="form-select" id="edit-pa-status">
+                <option value="Ongoing"    ${(record.status || 'Ongoing') === 'Ongoing'    ? 'selected' : ''}>Ongoing</option>
+                <option value="Successful" ${(record.status || 'Ongoing') === 'Successful' ? 'selected' : ''}>Successful</option>
+                <option value="Denied"     ${(record.status || 'Ongoing') === 'Denied'     ? 'selected' : ''}>Denied</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-md">
               <label class="form-label">Office Note</label>
               <textarea class="form-input" id="edit-pa-note" rows="2">${Utils.escapeHtml(record.office_note || '')}</textarea>
             </div>
@@ -823,6 +936,7 @@ const PAModule = {
     const purpose = document.getElementById('edit-pa-purpose').value.trim();
     const action = document.getElementById('edit-pa-action').value.trim();
     const note = document.getElementById('edit-pa-note').value.trim();
+    const status = document.getElementById('edit-pa-status').value;
     const errorEl = document.getElementById('pa-edit-error');
 
     if (!clientName || !amount) {
@@ -831,6 +945,9 @@ const PAModule = {
       return;
     }
 
+    const record = Storage.getById(KEYS.PA_RECORDS, paId, 'pa_id');
+    const oldStatus = record.status || 'Ongoing';
+
     const updates = {
       client_name: clientName,
       address: address,
@@ -838,6 +955,7 @@ const PAModule = {
       category_custom: categoryId === '_custom' ? categoryCustom : null,
       amount_provided: amount,
       bm_id: bmId,
+      status: status,
       event_purpose: purpose,
       action_taken: action,
       office_note: note || null,
@@ -845,6 +963,24 @@ const PAModule = {
     };
 
     Storage.update(KEYS.PA_RECORDS, paId, updates, 'pa_id');
+
+    // ── Frequency + cooldown on status transition ────────────────
+    if (status !== oldStatus) {
+      const ym = record.created_at.substring(0, 7);
+      if (status === 'Successful') {
+        Storage.updateFrequency(record.beneficiary_id, 'pa', amount, bmId, ym);
+        if (!record.skip_waiting_period) {
+          Storage.update(KEYS.PA_RECORDS, paId, {
+            next_available_date: Utils.addMonths(new Date(), record.cooldown_months || record.wait_duration_months || 3)
+          }, 'pa_id');
+        }
+      } else if (oldStatus === 'Successful') {
+        Storage.decrementFrequency(record.beneficiary_id, 'pa', record.amount_provided, record.bm_id, ym);
+        Storage.update(KEYS.PA_RECORDS, paId, { next_available_date: null }, 'pa_id');
+      } else if (status === 'Denied') {
+        Storage.update(KEYS.PA_RECORDS, paId, { next_available_date: null }, 'pa_id');
+      }
+    }
 
     ActivityLogger.log(
       `[Admin] Edited PA record: ${clientName}`,

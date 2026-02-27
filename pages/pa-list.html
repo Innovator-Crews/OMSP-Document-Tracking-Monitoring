@@ -60,6 +60,14 @@
           <div class="filter-group">
             <input type="text" id="filter-search" class="form-input form-input-sm" placeholder="Search beneficiary..." />
           </div>
+          <div class="filter-group">
+            <select id="filter-status" class="form-input form-input-sm">
+              <option value="">All Statuses</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Successful">Successful</option>
+              <option value="Denied">Denied</option>
+            </select>
+          </div>
           <button class="btn btn-secondary btn-sm" id="export-csv-btn">📤 Export</button>
         </div>
 
@@ -76,12 +84,13 @@
                 <th class="text-right">Amount</th>
                 <th>Event/Purpose</th>
                 <th>Date Requested</th>
+                <th>Status</th>
                 <th>Cooldown</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="pa-table-body">
-              <tr><td colspan="10" class="text-center text-muted">Loading...</td></tr>
+              <tr><td colspan="11" class="text-center text-muted">Loading...</td></tr>
             </tbody>
           </table>
         </div>
