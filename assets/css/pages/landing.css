@@ -580,7 +580,7 @@
       rgba(15, 23, 42, 0.72) 0%,
       rgba(15, 23, 42, 0.60) 100%
     ),
-    url('../../assets/images/TheBunker-bg.jpg');
+    url('../../images/TheBunker-bg.jpg');
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
