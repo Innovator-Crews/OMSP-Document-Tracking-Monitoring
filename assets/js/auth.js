@@ -191,6 +191,13 @@ const Auth = {
       }
     }
 
+    if (permission === 'view_pa' && role === 'board_member') {
+      // BM can only view their own PA
+      if (context.bmId) {
+        return user.bm_id === context.bmId;
+      }
+    }
+
     return true;
   },
 
