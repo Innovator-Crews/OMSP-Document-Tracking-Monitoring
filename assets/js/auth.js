@@ -216,7 +216,12 @@ const Auth = {
         export_data: true,
         // SysAdmin cannot create Financial Assistance/Personal Assistance records
         create_fa: false,
-        create_pa: false
+        create_pa: false,
+        // SysAdmin CAN edit and delete existing records
+        edit_fa: true,
+        delete_fa: true,
+        edit_pa: true,
+        delete_pa: true
       },
       board_member: {
         view_dashboard: true,

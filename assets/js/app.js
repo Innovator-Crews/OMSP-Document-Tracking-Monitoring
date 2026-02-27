@@ -60,6 +60,17 @@ const App = {
         return;
       }
 
+      // Admin login page: reject non-sysadmin users
+      const { section } = Router.getCurrentPage();
+      if (section === 'sysadmin' && result.user.role !== 'sysadmin') {
+        Auth.logout();
+        if (errorEl) {
+          errorEl.textContent = 'Access denied. This login is for system administrators only.';
+          errorEl.classList.remove('hidden');
+        }
+        return;
+      }
+
       // Redirect to dashboard
       Auth.goToDashboard();
     });

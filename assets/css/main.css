@@ -336,6 +336,7 @@ code {
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-left { text-align: left; }
+.text-uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
 .font-medium { font-weight: var(--font-medium); }
 .font-semibold { font-weight: var(--font-semibold); }
 .font-bold { font-weight: var(--font-bold); }
@@ -383,6 +384,7 @@ code {
 .ml-2 { margin-left: var(--space-2); }
 .ml-auto { margin-left: auto; }
 .mr-2 { margin-right: var(--space-2); }
+.mr-xs { margin-right: var(--space-1); }
 .mx-auto { margin-left: auto; margin-right: auto; }
 
 .p-0 { padding: 0; }
