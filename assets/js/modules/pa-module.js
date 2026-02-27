@@ -285,7 +285,7 @@ const PAModule = {
       alertEl.innerHTML = `
         <div class="banner banner-warning mb-sm">
           <div class="banner-content">
-            <strong>${Icons.get('alert-triangle', 14)} Cross-BM Alert:</strong> This beneficiary has received assistance from <strong>${crossInfo.bm_count} other Board Member${crossInfo.bm_count > 1 ? 's' : ''}</strong>.
+            <strong>${Icons.render('alert-triangle', 14)} Cross-BM Alert:</strong> This beneficiary has received assistance from <strong>${crossInfo.bm_count} other Board Member${crossInfo.bm_count > 1 ? 's' : ''}</strong>.
             <div class="mt-xs text-sm">
               ${crossInfo.details.map(d => `<div>• <strong>${Utils.escapeHtml(d.name)}</strong> (${d.district}): ${d.fa_count} FA (${Utils.formatCurrency(d.fa_total)}), ${d.pa_count} PA (${Utils.formatCurrency(d.pa_total)})</div>`).join('')}
             </div>
@@ -534,7 +534,7 @@ const PAModule = {
       // Cross-BM flag
       const crossInfo = r.beneficiary_id ? Storage.getCrossBMInfo(r.beneficiary_id, r.bm_id) : { bm_count: 0 };
       const crossBMFlag = crossInfo.bm_count > 0
-        ? `<span class="badge badge-warning" title="Also assisted by: ${crossInfo.bm_names.join(', ')}">${Icons.get('alert-triangle', 12)} ${crossInfo.bm_count} other BM${crossInfo.bm_count > 1 ? 's' : ''}</span>`
+        ? `<span class="badge badge-warning" title="Also assisted by: ${crossInfo.bm_names.join(', ')}">${Icons.render('alert-triangle', 12)} ${crossInfo.bm_count} other BM${crossInfo.bm_count > 1 ? 's' : ''}</span>`
         : '';
 
       return `

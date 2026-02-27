@@ -321,7 +321,7 @@ const DashboardModule = {
 
       <div class="card mb-lg" id="flagged-beneficiaries-card" style="display:none">
         <div class="card-header">
-          <h3 class="card-title">${Icons.get('alert-triangle', 16)} Cross-BM Flagged Beneficiaries</h3>
+          <h3 class="card-title">${Icons.render('alert-triangle', 16)} Cross-BM Flagged Beneficiaries</h3>
         </div>
         <div id="flagged-beneficiaries-list"></div>
       </div>

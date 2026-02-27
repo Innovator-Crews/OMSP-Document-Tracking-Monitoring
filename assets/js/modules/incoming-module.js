@@ -114,7 +114,7 @@ const IncomingModule = {
         <div class="filter-group">
           <input type="text" id="il-filter-search" class="form-input form-input-sm" placeholder="Search sender, event..." value="${Utils.escapeHtml(filters.search)}" />
         </div>
-        <button class="btn btn-secondary btn-sm" id="il-export-btn">${Icons.get('download', 16)} Export</button>
+        <button class="btn btn-secondary btn-sm" id="il-export-btn">${Icons.render('download', 16)} Export</button>
       </div>
 
       <!-- Table -->
@@ -175,7 +175,7 @@ const IncomingModule = {
     const bmName = bmUser ? bmUser.full_name : (letter.bm_id || '—');
     const eventPurpose = letter.event || letter.purpose || '—';
 
-    const canEdit = user.role === 'secretary' || user.role === 'admin';
+    const canEdit = user.role === 'secretary' || user.role === 'sysadmin';
 
     return `
       <tr>
@@ -187,8 +187,8 @@ const IncomingModule = {
         <td>${Utils.escapeHtml(bmName)}</td>
         <td>
           <div class="action-btns">
-            <button class="btn btn-xs btn-secondary il-view-btn" data-id="${letter.letter_id}" title="View details">${Icons.get('eye', 14)}</button>
-            ${canEdit ? `<button class="btn btn-xs btn-primary il-edit-btn" data-id="${letter.letter_id}" title="Edit">${Icons.get('edit', 14)}</button>` : ''}
+            <button class="btn btn-xs btn-secondary il-view-btn" data-id="${letter.letter_id}" title="View details">${Icons.render('eye', 14)}</button>
+            ${canEdit ? `<button class="btn btn-xs btn-primary il-edit-btn" data-id="${letter.letter_id}" title="Edit">${Icons.render('edit', 14)}</button>` : ''}
           </div>
         </td>
       </tr>
@@ -263,7 +263,7 @@ const IncomingModule = {
         'Board Member': bmUser ? bmUser.full_name : ''
       };
     });
-    ExportUtils.downloadCSV(rows, 'incoming-letters');
+    ExportUtils.toCSV(rows, 'incoming-letters');
     Notifications.success('Exported successfully.');
   },
 

@@ -147,7 +147,7 @@ const SearchModule = {
     const totalPA = paRecords.reduce((s, r) => s + (r.amount_provided || 0), 0);
 
     const crossBMBadge = crossInfo.bm_count > 1
-      ? `<span class="badge badge-warning" title="Assisted by: ${crossInfo.bm_names.join(', ')}">${Icons.get('alert-triangle', 12)} ${crossInfo.bm_count} BMs</span>`
+      ? `<span class="badge badge-warning" title="Assisted by: ${crossInfo.bm_names.join(', ')}">${Icons.render('alert-triangle', 12)} ${crossInfo.bm_count} BMs</span>`
       : '';
 
     return `
@@ -329,7 +329,7 @@ const SearchModule = {
         <div class="form-group" style="max-width:600px">
           <div class="d-flex gap-sm">
             <input type="text" id="archive-search-input" class="form-input" placeholder="Search archived FA / PA records by beneficiary name, ID..." autofocus />
-            <button class="btn btn-primary" id="archive-search-btn">${Icons.get('search', 16)} Search</button>
+            <button class="btn btn-primary" id="archive-search-btn">${Icons.render('search', 16)} Search</button>
           </div>
         </div>
         <div class="d-flex gap-sm mt-sm">
@@ -342,7 +342,7 @@ const SearchModule = {
       <div id="archive-result-count" class="text-muted text-sm mb-sm"></div>
       <div id="archive-results">
         <div class="empty-state">
-          <div class="empty-state-icon">${Icons.get('archive', 32)}</div>
+          <div class="empty-state-icon">${Icons.render('archive', 32)}</div>
           <h3 class="empty-state-title">Search Archives</h3>
           <p class="empty-state-text">Search through archived and past-term records</p>
         </div>
@@ -392,7 +392,7 @@ const SearchModule = {
       countEl.textContent = '';
       resultsEl.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">${Icons.get('archive', 32)}</div>
+          <div class="empty-state-icon">${Icons.render('archive', 32)}</div>
           <h3 class="empty-state-title">Search Archives</h3>
           <p class="empty-state-text">Type at least 2 characters to search</p>
         </div>
@@ -457,7 +457,7 @@ const SearchModule = {
     if (results.length === 0) {
       resultsEl.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">${Icons.get('archive', 32)}</div>
+          <div class="empty-state-icon">${Icons.render('archive', 32)}</div>
           <h3 class="empty-state-title">No Results</h3>
           <p class="empty-state-text">No archived records match "${Utils.escapeHtml(query)}"</p>
         </div>
